@@ -111,7 +111,7 @@ function a_db_insert($table, &$data) {
     if (isset($data[$pid])) {
 	// 错误,插入的数据有主键
 
-	return a_log("your data has primary key, plase check id.");
+	return a_log();
     }
 
 

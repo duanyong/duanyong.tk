@@ -75,6 +75,10 @@ function a_action_ip() {
 // 查看浏览器cookie中取得uid再和cookie中password与数据库中的密码是否匹配
 function a_action_user() {
     // 从浏览器的Cookie中取
+    return array(
+	"uid"	    => 1,
+	"mobile"    => "15821231614",
+    );
 
     // 可能没有数据
     if (a_bad_table_id("user", $uid, $user) ) {
@@ -95,6 +99,4 @@ function a_action_user() {
     }
 
     return true;
-}
-
 }

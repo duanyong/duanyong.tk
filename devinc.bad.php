@@ -68,7 +68,7 @@ function a_bad_array($arr, &$var=false) {
 
 
 function a_bad_table_id($table, $id, &$var=false) {
-    if (a_bad_string($table))
+    if (a_bad_string($table)
 	|| a_bad_id($id)
     ) {
 	return true;
@@ -81,7 +81,7 @@ function a_bad_table_id($table, $id, &$var=false) {
 	return true;
     }
 
-    if ( $data["status"] < 0 ) {
+    if ($data["status"] < 0) {
 
 	return true;
     }
@@ -103,7 +103,9 @@ function a_bad_email($email, &$var=false) {
 	return true;
     }
 
-    $var = $email;
+    if ($var !== false) {
+	$var = $email;
+    }
 
     return false;
 }
@@ -154,21 +156,4 @@ function a_bad_user($uid=false, &$user=false) {
     return $user["status"] != 44;
 }
 
-
-// 用户名检查 TODO: 用户名正则
-function a_bad_username($username, &$var=false) {
-    //只有._-及非数字开头的英文字母，数字符合要求
-    if (a_bad_string($username)) {
-	return false;
-    }
-
-    // 正则
-    //if () {}
-
-    if ($var !== false) {
-	$var = $username;
-    }
-
-    return true;
-}
 
