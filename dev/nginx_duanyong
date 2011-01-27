@@ -1,0 +1,19 @@
+# 开发环境下为duanyong-dev.tk，生产环境下为duanyong.tk
+server {
+    listen 80;
+	# 注意名称
+    server_name duanyong-dev.tk www.duanyong-dev.tk;
+
+    root    /var/www/duanyong;
+    index   index.html index.shtml index.php;
+
+    error_log       /var/log/duanyong/error.log;
+    access_log      /var/log/duanyong/access.log;
+
+
+    error_page 404              /404.html;
+    error_page 403              /404.html;
+    error_page 413              /413.shtml;
+    error_page 500 502 503 504  /50x.html;
+}
+
