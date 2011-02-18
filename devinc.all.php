@@ -24,9 +24,15 @@
 define("ROOT_DIR", "/var/www/duanyong");
 
 
+// 配置文件
+require_once(ROOT_DIR. '/devinc.config.php');
+
+
 // 基础的php文件
 require_once(ROOT_DIR . '/devinc.bad.php');
 require_once(ROOT_DIR . '/devinc.log.php');
 require_once(ROOT_DIR . '/devinc.smarty.php');
 require_once(ROOT_DIR . '/devinc.action.php');
 
+// 数据库文件
+require_once(ROOT_DIR . '/devdb.mysql.php');
