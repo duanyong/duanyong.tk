@@ -2,3 +2,6 @@
 
 ?.php
 ?.tpl
+
+*.tpl.php
+*.php.php
