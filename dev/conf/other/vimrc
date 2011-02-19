@@ -1,0 +1,78 @@
+" 不要使用vi的键盘模式，而是vim自己的
+set nocompatible
+
+" 去掉输入错误的提示声音
+set noeb
+
+
+" 自动缩进
+set autoindent
+set cindent
+set smartindent
+
+" 统一缩进为4
+set softtabstop=4
+set shiftwidth=4
+
+" 显示行号
+set number
+
+" 历史记录数
+set history=1000
+
+
+" 搜索到文件的开始和结尾时不再继续搜索
+set nowrapscan
+
+"搜索忽略大小写
+set ignorecase
+
+"搜索逐字符高亮
+set hlsearch
+set incsearch
+
+
+"编码设置
+set enc=utf-8
+set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
+
+
+"语言设置
+set langmenu=zh_CN.UTF-8
+set helplang=cn
+
+" 高亮显示匹配的括号
+set showmatch
+
+" 匹配括号高亮的时间（单位是十分之一秒）
+set matchtime=5
+
+" 设置文件的目录为当前目录
+set autochdir
+
+
+
+" 侦测文件类型载入对应的语法及缩进
+syntax on
+filetype on
+filetype plugin on
+filetype indent on
+
+
+" ////////////////////////////////////////////////////////////////////////////////
+" 快键键
+
+
+" 按f5注释代码 F6取消注释
+nmap <F5> 0i//<Esc><CR>
+nmap <F6> 02x<Esc><CR>
+
+
+" Ctrl + o 标签打开文件
+nmap <C-o> :tabnew 
+
+
+" tab和Shift tab要标模式下切换标签
+nmap <Tab> :tabn<CR>
+nmap <S-Tab> :tabp<CR>
+
