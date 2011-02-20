@@ -25,4 +25,7 @@ $config = array();
 $config["username"] = "root";
 $config["password"] = "a";
 $config["database"] = "duanyong";
-$config["farm"]	    = "localhost";
+$config["farm"]	    = array(
+    "127.0.0.1",
+    "192.168.1.104",
+);

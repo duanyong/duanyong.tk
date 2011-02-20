@@ -14,8 +14,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 function a_log($log="") {
+    return false;
 }
 
 
 function a_warn($log="") {
+    return false;
 }
