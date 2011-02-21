@@ -4,6 +4,18 @@
 //	数据库mysql相关的操作
 //	    主要功能是提供符合mysql的连接池，断开以及如何执行sql语句的接口
 //
+//	a_db($table, $v1, $v2=false)
+//	    数据库操作函数，下面几种情况
+//		a_db("user", 1)
+//		    根据主键查询表数据
+//
+//		a_db("user:insert", array("name" => "test"))
+//		    插入数据到表中(注意:数据中不能有表的主键）
+//
+//		a_db("user:update", array("uid" => 3, "name" => "张三", "age" => true), array("name" => "duanyong"))
+//		    更新数据到表中(注意:插入的数据需要指定主键)
+//		
+//
 //	
 //	a_mysql_conn()
 //	    将数据合并到模板中，供模板输出
