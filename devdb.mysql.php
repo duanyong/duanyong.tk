@@ -43,10 +43,12 @@ function a_db($table, $v1, $v2=false) {
 
     } else if ($action === "insert") {
 	// 插入数据
-
+	$ret = a_db_insert($table, $v1, $v2);
 
     } else if ($action === "update") {
 	// 更新
+	$ret = a_db_update($table, $v1, $v2);
+
     } else if ($action === "delete") {
 	// 删除
     }
@@ -65,8 +67,7 @@ function a_db_select($table, $id) {
     }
 
     $pid = substr($table, 0, 1) . "id";
-    $sql = "select * from {$table} where {$pid} = {$id}";
-
+    $sql = "select * from {$table} where {$pid} = {$id}\G";
     echo $sql;
 
     // 得到一个资源连接后取得对应的数据
@@ -82,6 +83,8 @@ function a_db_select($table, $id) {
     return $row;
 }
 
+
+// 返回插入数据的其中包括了表主键
 function a_db_insert($table, $data) {
     if (a_bad_string($table)
 	|| a_bad_array($data)
@@ -92,15 +95,16 @@ function a_db_insert($table, $data) {
     $pid = substr($table, 0, 1) . "id";
 
     if (isset($data[$pid])) {
-	// 插入的数据有主键
+	// 错误,插入的数据有主键
 
-	return a_log();
+	return a_log("your data has primary key, plase check id.");
     }
+
 
     // 除去重复的值
     $data = array_unique($data);
 
-    // 将数据中的字段和值分开
+    // 将$data中的字段折出来(`name`, `age`, `sex`, `account`)
     $arr = array();
     $sql = "insert into `{$table}`";
 
@@ -108,29 +112,86 @@ function a_db_insert($table, $data) {
 	$arr[] = $key;
     }
 
-    // (`name`, `age`, `sex`, `accont`)
-    $sql .= ' (`' implode('`,`', $arr) . '`)';
+    // (`name`, `age`, `sex`, `accuont`)
+    $sql .= ' (`' . implode('`, `', $arr) . '`)';
 
+
+    // 将$data中的数据组合起来（'duanyong', 12, true, 2456）
     $arr = array();
 
     foreach (array_values($data) as $value) {
-	$arr[] = $value;
+	$arr[] = is_string($value) ? '"' . $value . '"' : $value;
     }
 
     // ('zhangsan', 22, true, 99)
-    $sql .= ' value (' . implode(',', $arr) . ')';
+    $sql .= ' value (' . implode(', ', $arr) . ')';
 
 
-    if(false === a_db_sql($sql)) {
+
+    if(false === a_db_sql($sql)
+	|| false === ($id = mysql_insert_id() )
+    ) {
 	// 插入失败
 
 	return l_log();
     }
 
-    return mysql_insert_id();
+    return a_db_select($table, $id);
 }
 
-function a_db_update($table, $v1, $v2) {}
+
+// 更新数据，其中$v1是原始数据，$v2是需更新的字段，其中不能包括主键
+function a_db_update($table, $v1, $v2) {
+    if (a_bad_string($table)
+	|| a_bad_array($v1)
+	|| a_bad_array($v2)
+    ) {
+	return a_log();
+    }
+
+    // 分析$table，得到表主键
+    $pid    = "";
+    $names  = explode("_", $table);
+    foreach ($names as $key) {
+	if (a_bad_string($key)) {
+	    continue;
+	}
+
+	// 把每个单词的首字母拼凑起来组合成主键
+	$pid .= substr($key, 0, 1);
+    }
+
+    if (empty($pid)) {
+	return a_log();
+    }
+
+    $pid .= "id";
+
+
+    $values = array();
+
+    // 防止有重复的值
+    $v2 = array_unique($v2);
+
+    // 对$v1和$v2数据归类
+    foreach ($v2 as $key => $value) {
+	if ($v1[$key] == $v2[$key]) {
+	    continue;
+	}
+
+	$values[] = "`{$key}`=" . ( is_string($value) ? '"' . $value . '"' : $value );
+    }
+
+
+    $sql = "update `{$table}` set " . implode(", ", $values) . " where {$pid} = {$v1[$pid]}";
+
+    if (false === a_db_sql($sql)) {
+	return l_log();
+    }
+
+    return a_db_select($table, $v1[$pid]);
+}
+
 
 // 把数据按列表返回
 function a_db_list($sql) {
