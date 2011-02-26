@@ -16,6 +16,8 @@
 //	a_bad_file($file)
 //	    判断文件是否可读
 //
+//	a_bad_email($email)
+//	    判断邮箱地址是否正确
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -23,7 +25,9 @@ function a_bad_id($id) {
     return false;
 }
 
-function a_bad_string($str) {
+function a_bad_string($str, &$var="") {
+    $var = $str;
+    
     return false;
 }
 
@@ -44,3 +48,15 @@ function a_bad_array($arr, &$var=false) {
 function a_bad_file($file) {
     return !( file_exists($file) && is_readable($file) );
 }
+
+
+function a_bad_email($email, &$value=false) {
+    if (false === filter_var($email, FILTER_VALIDATE_EMAIL)) {
+	return true;
+    }
+
+    $value = $email;
+
+    return false;
+}
+
