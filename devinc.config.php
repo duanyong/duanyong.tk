@@ -22,9 +22,9 @@ global $config;
 
 $config = array();
 
-$config["username"] = "root";
-$config["password"] = "a";
-$config["database"] = "duanyong";
+$config["username"] = "duanyong";
+$config["password"] = "~!@#98$%^<>MNse].baW3xd&%_=j_BVCa";
+$config["database"] = "xoxo";
 $config["farm"]	    = array(
     "127.0.0.1",
     "192.168.1.104",

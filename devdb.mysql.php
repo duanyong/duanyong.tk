@@ -23,6 +23,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+require_once(__DIR__ . "/devinc.all.php");
+
 
 // 数据操作
 function a_db($table, $v1, $v2=false) {
@@ -71,7 +73,7 @@ function a_db($table, $v1, $v2=false) {
 
 
 // 返回主键对应的数据
-function a_db_select($table, $id) {
+function a_db_primary($table, $id) {
     if (a_bad_string($table)
 	|| a_bad_id($id)
     ) {
@@ -145,10 +147,10 @@ function a_db_insert($table, $data) {
     ) {
 	// 插入失败
 
-	return l_log();
+	return a_log();
     }
 
-    return a_db_select($table, $id);
+    return a_db_primary($table, $id);
 }
 
 
@@ -198,15 +200,15 @@ function a_db_update($table, $v1, $v2) {
     $sql = "update `{$table}` set " . implode(", ", $values) . " where {$pid} = {$v1[$pid]}";
 
     if (false === a_db_sql($sql)) {
-	return l_log();
+	return a_log();
     }
 
-    return a_db_select($table, $v1[$pid]);
+    return a_db_primary($table, $v1[$pid]);
 }
 
 
 // 把数据按列表返回
-function a_db_list($sql) {
+function a_db_query($sql) {
     if (a_bad_string($sql)) {
 	return a_log();
     }
@@ -225,6 +227,14 @@ function a_db_list($sql) {
     // 释放资源文件
     mysql_free_result($ret);
 
+
+    //只返回一条数据时
+    if (strrpos("limit 1", $sql) === -1
+	&& count($rows) === 1
+    ) {
+	return current($rows);
+    }
+
     return $rows;
 }
 
@@ -234,7 +244,7 @@ function a_db_conn() {
     global $config;
 
     if (a_bad_array($config["farm"], $farm)) {
-	return f_warn();
+	return a_warn();
     }
 
     //TODO 优先选择状态好的数据库
@@ -260,14 +270,14 @@ function a_db_sql($sql) {
     if (false === mysql_select_db($config["database"], $conn)) {
 	// 没有数据库
 
-	return f_warn();
+	return a_warn();
     }
 
     // 设置存取的编码格式。此处用utf8格式
     if (false === mysql_query("SET NAMES 'UTF8'", $conn)) {
 	// 设置编码格式有问题
 
-	return f_warn();
+	return a_warn();
     }
 
     return mysql_query($sql, $conn);

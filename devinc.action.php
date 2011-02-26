@@ -7,6 +7,12 @@
 //	a_action_done($tpl)
 //	    接收smarty模板，将其渲染出来
 //
+//	a_action_is_get()
+//	    返回true表示是GET请求
+//
+//	a_action_is_post()
+//	    返回true表示是POST请求
+//
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -14,6 +20,14 @@
 function a_action_done() {
     global $arg;
     global $_SERVER;
+
+    // 先做ajax判断，如果是直接返回json_encode($arg);
+    if (!a_bad_ajax()) {
+	// 直接返回json格式
+
+	return json_encode($arg);
+    }
+
 
     if (a_bad_string($_SERVER["REQUEST_URI"], $tpl)) {
 	return a_log();
@@ -40,5 +54,19 @@ function a_action_done() {
 
     // 交给smarty去渲染出页面
     a_smarty($tpl, $arg);
+}
+
+
+function a_action_time() {
+    global $_SERVER;
+
+    return $_SERVER["REQUEST_TIME"];
+}
+
+
+function a_action_ip() {
+    global $_SERVER;
+
+    return $_SERVER["REMOTE_ADDR"];
 }
 
