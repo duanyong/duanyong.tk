@@ -4,20 +4,24 @@
 //	日志文件
 //
 //	
-//	a_log($log)
+//	a_log(&$log)
 //	    输出日志
 //
-//	a_warn($log)
+//	a_warn(&$log)
 //	    输出日志（这个错误很严重）
 //
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-function a_log($log="") {
+function a_log(&$log="") {
+    echo $log;
+
     return false;
 }
 
 
-function a_warn($log="") {
+function a_warn(&$log="") {
+    echo $log;
+
     return false;
 }

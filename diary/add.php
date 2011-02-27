@@ -1,16 +1,14 @@
 <?php
 /**
- * 提供用户注册的程序
+ * 提供用户发布日记
  *
  * */
 
 require_once(__DIR__ . "/devinc.all.php");
-require_once(ROOT_DIR . "/db/devdb.user.php");
-require_once(ROOT_DIR . "/user/devapi.user.php");
+require_once(ROOT_DIR . "/user/devapi.diary.php");
 
 
-///
-// 登录逻辑的必要值检查（邮箱、密码）
+// 登录逻辑的必要值检查（日记内容）
 if (a_bad_ajax()) {
     //非正常提交，直接返回403
 
@@ -19,13 +17,15 @@ if (a_bad_ajax()) {
 
 global $arg;
 
-if (a_bad_mobile($_POST["mobile"], $mobile)) {
-    $arg["err"]["mobile"] = "邮箱做为登录账号，必须填写。";
+if (a_bad_user(false, $user)) {
+    $arg["err"]["form"] = "您可能没有登陆，请登陆后再写日记";
 }
 
-if (a_bad_string($_POST["password"], $password)) {
-    $arg["err"]["password"] = "密码是保护账号的基本手段，必须填写。";
+
+if (a_bad_mobile($_POST["content"], $content)) {
+    $arg["err"]["content"] = "请写点字儿再提交吧";
 }
+
 
 if (a_bad_0string($_POST["email"], $email)) {
     $arg["err"]["email"] = "没有邮箱地址。";
@@ -33,13 +33,6 @@ if (a_bad_0string($_POST["email"], $email)) {
 
 
 //取值完毕
-
-//检查数据库中的值是否存在
-if (false !== ( $user = a_user_by_email($email) )) {
-    //已经有用户注册过了
-
-    $arg["err"]["email"] = "您输入的用户名已经被注册。";
-}
 
 if (!a_bad_array($arg["err"])) {
     //有错误发生，返回错误
@@ -74,3 +67,4 @@ $arg["err"] = 0;
 echo var_export($arg, true);
 
 exit(a_action_done());
+

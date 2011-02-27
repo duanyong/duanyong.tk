@@ -57,7 +57,7 @@ function a_action_done() {
 }
 
 
-function a_action_time() {
+function a_action_timestamp() {
     global $_SERVER;
 
     return $_SERVER["REQUEST_TIME"];
@@ -70,3 +70,31 @@ function a_action_ip() {
     return $_SERVER["REMOTE_ADDR"];
 }
 
+
+//TODO 
+// 查看浏览器cookie中取得uid再和cookie中password与数据库中的密码是否匹配
+function a_action_user() {
+    // 从浏览器的Cookie中取
+
+    // 可能没有数据
+    if (a_bad_table_id("user", $uid, $user) ) {
+
+	return false;
+    }
+
+    // 用户是否被禁言
+    return $user["status"] != 44;
+
+    //只有._-及非数字开头的英文字母，数字符合要求
+    if (a_bad_string($username)) {
+	return false;
+    }
+
+    if ($var !== false) {
+	$var = $username;
+    }
+
+    return true;
+}
+
+}

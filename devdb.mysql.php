@@ -10,7 +10,7 @@
 //		    根据主键查询表数据
 //
 //		a_db("user:insert", array("name" => "test"))
-//		    插入数据到表中(注意:数据中不能有表的主键）
+//		    返回插入的主键ID(注意:数据中不能有表的主键）
 //
 //		a_db("user:update", array("uid" => 3, "name" => "张三", "age" => true), array("name" => "duanyong"))
 //		    更新数据到表中(注意:插入的数据需要指定主键)
@@ -72,6 +72,7 @@ function a_db($table, $v1, $v2=false) {
 }
 
 
+
 // 返回主键对应的数据
 function a_db_primary($table, $id) {
     if (a_bad_string($table)
@@ -81,8 +82,7 @@ function a_db_primary($table, $id) {
     }
 
     $pid = substr($table, 0, 1) . "id";
-    $sql = "select * from {$table} where {$pid} = {$id}\G";
-    echo $sql;
+    $sql = "select * from {$table} where {$pid} = {$id}";
 
     // 得到一个资源连接后取得对应的数据
     if ( false === ( $ret = a_db_sql($sql) )
@@ -98,8 +98,8 @@ function a_db_primary($table, $id) {
 }
 
 
-// 返回插入数据的其中包括了表主键
-function a_db_insert($table, $data) {
+// 插入数据到数据库。其中$data已经包含了对应的主键
+function a_db_insert($table, &$data) {
     if (a_bad_string($table)
 	|| a_bad_array($data)
     ) {
@@ -150,7 +150,7 @@ function a_db_insert($table, $data) {
 	return a_log();
     }
 
-    return a_db_primary($table, $id);
+    return $data[$pid] = $id;
 }
 
 
