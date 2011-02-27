@@ -27,7 +27,7 @@ require_once(__DIR__ . "/devinc.all.php");
 
 
 // 数据操作
-function a_db($table, $v1, $v2=false) {
+function a_db($table, &$v1, &$v2=false) {
     if (a_bad_string($table)) {
 	return a_log();
     }
@@ -155,7 +155,7 @@ function a_db_insert($table, &$data) {
 
 
 // 更新数据，其中$v1是原始数据，$v2是需更新的字段，其中不能包括主键
-function a_db_update($table, $v1, $v2) {
+function a_db_update($table, &$v1, &$v2) {
     if (a_bad_string($table)
 	|| a_bad_array($v1)
 	|| a_bad_array($v2)
