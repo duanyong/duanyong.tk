@@ -46,7 +46,7 @@ DROP TABLE IF EXISTS `diary`;
 CREATE TABLE `diary` (
   `did` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `uid` int(10) unsigned NOT NULL default 0 COMMENT '外键，发表日记的用户',
-  `day` char(10) NOT NULL DEFAULT '' COMMENT '用户填写的日期',
+  `date` char(10) NOT NULL DEFAULT '' COMMENT '用户填写的日期',
   `gether` varchar(20) NOT NULL DEFAULT '' COMMENT '用户填写的天气状况',
   `content` varchar(2560) NOT NULL DEFAULT '' COMMENT '日记内容',
   `ctime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '发表日记的时间',
