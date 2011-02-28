@@ -29,6 +29,7 @@ CREATE TABLE `user` (
   `mobile` char(11) NOT NULL DEFAULT '' COMMENT '用户手机',
   `password` char(32) NOT NULL DEFAULT '' COMMENT '用户密码',
   `name` varchar(32) NOT NULL DEFAULT '' COMMENT '用户姓名',
+  `sex` boolean NOT NULL DEFAULT false COMMENT '用户性别',
   `email` varchar(128) NOT NULL DEFAULT '' COMMENT '登录邮箱',
   `regip` varchar(32) NOT NULL DEFAULT '' COMMENT '注册IP',
   `count_diary` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '用户发的日记总数',
