@@ -15,17 +15,23 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-function a_log(&$log="") {
+error_reporting(E_ALL);
+ini_set('display_errors','On');
+
+
+function a_log($log=false) {
+    if ($log === false) {
+	// 函数的参数调用
+	//TODO***
+	return trigger_error("wrong arg...") && false;
+    }
+
+    return trigger_error($log) && false;
+}
+
+
+function a_warn($log=false) {
     echo $log;
 
     return false;
 }
-
-
-function a_warn(&$log="") {
-    echo $log;
-
-    return false;
-}
-
-
