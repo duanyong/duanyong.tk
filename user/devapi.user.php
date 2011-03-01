@@ -72,10 +72,3 @@ function a_user_reg(&$user=false) {
     // 插入成功
     return $data;
 }
-
-function a_current_user() {
-    return array(
-	"id"	    => 1,
-	"status"    => 0,
-    );
-}
