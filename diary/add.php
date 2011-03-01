@@ -15,33 +15,39 @@ if (a_bad_ajax()) {
     return false;
 }
 
-global $arg;
+$diary = array(
+    "date"	=> "",
+    "content"	=> "",
+    "weather"	=> "",
+);
 
-if (a_bad_user(false, $user)) {
+$arg = array();
+
+if (false === ( $user = a_current_user() )) {
     $arg["err"]["form"] = "您可能没有登陆，请登陆后再写日记";
 }
 
 
-if (a_bad_mobile($_POST["content"], $content)) {
+if (a_bad_string($_POST["content"], $diary["content"])) {
     $arg["err"]["content"] = "请写点字儿再提交吧";
 }
 
 
-if (a_bad_0string($_POST["date"], $date)) {
+if (a_bad_0string($_POST["date"], $diary["date"])) {
     // 提交的数据有问题，不应该产生这样的情况的
     $arg["err"]["date"] = "写个日期吧";
 }
 
-if (a_bad_0string($_POST["gether"], $gether)) {
+if (a_bad_0string($_POST["weather"], $diary["weather"])) {
     // 提交的数据有问题，不应该产生这样的情况的
-    $arg["err"]["gether"] = "今天的天气怎么样?";
+    $arg["err"]["weather"] = "今天的天气怎么样?";
 }
 
 
 
 //取值完毕
 
-if (!a_bad_array($arg["err"])) {
+if (isset($arg["err"])) {
     //有错误发生，返回错误
 
     return a_action_done();

@@ -28,7 +28,7 @@ function a_user_reg(&$user=false) {
 	"password"  => "",
     );
 
-    //检查必填项(手机号码、密码)和可选项
+    // 检查必填项(手机号码、密码)和可选项
     if (a_bad_mobile($user["mobile"], $data["mobile"])) {
 	// 手机号码格式错误
 
@@ -51,20 +51,31 @@ function a_user_reg(&$user=false) {
     }
 
 
-    //用户请求时间
+    // 用户性别 
+    $data["sex"]   = $data["sex"] === 0 ? 0 : 1;
+
+    // 用户请求时间
     $data["ctime"] = a_action_timestamp();
 
-    //用户请求IP
+    // 用户请求IP
     $data["regip"] = a_action_ip();
 
 
-    //插入数据
+
+    // 插入数据
     if (false === a_db("user:insert", $data)
 	|| a_bad_id($data["uid"])
     ) {
 	return false;
     }
 
-    //插入成功
+    // 插入成功
     return $data;
+}
+
+function a_current_user() {
+    return array(
+	"id"	    => 1,
+	"status"    => 0,
+    );
 }
