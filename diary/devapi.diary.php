@@ -22,9 +22,7 @@ function a_diary_add(&$diary=false) {
     }
 
     // 检查用户是否已经在线
-    if (false === ( $user = a_action_user() )
-	|| a_bad_id($user["uid"])
-    ) {
+    if (false === ( $user = a_action_user() )) {
 	// 用户有问题
 
 	return false;
@@ -34,11 +32,8 @@ function a_diary_add(&$diary=false) {
     // 初始化存储数组
     $data = array(
 	"date"	    => "",
-	"gether"    => "",
+	"weather"   => "",
 	"content"   => "",
-
-	"uid"	    => $user["uid"],
-	"ctime"	    => a_action_timestamp(),
     );
 
 
@@ -50,7 +45,7 @@ function a_diary_add(&$diary=false) {
     }
 
 
-    if (a_bad_0string($diary["gether"], $data["gether"])) {
+    if (a_bad_0string($diary["weather"], $data["weather"])) {
 	// 天气情况
 
 	return false;
@@ -63,15 +58,21 @@ function a_diary_add(&$diary=false) {
 	return false;
     }
 
-    
+
+    // 用户标识
+    $data["uid"]    = $user["uid"];
+
+    // 发布时间
+    $data["ctime"]  = a_action_timestamp();
+
+    // 对用户的内容进行编码
+    $data["content"] = htmlspecialchars($data["content"]); 
 
     //插入数据
-    if (false === a_db("diary:insert", $data)
-	|| a_bad_id($data["did"])
-    ) {
+    if (false === a_db("diary:insert", $data)) {
 	return false;
     }
 
     //插入成功
-    return true;
+    return $data;
 }

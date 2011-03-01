@@ -7,11 +7,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-function a_user_by_email($email) {
-    if (a_bad_email($email)) {
+function a_user_by_mobile($mobile) {
+    if (a_bad_mobile($mobile)) {
 	return a_log();
     }
 
-    return a_db_sql("select * from user where `email`='{$email}' limit 1;");
+    return a_db_query("select * from user where `mobile`='{$mobile}' limit 1;");
 }
 

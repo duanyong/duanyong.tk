@@ -14,7 +14,7 @@
 	<form action="/diary/add.php" method="post">
 	    <div>
 		<span>日期:<input type="text" name="date" value="" /></span>
-		<span>天气:<input type="text" name="gether" value="" /></span>
+		<span>天气:<input type="text" name="weather" value="" /></span>
 	    </div>
 
 	    <div>
