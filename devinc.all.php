@@ -25,7 +25,7 @@ define("ROOT_DIR", "/var/www/duanyong");
 
 
 // 配置文件
-require_once(ROOT_DIR. '/devinc.config.php');
+require_once(ROOT_DIR. '/devinc.farm.php');
 
 
 // 基础的php文件
