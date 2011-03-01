@@ -35,27 +35,67 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 function a_bad_id($id, &$var=false) {
-    $var = $id;
+    if(!is_numeric($id)
+	|| ( $id = intval($id) ) <= 0
+    ) {
+	return true;
+    }
+
+    if ($var !== false) {
+	$var = $id;
+    }
+
+    return false;
+}
+
+
+function a_bad_0id($id, &$var=false) {
+    if(!is_numeric($id)
+	|| ( $id = intval($id) ) < 0
+    ) {
+	return true;
+    }
+
+    if ($var !== false) {
+	$var = $id;
+    }
 
     return false;
 }
 
 
 function a_bad_string($str, &$var=false) {
-    $var = $str;
+    if (!is_string($str)
+	|| empty($str)
+    ) {
+	return true;
+    }
+
+    if ($var !== false) {
+	$var = $str;
+    }
+
     
     return false;
 }
 
 
 function a_bad_0string($str, &$var=false) {
-    $var = $str;
-    
+    if (!is_string($str)) {
+	return true;
+    }
+
+    if ($var !== false) {
+	$var = $str;
+    }
+
     return false;
 }
 
 function a_bad_array($arr, &$var=false) {
-    if (!is_array($arr)) {
+    if (!is_array($arr)
+	|| empty($arr)
+    ) {
 	return true;
     }
 
@@ -74,14 +114,9 @@ function a_bad_table_id($table, $id, &$var=false) {
 	return true;
     }
 
-    if (false === ( $data = a_db_query($table, $id))) {
+    if (false === ( $data = a_db($table, $id))) {
 	// 数据库发生错误，写日志
 	a_warn();
-
-	return true;
-    }
-
-    if ($data["status"] < 0) {
 
 	return true;
     }
@@ -90,8 +125,9 @@ function a_bad_table_id($table, $id, &$var=false) {
 	$var = $data;
     }
 
-    return true;
+    return false;
 }
+
 
 function a_bad_file($file) {
     return !( file_exists($file) && is_readable($file) );
@@ -111,8 +147,16 @@ function a_bad_email($email, &$var=false) {
 }
 
 
-function a_bad_mobile($mobile, &$var) {
-    $var = $mobile;
+function a_bad_mobile($mobile, &$var=false) {
+    if (a_bad_id($mobile)
+	|| strlen($mobile) !== 11
+    ) {
+	return true;
+    }
+
+    if ($var !== false) {
+	$var = $mobile;
+    }
 
     return false;
 }
@@ -139,12 +183,10 @@ function a_bad_ajax() {
 }
 
 
-function a_bad_user($uid=false, &$user=false) {
-    if ($uid === false) {
-	// 从浏览器的Cookie中取
+function a_bad_user($uid, &$user=false) {
+    if (a_bad_id($uid)) {
+	return a_log();
     }
-
-    if (a_bad_id($uid)) {}
 
     // 可能没有数据
     if (a_bad_table_id("user", $uid, $user) ) {

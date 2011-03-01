@@ -13,9 +13,12 @@
     <div id="main">
 	<form action="/reg.php" method="post">
 	    <ul>
-		<li><label>邮箱地址:</label><input type="text" name="email" value="可以使用常用的邮箱" /></li>
-		<li><label>登录密码:</label><input type="text" name="password" value="密码" /></li>
-		<li><label>手机号码:</label><input type="text" name="mobile" value="11位的手机号码" /></li>
+		<label>手机号码:</label><input type="text" name="mobile" value="11位的手机号码" maxlength="11" /><br />
+		<label>登录密码:</label><input type="text" name="password" value="密码" maxlength="16" /><br />
+		<label>性别:</label>
+		<input type="radio" name="sex" value="1" /><label>男</label>
+		<input type="radio" name="sex" value="0" /><label>女</label><br />
+
 		<input type="submit" value="注册" />
 	    </ul>
 	</form>
