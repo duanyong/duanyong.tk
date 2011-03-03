@@ -8,12 +8,23 @@
     <meta name="keywords" content="啊段" />
     <meta name="description" content="" />
     <title>宁静致远</title>
-    <style type="text/css">
-    </style>
+    <link type="text/css" rel="stylesheet" href="/css/base.css" />
+    <link type="text/css" rel="stylesheet" href="/css/main.css" />
 </head>
 <body>
-    <div>
-        <h3>Welcome to duanyong.tk</h3>
+    <div id="head">
+	<a href="/login.shtml">登录</a>
+    </div>
+
+    <div id="main">
+	<div id="nav">
+	    <span class="bgg">日记</span>
+	    <span class="bgo">日记</span>
+	</div>
+    </div>
+
+    <div id="foot">
+	<span>Copyright&copy;2010</span>
     </div>
 </body>
 </html>

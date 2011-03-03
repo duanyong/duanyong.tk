@@ -1,0 +1,38 @@
+body {
+    background: #414A5B;
+    padding: 0px;
+    margin: 0px;
+}
+
+#head {
+    height: 30px;
+    margin-right: 30px;
+    text-align: right;
+}
+
+#headr a {
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+
+#main {
+}
+
+.bgg {
+    background: #BED72E;
+}
+
+.bgo {
+    background: #F36E1F;
+}
+
+#foot {
+    left: auto;
+    right: auto;
+    bottom: 5pt;
+    height: 30px;
+    width: 100%;
+    position: fixed;
+    text-align: center;
+}
