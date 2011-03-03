@@ -229,7 +229,7 @@ function a_db_query($sql) {
 
 
     //只返回一条数据时
-    if (strrpos("limit 1", $sql) === -1
+    if (strripos($sql, "limit 1;") !== false
 	&& count($rows) === 1
     ) {
 	return current($rows);
@@ -279,6 +279,8 @@ function a_db_sql($sql) {
 
 	return a_warn();
     }
+
+    a_log($sql);
 
     return mysql_query($sql, $conn);
 }
