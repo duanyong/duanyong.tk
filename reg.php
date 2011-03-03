@@ -48,8 +48,7 @@ if (a_bad_0id($_POST["sex"], $user["sex"])) {
 
 
 //检查数据库中的值是否存在
-if (false === ( $data = a_user_by_mobile($mobile) )
-    || !empty($data)
+if (( $data = a_user_by_mobile($user["mobile"]) )
 ) {
     // 数据库错误
     $arg["err"]["mobile"] = "您提供的手机号码有问题，请联系管理员。";
@@ -62,6 +61,7 @@ if (isset($arg["err"])) {
     exit(a_action_done());
 }
 
+$user["password"] = md5($user["password"]);
 
 if (false === (a_user_reg($user) )) {
     //数据存储发生错误，提示用户
