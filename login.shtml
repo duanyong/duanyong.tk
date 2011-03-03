@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+    <link rel="icon" href="/favicon.ico" type="image/ico" />
+    <link rel="shortcut icon" href="/images/favicon.ico" />
+    <meta name="keywords" content="登录" />
+    <meta name="description" content="用手机号码登录" />
+    <title>登录</title>
+    <link type="text/css" rel="stylesheet" href="/css/base.css" />
+    <link type="text/css" rel="stylesheet" href="/css/main.css" />
+</head>
+<body>
+    <div>
+	<div id="head">
+	    <a href="/login.shtml">登录</a>
+	</div>
+
+	<div id="main">
+	    <form action="/login.php" method="post">
+		<label>手机号码:</label><input type="text" name="mobile" value="11位的手机号码" maxlength="11" /><br />
+		<label>登录密码:</label><input type="password" name="password" value="密码" maxlength="16" /><br />
+		<input type="checkbox" name="rember" value="1" id="rember" /><label for="rember">登录密码:</label><br />
+
+		<input type="submit" value="注册" />
+	    </form>
+	</div>
+
+	<div id="foot">
+	    <span>Copyright&copy;2010</span>
+	</div>
+    </div>
+</body>
+</html>
