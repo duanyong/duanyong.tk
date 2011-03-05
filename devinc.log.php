@@ -23,10 +23,10 @@ function a_log($log=false) {
     if ($log === false) {
 	// 函数的参数调用
 	//TODO***
-	return trigger_error("wrong arg...") && false;
+	//return trigger_error("wrong arg...") && false;
     }
 
-    return trigger_error($log) && false;
+    //return trigger_error($log) && false;
 }
 
 
