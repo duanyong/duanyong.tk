@@ -2,7 +2,6 @@
 var a_ajax = function(obj) {
     if (a_bad_object(obj)
 	    || a_bad_string(obj.url)
-	    || a_type(obj.callback) !== "function"
        ) {
 	return a_log();
     }
@@ -78,21 +77,69 @@ var __ajax_http = function() {
 };
 
 
-var __ajax_callback = function(response) {
+var __ajax_callback = function() {
     if (this.readyState !== 4) {
 	return ;
     }
 
+    var err	= this.responseText,
+	param	= this.__param,
+	hascall = a_type(param.callback) === "function";
+
+    if (hascall) {
+	// 请求ajax的参数, 返回回来的参数， ajax
+	param.callback.call(param, err, this);
+    }
+
+
+    // 自己先判断，看是否是默认的跳转或者其它默认指令
+    if (err.err !== 0) {
+	// 不正确
+	a_dialog_show(err.msg);
+
+	return ;
+    }
+
+    // 有cookie信息，用js设置到cookie中
+    if () {}
+
+
+    if (err.referer) {
+	// 页面需要跳转
+	return __ajax_redirect(err.referer, err.msg, err.delay);
+    }
+
     // 成功回调
-    if (this.__param
-	    && a_type(this.__param.callback) === "function"
+    if (param
+	    && a_type(param.callback) === "function"
        ) {
 
 	try {
-	    this.__param.callback.call(this.__param, this.responseText);
-	} catch (e) {}
+	    param.callback.call(this, param);
+	} catch (e) {
+	    console.log(e);
+	}
     }
 
     // 删除ajax对象
     delete this;
 }
+
+var __ajax_cookie = function(cookies) {}
+
+
+var __ajax_redirect = function(param) {
+    var err = this.responseText;
+
+    // 得到一个空的对话框
+    var dialog = a_dialog();
+
+    dialog.innerHTML = '<img src="" /><a href="' +  + '">还余<span></span>秒，点击此处马上跳转</a>';
+
+
+    window.location.href = ;
+}
+
+
+var __ajax_countdown =function(count) {}
+

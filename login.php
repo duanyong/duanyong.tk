@@ -68,4 +68,4 @@ if (md5($user["password"]) !== $data["password"]) {
 $arg["err"] = 0;
 
 
-exit(a_action_done());
+exit(a_action_redirect("/index.shtml", "登陆成功，稍后将会转到首页。", 3));

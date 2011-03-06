@@ -71,6 +71,24 @@ function a_action_ip() {
 }
 
 
+
+function a_action_redirect($url="/", $msg="", $delay=3) {
+    global $arg;
+
+    $arg["delay"]	= $delay;
+    $arg["errmsg"]	= $msg;
+    $arg["redirection"] = $url;
+
+
+    // 准备页面跳转
+    header("Status: 200");
+    header("Referer: {$url}");
+
+
+    a_action_done();
+}
+
+
 //TODO 
 // 查看浏览器cookie中取得uid再和cookie中password与数据库中的密码是否匹配
 function a_action_user() {
