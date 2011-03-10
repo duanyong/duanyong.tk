@@ -12,6 +12,6 @@ function a_user_by_mobile($mobile) {
 	return a_log();
     }
 
-    return a_db_query("select * from user where `mobile`='{$mobile}' limit 1;");
+    return a_db_query("select * from `user` where `mobile`='{$mobile}' limit 1;");
 }
 

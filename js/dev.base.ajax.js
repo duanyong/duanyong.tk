@@ -95,51 +95,48 @@ var __ajax_callback = function() {
     // 自己先判断，看是否是默认的跳转或者其它默认指令
     if (err.err !== 0) {
 	// 不正确
-	a_dialog_show(err.msg);
-
-	return ;
+	return a_dialog_show(err.msg);
     }
 
     // 有cookie信息，用js设置到cookie中
-    if () {}
 
 
+    // 需要进行页面跳转
     if (err.referer) {
 	// 页面需要跳转
 	return __ajax_redirect(err.referer, err.msg, err.delay);
-    }
-
-    // 成功回调
-    if (param
-	    && a_type(param.callback) === "function"
-       ) {
-
-	try {
-	    param.callback.call(this, param);
-	} catch (e) {
-	    console.log(e);
-	}
     }
 
     // 删除ajax对象
     delete this;
 }
 
-var __ajax_cookie = function(cookies) {}
 
+// ajax取得值后需要进行页面跳转
+var __ajax_redirect = function(refere, msg, delay) {
+    if (!delay) {
+	delay = 3;
+    }
 
-var __ajax_redirect = function(param) {
-    var err = this.responseText;
+    if (!refere) {
+	//跳转到首页
+	refere = "/";
+    }
+
+    if (!msg) {
+	msg = "请求成功";
+    }
 
     // 得到一个空的对话框
     var dialog = a_dialog();
 
-    dialog.innerHTML = '<img src="" /><a href="' +  + '">还余<span></span>秒，点击此处马上跳转</a>';
+    dialog.innerHTML = '还余<span>' + delay + '</span>秒，<a href="' + refere + '">点击此处马上跳转</a>';
 
 
-    window.location.href = ;
+    __ajax_countdown();
 }
 
-
-var __ajax_countdown =function(count) {}
+// ajax的计数函数，全站采用统一的风格
+var __ajax_countdown =function(count, id) {
+}
 

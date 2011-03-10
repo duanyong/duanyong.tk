@@ -23,7 +23,7 @@
 		<label>登录密码:</label><input type="password" name="password" value="密码" maxlength="16" /><br />
 		<input type="checkbox" name="rember" value="1" id="rember" /><label for="rember">登录密码:</label><br />
 
-		<input type="submit" value="注册" />
+		<input type="button" value="注册" onclick="javascript: void submit();" />
 	    </form>
 	</div>
 

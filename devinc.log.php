@@ -16,17 +16,21 @@
 
 
 error_reporting(E_ALL);
-ini_set('display_errors','On');
+ini_set('display_errors','Off');
 
 
 function a_log($log=false) {
     if ($log === false) {
 	// 函数的参数调用
-	//TODO***
-	//return trigger_error("wrong arg...") && false;
+
+	return trigger_error("wrong arg", E_USER_ERROR) && false;
     }
 
-    //return trigger_error($log) && false;
+
+    // todo:
+    // if (a_type($log) === "string") {}
+
+    return trigger_error($log, E_USER_ERROR) && false;
 }
 
 
