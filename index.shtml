@@ -5,31 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
     <link rel="icon" href="/favicon.ico" type="image/ico" />
     <link rel="shortcut icon" href="/favicon.ico" />
-    <meta name="keywords" content="啊段" />
-    <meta name="description" content="" />
+    <meta name="keywords" content="这是您的日记" />
+    <meta name="description" content="私人日记" />
     <title>宁静致远</title>
     <link type="text/css" rel="stylesheet" href="/css/base.css" />
-    <link type="text/css" rel="stylesheet" href="/css/main.css" />
+    <link type="text/css" rel="stylesheet" href="/css/index.css" />
 </head>
 <body>
-    <div id="head">
-	<a href="/login.shtml">登录</a>
-    </div>
+    <div id="body">
+	<!-- 导航条 //-->
+	<div id="header">
+	    <a href="/login.shtml">登录</a>
+	    <a href="/login.shtml">安全退出</a>
+	    <a href="/login.shtml">返回</a>
+	</div>
 
-    <div id="main">
-	<div id="nav">
-	    <span class="bgg">日记</span>
-	    <span class="bgo">日记</span>
+	<!-- 导航条 //-->
+	<div id="container">
+	    <div class="nav">
+		<a href="#"><img src="/img/diary75-75.jpg"/ ></a>
+	    </div>
+	</div>
+
+	<!-- 页脚 //-->
+	<div id="footer">
+	    <span>Copyright&copy;2010</span>
 	</div>
     </div>
-
-    <div id="foot">
-	<span>Copyright&copy;2010</span>
-    </div>
-
-
-    <script src="/js/dev.base.js"></script>
-    <script src="/js/dev.base.ajax.js"></script>
-    <script src="/js/dev.base.form.js"></script>
 </body>
 </html>

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+tail -f /var/log/php/cgi.error.log > /tmp/.log &
+tail -f /var/log/php/cli.error.log > /tmp/.log &
+
+tail -f /tmp/.log
+
+

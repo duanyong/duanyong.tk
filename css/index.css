@@ -1,0 +1,12 @@
+.nav {
+    height: 75px;
+}
+
+.nav span {
+    width: 75px;
+    height: 75px;
+    border: 1px solid #fff;
+    display: inline-block;
+}
+
+
