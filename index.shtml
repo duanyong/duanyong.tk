@@ -15,15 +15,15 @@
     <div id="body">
 	<!-- 导航条 //-->
 	<div id="header">
-	    <a href="/login.shtml">登录</a>
-	    <a href="/login.shtml">安全退出</a>
-	    <a href="/login.shtml">返回</a>
+	    <a href="/login.shtml" style="display: none;" id="login">登录</a>
+	    <a href="/login.shtml" style="display: none;" id="exit">安全退出</a>
+	    <a href="/login.shtml" style="display: none;" id="return">返回</a>
 	</div>
 
 	<!-- 导航条 //-->
 	<div id="container">
 	    <div class="nav">
-		<a href="#"><img src="/img/diary75-75.jpg"/ ></a>
+		<a href="#" title="写日记" alt="写日记"><img src="/img/diary75-75.jpg"/ ></a>
 	    </div>
 	</div>
 
@@ -32,5 +32,16 @@
 	    <span>Copyright&copy;2010</span>
 	</div>
     </div>
+
+    <script src="/js/dev.base.js"></script>
+    <script src="/js/dev.base.bad.js"></script>
+    <script src="/js/dev.base.ajax.js"></script>
+    <script src="/js/dev.base.json.js"></script>
+    <script src="/js/dev.base.event.js"></script>
+    <script src="/js/dev.base.cookie.js"></script>
+    <script src="/js/dev.base.form.js"></script>
+    <script src="/js/dev.base.login.js"></script>
+    <script src="/js/dev.base.brower.js"></script>
+    <script src="/js/index.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@ var a_bad_element = function(element) {
 }
 
 var a_bad_number = function(num) {
-    return isNaN( 1 * num);
+    return !(/^\d+$/.test(num));
 }
 
 var a_bad_string = function(str) {
@@ -24,4 +24,8 @@ var a_bad_object = function(obj) {
     }
 
     return true;
+}
+
+var a_bad_function = function(func) {
+    return a_type(func) !== "function";
 }

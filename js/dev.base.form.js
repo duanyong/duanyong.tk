@@ -62,4 +62,4 @@ var a_form_input_value = function(input) {
     }
 
     return false;
-};
+}
