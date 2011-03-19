@@ -1,3 +1,10 @@
+/*
+ * 基础函系列 - a_json_xxx()
+ *
+ *  a_json_string(json)
+ *	返回把json转换成url的字符串
+ *
+ * */
 
 var a_json_string = function(json, name) {
     var type, value, ret = [];
@@ -30,4 +37,4 @@ var a_json_string = function(json, name) {
     }
 
     return ret.join("&");
-}
+};

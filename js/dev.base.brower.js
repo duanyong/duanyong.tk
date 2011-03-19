@@ -1,3 +1,12 @@
+/*
+ * 基础函系列 - a_browser_xxx()
+ *
+ *  a_browser_is_IE()
+ *	返回是否为IE
+ *
+ * */
+
+
 (function() {
     var ua = navigator.userAgent.toLowerCase(),
 	UA = ua.match(/(opera|ie|firefox|chrome|version)[\s\/:]([\w\d\.]+)?.*?(safari|version[\s\/:]([\w\d\.]+)|$)/) || [null, 'unknown', 0],
@@ -15,6 +24,7 @@
 })();
 
 
+// 是否为IE浏览器
 var a_brower_isIE = function() {
     return a.brower_name === "ie";
-}
+};

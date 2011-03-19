@@ -15,6 +15,7 @@
  *  3、服务器返回有两种结果
  *	成功 --- 需要页面跳转只需要指定referer在指定时间内跳转，如果指定msg在显示的提示信息
  *	错误 --- 显示错误信息只需要指定msg，会自动显示并在默认的指定时间内隐藏
+ *
  * */
 
 var a_ajax = function(obj) {
@@ -147,7 +148,7 @@ var __ajax_onchangestate = function() {
 
     // 删除ajax对象
     delete this;
-}
+};
 
 
 // ajax取得值后需要进行页面跳转
@@ -172,9 +173,9 @@ var __ajax_redirect = function(refere, msg, delay) {
 
 
     __ajax_countdown();
-}
+};
 
 // ajax的计数函数，全站采用统一的风格
 var __ajax_countdown =function(count, id) {
-}
+};
 

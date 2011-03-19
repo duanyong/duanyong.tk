@@ -33,15 +33,7 @@
 	</div>
     </div>
 
-    <script src="/js/dev.base.js"></script>
-    <script src="/js/dev.base.bad.js"></script>
-    <script src="/js/dev.base.ajax.js"></script>
-    <script src="/js/dev.base.json.js"></script>
-    <script src="/js/dev.base.event.js"></script>
-    <script src="/js/dev.base.cookie.js"></script>
-    <script src="/js/dev.base.form.js"></script>
-    <script src="/js/dev.base.login.js"></script>
-    <script src="/js/dev.base.brower.js"></script>
+    <script src="/js/base.js"></script>
     <script src="/js/index.js"></script>
 </body>
 </html>
