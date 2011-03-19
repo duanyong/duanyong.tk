@@ -9,7 +9,7 @@
 
 
 /**
- * &diary = array(
+ * array(
  *	"date"		=> "",
  *	"gether"	=> "艳阳天",
  *	"content"	=> "今天天气真的很好，想和女朋友去散步",

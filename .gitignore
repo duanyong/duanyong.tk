@@ -5,3 +5,4 @@
 
 *.tpl.php
 *.php.php
+[^dev.]*.js
