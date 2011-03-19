@@ -69,37 +69,36 @@ function a_watching() {
 }
 
 // 生成守护进程
-function daemonize() {
+function a_daemonize() {
+    global $pid_file;
+
     // 查看执行的结果
     $pid = pcntl_fork();
 
-    if ($pid === -1 ) {
+    if ($pid < 0 ) {
 	// 执行失败
 	return false;
 
     } else if ($pid) {
 
 	// 在父进程中，一秒后醒过来
-	usleep(1000);
+	usleep(1);
 
 	// 退出父进程
-	exit();
+	exit(0);
     }
 
 
     // 得到程序的ID
-    if (!( $sid = posix_setsid() )
-	|| !( $pid = pcntl_fork() )
-    ) {
+    if (( $sid = posix_setsid() ) < 1) {
 	// 获取执行环境失败
 	return false;
     }
 
     file_put_contents($pid_file, $pid);
+    file_put_contents("/tmp/log","sleep: {$pid}, {$sid}\n", FILE_APPEND);
 
-    usleep(1000);
-
-    exit(0);
+    usleep(1);
 
     // 关闭各终端
     if (defined('STDIN')) {
@@ -118,7 +117,12 @@ function daemonize() {
 // 每次有变化时启动
 a_watching();
 
-if (false === daemonize())  {
+if (false === a_daemonize())  {
     // 守护进程失败，删除pid
-    unlink($pid_file);
+    global $pid_file;
+
+    @unlink($pid_file);
 }
+
+
+//register_shutdown_function("f_daemon_stop");
