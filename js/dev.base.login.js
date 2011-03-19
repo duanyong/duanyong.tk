@@ -1,29 +1,28 @@
-// 检查有没有登录
-var a_badLogin = function() {
-    // 通过取得cookie，检查cookie是否在有郊期内
-    
-    var mobile	    = a_cookie_get("mobile"),
-	password    = a_cookie_get("password");
-
-    if (!( mobile )
-	    || !( password)
-
-	    || mobile.length
-	    || mobile.length !== 11
-
-	    || password.length
-	    || password.length !== 32
-       ) {
-	return true;
-    }
-
-    return false;
-}
-
+/*
+ * 基础函系列 - a_login_xxx()
+ *	登陆做为基础的函数放置在dev.base.js中。因为登录是用户用到最多的功能，所以集成到base中
+ *
+ *  a_login_show(msg)
+ *	用户需要进行验证操作时，创建一个迷你登录框供用户登录。
+ *
+ *  a_login_mobile_focus(e)
+ *	手机输入框获取焦点，清除登录框中的提示文字
+ *
+ *  a_login_password_focus(e)
+ *	密码输入框获取焦点，清除登录框中的提示文字
+ *
+ *  a_login_mobile_check(e)
+ *	登录时对手机的格式做检查
+ *
+ * */
+// 手机的提示信息
 a.mobileTip	= "请输入11位的手机号码";
+
+// 密码的提示信息
 a.passwordTip	= "请输入你在这儿的密码";
 
-var a_minLogin = function(msg) {
+
+var a_login_show = function(msg) {
     if (!( msg )) {
 	msg = "";
     }
@@ -31,38 +30,42 @@ var a_minLogin = function(msg) {
     // 获取屏幕的中心点
 
     var id = "minlogin",
-	login;
+	ui;
 
-    if (( login = a_$(id) )) {
+    if (( ui = a_$(id) )) {
 	// 已经存在，说明已经在页面上创建过了
 	// 1、是否需要更新新消息
 	// 2、检查是否在公开的环境中
 
-	return a_show(login);
+	return a_show(ui);
     }
 
-    login	= document.createElement("div");
-    login.id	= "minLogin";
+    ui	= document.createElement("div");
+    ui.id	= "minLogin";
 
     var str = "";
     str += '<span>' + msg + '</span>';
-    str += '手机号码：<input type="text" name="mobile" maxlength="11" value="' + a.mobileTip + '" onclick="a_login_mobile_focus(event);" onblur="a_login_mobile_check(event);" /><br />';
+    str += '手机号码：<input type="text" name="mobile" maxlength="11" value="' + a.mobileTip + '" onclick="a_form_focus(event);" onblur="a_login_mobile_check(event);" /><br />';
     str += '用户密码：<input type="text" name="password" maxlength="12" value="' + a.passwordTip + '" onfocus="a_login_password_focus(event);" onblur="a_login_password_check(event);" /><br />';
     str += '<input type="submit" value="登录" onclick="a_login_submit()" />';
 
-    login.innerHTML = str;
+    ui.innerHTML = str;
 
-    return document.body.appendChild(login);
-}
+    return document.body.appendChild(ui);
+};
 
+
+// 用户点击手机号码输入框，显示隐藏提示内容
 var a_login_mobile_focus = function(e) {
     var input = a_event_target(e ? e : window.event);
 
     if (input.value === a.mobileTip) {
 	input.value = "";
     }
-}
+};
 
+
+// 密码框获取焦点后清除提示语句
 var a_login_password_focus = function(e) {
     var input = a_event_target(e ? e : window.event);
 
@@ -73,40 +76,8 @@ var a_login_password_focus = function(e) {
 	// 设置密码属性，防止输入时出现明文字母
 	input.type = "password";
     }
-}
+};
 
-var a_login_mobile_check = function(e) {
-    e = e ? e : window.event;
-
-    var input = a_event_target(e);
-
-    if (input.value === "") {
-	// 用户没有输入任何数字
-
-	input.type  = "text";
-	input.value = a.mobileTip;
-
-	input.className = "err";
-    }
-
-    return false;
-}
-
-// 检查密码是否在12位以内
-var a_login_password_check = function(e) {
-    var input = a_event_target(e ? e : window.event);
-
-    if (input.value === "") {
-	// 用户没有输入任何数字
-
-	input.type  = "text";
-	input.value = a.passwordTip;
-
-	input.className = "err";
-    }
-
-    return false;
-}
 
 var a_exit = function() {}
 
