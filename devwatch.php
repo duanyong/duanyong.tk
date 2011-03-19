@@ -8,10 +8,11 @@
 
 require_once(__DIR__ . "/devinc.all.php");
 
+$pid_file = "/tmp/devwatch.pid";
+
 
 ////////////////////////////////////////////////////////////////////////////////
-// 生成js文件
-//  监视js目录将dev.base.js和dev.base.form.js生成同一个文件
+// 生成js和css文件
 //
 ////////////////////////////////////////////////////////////////////////////////
 function a_watch_general($type) {
@@ -55,14 +56,69 @@ function a_watch_general($type) {
     }
 }
 
+
+// 生成各种文件
 function a_watching() {
     // 生成js文件
     a_watch_general("js");
 
     // 生成css文件
     a_watch_general("css");
+
+    return true;
 }
 
+// 生成守护进程
+function daemonize() {
+    // 查看执行的结果
+    $pid = pcntl_fork();
+
+    if ($pid === -1 ) {
+	// 执行失败
+	return false;
+
+    } else if ($pid) {
+
+	// 在父进程中，一秒后醒过来
+	usleep(1000);
+
+	// 退出父进程
+	exit();
+    }
+
+
+    // 得到程序的ID
+    if (!( $sid = posix_setsid() )
+	|| !( $pid = pcntl_fork() )
+    ) {
+	// 获取执行环境失败
+	return false;
+    }
+
+    file_put_contents($pid_file, $pid);
+
+    usleep(1000);
+
+    exit(0);
+
+    // 关闭各终端
+    if (defined('STDIN')) {
+	fclose(STDIN);
+    }
+
+    if (defined('STDOUT')){
+	fclose(STDOUT);
+    }
+
+    if (defined('STDERR')) {
+	fclose(STDERR);
+    }
+}
 
 // 每次有变化时启动
 a_watching();
+
+if (false === daemonize())  {
+    // 守护进程失败，删除pid
+    unlink($pid_file);
+}
