@@ -125,4 +125,4 @@ if (false === a_daemonize())  {
 }
 
 
-//register_shutdown_function("f_daemon_stop");
+register_shutdown_function("f_daemon_stop");

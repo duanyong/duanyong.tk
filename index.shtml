@@ -8,32 +8,23 @@
     <meta name="keywords" content="这是您的日记" />
     <meta name="description" content="私人日记" />
     <title>宁静致远</title>
-    <link type="text/css" rel="stylesheet" href="/css/base.css" />
-    <link type="text/css" rel="stylesheet" href="/css/index.css" />
+    {css="base,index"}
+    {js	="base,index", "link"}
 </head>
 <body>
     <div id="body">
-	<!-- 导航条 //-->
-	<div id="header">
-	    <a href="/login.shtml" style="display: none;" id="login">登录</a>
-	    <a href="/login.shtml" style="display: none;" id="exit">安全退出</a>
-	    <a href="/login.shtml" style="display: none;" id="return">返回</a>
-	</div>
+	{* 导航条 *}
+	{include "/header"}
 
-	<!-- 导航条 //-->
+	{* 登录和网站宣传 *}
 	<div id="container">
 	    <div class="nav">
 		<a href="#" title="写日记" alt="写日记"><img src="/img/diary75-75.jpg"/ ></a>
 	    </div>
 	</div>
 
-	<!-- 页脚 //-->
-	<div id="footer">
-	    <span>Copyright&copy;2010</span>
-	</div>
+	{* 页脚 *}
+	{include "/footer"}
     </div>
-
-    <script src="/js/base.js"></script>
-    <script src="/js/index.js"></script>
 </body>
 </html>

@@ -95,7 +95,7 @@ var a_form_input_value = function(input) {
 
 
 // 表单项获取焦点，将其的红色外框去除同时也去除其黄色的提示框
-var a_form_onfocus(element) {
+var a_form_onfocus = function(element) {
     if (!( element = a_$(element) )) {
 	return a_log();
     }
@@ -105,7 +105,7 @@ var a_form_onfocus(element) {
 
 
 // 表单项失去焦点，检查其值是否符合条件
-var a_form_onblur(element) {
+var a_form_onblur = function(element) {
     if (!( element = a_$(element) )) {
 	return a_log();
     }
@@ -130,7 +130,7 @@ var a_form_onblur(element) {
 
 
 // 表单元素错误，显示错误的输入框
-var a_form_error(element, error) {
+var a_form_error = function(element, error) {
     if (!( element = a_$(element) )) {
 	return a_log();
     }
@@ -152,7 +152,7 @@ var a_form_error(element, error) {
 
 
 // 显示表单元素的提示信息
-var a_form_tip(element, error) {
+var a_form_tip = function(element, error) {
     var tip, cls;
 
     if (!( element = a_$(element) )
