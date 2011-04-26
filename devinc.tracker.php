@@ -38,13 +38,13 @@ function a_tracker_signle() {
     global $fd;
 
     if (!extension_loaded("inotify")) {
-	//没有加载inotify模块
+	//php没有加载inotify模块
 
 	return a_log("inotify not loaded.");
     }
 
     if (false !== $fd ) {
-	//已经初始化过了
+	//已经初始化过直接返回
 
 	return $fd;
     }
@@ -55,6 +55,7 @@ function a_tracker_signle() {
 
 ////////////////////////////////////////////////////////////////////////////////
 // 增加监控文件
+//  必须要文件列表（files）和回调函数（callback）
 //
 function a_tracker_add($arr=false) {
     if (a_bad_array($arr)
@@ -64,8 +65,9 @@ function a_tracker_add($arr=false) {
 	return a_log();
     }
 
-    //没有，创建一个
+    //没有监听的句柄
     if (false === ( $fd = a_tracker_signle() ) {
+	//创建不了，有可能是没有加载php inotify模块
 
 	return false;
     }
@@ -73,7 +75,7 @@ function a_tracker_add($arr=false) {
     global $masks;
     global $watchings;
 
-    //将需要监控的文件存储起来，
+    //将需要监控的文件存储起来
     foreach ($list as &$file) {
 	if (file_exists($file)
 	    || isset($files[$file])
@@ -109,11 +111,12 @@ function a_tracker_watching() {
 
     while(true) {
 	if (inotify_queue_len($fd)) {
-	    //有事件需要处理
+	    //内核检测到有事件（创造、修改或者删除等）
 
 	    $events = inotify_read($fd);
 
 	    foreach ($events as $event) {
+		//检查每个事件是否有对应的文件以及回调函数
 		if (f_bad_id($event["mask"])
 		    || f_bad_string($event["name"], $name)
 		    || f_bad_array($watchings[$name], $watch)
@@ -131,7 +134,8 @@ function a_tracker_watching() {
 		    break;
 
 		case $mask["delete"] :
-		    //删除得先把监听事件注销
+		    //删除文件或者目录得先把监听事件注销
+		    //TODO:
 		    delete $watchings[$name];
 		    break;
 

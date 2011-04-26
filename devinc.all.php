@@ -20,19 +20,19 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-// 项目根目录
+//项目根目录
 define("ROOT_DIR", "/var/www/duanyong");
 
 
-// 配置文件
+//配置文件
 require_once(ROOT_DIR. '/devinc.farm.php');
 
 
-// 基础的php文件
+//基础的php文件
 require_once(ROOT_DIR . '/devinc.bad.php');
 require_once(ROOT_DIR . '/devinc.log.php');
 require_once(ROOT_DIR . '/devinc.smarty.php');
 require_once(ROOT_DIR . '/devinc.action.php');
 
-// 数据库文件
+//数据库文件
 require_once(ROOT_DIR . '/devdb.mysql.php');
