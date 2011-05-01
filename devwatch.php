@@ -8,7 +8,35 @@
 
 require_once(__DIR__ . "/devinc.all.php");
 
+
+$tpls	= array();
+$jses	= array();
+$csses	= array();
+
 $pid_file = "/tmp/devwatch.pid";
+
+
+////////////////////////////////////////////////////////////////////////////////
+// devwatch init
+//
+////////////////////////////////////////////////////////////////////////////////
+function a_watch_init() {
+    //分析ROOT_DIR目录中的所有js，css，tpl文件相互之间的关系
+
+    $depends = a_watch_depend(ROOT_DIR);
+
+}
+
+
+//分析目录下的文件（tpl）
+function a_watch_depend($dir) {
+    if (!is_dir($dir)) {
+	return a_log();
+    }
+
+    //
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +83,16 @@ function a_watch_general($type) {
 	}
     }
 }
+
+
+//分析目录下所有的文件与文件之间的关系
+//  只分析.tpl与js，css文件之间的关系
+function a_depend($root) {
+    if (is_dir($root)) {
+	return a_log();
+    }
+}
+
 
 
 // 生成各种文件
