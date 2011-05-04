@@ -200,5 +200,3 @@ function a_bad_user($uid, &$user=false) {
     //用户是否被禁言
     return $user["status"] != 44;
 }
-
-

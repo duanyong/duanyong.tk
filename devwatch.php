@@ -34,7 +34,13 @@ function a_watch_depend($dir) {
 	return a_log();
     }
 
-    //
+    //得到目录下所有的文件，非tpl结尾的略过
+    if (strrpos(".tpl") !== ) {}
+    $file = @fopen($file, "r");
+
+    while (false !== ($line = fgets($file))) {
+	//并没有
+    }
 }
 
 
