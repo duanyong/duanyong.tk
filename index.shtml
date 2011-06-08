@@ -7,24 +7,34 @@
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta name="keywords" content="这是您的日记" />
     <meta name="description" content="私人日记" />
+    <link type="text/css" rel="stylesheet" href="/css/layout.css" />
     <title>宁静致远</title>
-    {css="base,index"}
-    {js	="base,index", "link"}
 </head>
 <body>
-    <div id="body">
-	{* 导航条 *}
-	{include "/header"}
-
-	{* 登录和网站宣传 *}
-	<div id="container">
-	    <div class="nav">
-		<a href="#" title="写日记" alt="写日记"><img src="/img/diary75-75.jpg"/ ></a>
-	    </div>
+    <div id="head">
+	<div id="head-logo">
+	    <a href="http://www.aiyuji.com">
+		<img src= "" style="width: 180px; height:30ppx" />
+	    </a>
 	</div>
 
-	{* 页脚 *}
-	{include "/footer"}
+	<div id="head-nav">
+	    <ul class="head-nav-ul">
+		<li><a alt="Sign In" href="http://www.flickr.com/signin/" id="head-signin-link" class="signin-popup" data-track="signin">Sign In</a></li>
+		<li><a alt="Sign Up for a Free Account" href="http://www.flickr.com/signup/" id="head-sign-up" class="signin-popup" data-track="signup">Sign Up</a></li>
+	    </ul>
+
+	    <div id="head-nav-search">
+		<form method="get" action="/search/">
+		    <input type="text" autocomplete="off" class="Box" tabindex="5" aria-label="Search" id="nav-selecta-field" name="q">
+		    <input type="hidden" value="hp" name="f">
+		    <input type="submit" id="nav-selecta-search-button" tabindex="5" value="Search">
+		</form>
+	    </div>
+	</div>
     </div>
+
+    <div id="main"></div>
+    <div id="foot"></div>
 </body>
 </html>

@@ -23,25 +23,127 @@ $pid_file = "/tmp/devwatch.pid";
 function a_watch_init() {
     //分析ROOT_DIR目录中的所有js，css，tpl文件相互之间的关系
 
-    $depends = a_watch_depend(ROOT_DIR);
-
+    $tpls = a_watch_get_files(ROOT_DIR, "tpl");
 }
 
 
 //分析目录下的文件（tpl）
-function a_watch_depend($dir) {
-    if (!is_dir($dir)) {
+function a_devwatch_get_files($dir, $type) {
+    if (!is_dir($dir)
+	|| false === ( $hd = @opendir($dir) )
+
+	|| a_bad_string($type)
+    ) {
 	return a_log();
     }
 
-    //得到目录下所有的文件，非tpl结尾的略过
-    if (strrpos(".tpl") !== ) {}
-    $file = @fopen($file, "r");
 
-    while (false !== ($line = fgets($file))) {
-	//并没有
+    $files = array();
+
+    while (false !== ( $name = readdir($hd) )) {
+	if ($name === '.'
+	    || $name === '..'
+	) {
+	    continue;
+
+	} 
+
+	//是文件的情况
+	if (is_file($name)) {
+	    //隐藏文件和非type文件不返回
+	    if (0 === ( $pos = strrpos($name, '.') )
+		|| $type !== mb_substr($name, $pos + 1)
+	    ) {
+		continue;
+	    }
+
+	    $files[] = $dir . '/' . $name;
+
+	} else if (is_dir($name)) {
+	    //是目录，递归
+	    $files = array_merge($files, a_devwatch_get_files($dir . '//' . $name, $type));
+	}
+    }
+
+    @closedir($dir);
+
+    return $files;
+}
+
+
+
+//分析tpl文件中的依赖关系的数据
+function a_devwatch_depend($files) {
+    if (a_bad_array($files)) {
+	return a_log();
+    }
+
+    global $depends;
+
+    foreach ($files as $name) {
+
+	if (!is_file($name)
+	    || false === ( $hd = @fopen($name, 'r') )
+	) {
+	    continue;
+	}
+
+	while (false !== ( $line = fgets($hd) )) {
+	    //是否以{开始和}结尾
+	    if (false === ( $line = str_replace(array("\n", "\r"), '', $line) )
+		|| '{' !== substr($line, 0, 1)
+		|| '}' !== substr($line, strlen($line) -1, 1)
+
+		|| false === strpos($line, '=')
+
+		//取{js file="layout, login"}中的js依赖文件类型
+		|| false === ( $type = substr($line , 1, strpos($line, ' ') -1) )
+
+		//取{js file="layout, login"}中的layout, login会依赖文件名
+		|| false === ( $pos1 = strpos($line, '"') )
+		|| false === ( $pos2 = strrpos($line, '"') )
+		|| false === ( $change = substr($line, $pos1+1, $pos2 - $pos1 -1) )
+	    ) {
+		continue;
+	    }
+
+	    //去除"layout, login"中的空格
+	    $change = str_replace(' ', '', $change);
+
+	    if (empty($change)) {
+		//没有可变化的文件
+		continue;
+	    }
+
+	    if ($type === 'js') {
+		//dev.base.js
+		$pre	= 'dev.';
+		$post	= '.js';
+
+	    } else if ($type === 'css') {
+		//dev.layout.js
+		$pre	= 'dev.';
+		$post	= '.css';
+
+	    } else {
+		$pre	= '';
+		$post	= '';
+	    }
+
+
+	    //当前行为js，换成dev.layout.js 和 dev.login.js
+	    $change = explode(',', $change);
+
+	    //建立依赖关系depends['dev.layout.js'][] = "t.tpl";
+	    foreach ($change as &$c) {
+		$depends[$pre . $c. $post][] = $name;
+
+		unset($c);
+	    }
+	}
     }
 }
+
 
 
 
@@ -93,9 +195,44 @@ function a_watch_general($type) {
 
 //分析目录下所有的文件与文件之间的关系
 //  只分析.tpl与js，css文件之间的关系
-function a_depend($root) {
-    if (is_dir($root)) {
+function a_devwatch_get_files($dir, $type) {
+    if (a_bad_string($type)
+	|| !is_dir($dir)
+	|| false === opendir($dir)
+    ) {
+
 	return a_log();
+    }
+
+
+    $files = array();
+
+    while (false !== ( $name = readdir($dir) )) {
+	if (is_dir($name)) {}
+
+	$files = array_merge($files, a_devwatch_get_files())
+
+	if (false === ( $pos = strrpos($name, '.') )
+	    || $type !== substr($name, $pos + 1)
+	) {
+	    continue;
+	}
+
+	$files[] = $name;
+    }
+
+
+    while (false !== ( $file = readdir($handle) )) {
+	// 如果文件不以dev.xx.js这样的格式，不管
+	if (!( $file = explode(".", $file) )
+	    || $file[0] !== "dev"
+	    || $file[count($file)-1] !== "tpl"
+	) {
+	    continue;
+	}
+
+	// 对dev.base.form.js 进行分组，最后得到base.js文件名
+	$files[$file[1]][] = implode(".", $file);
     }
 }
 
@@ -158,8 +295,6 @@ function a_daemonize() {
     }
 }
 
-// 每次有变化时启动
-a_watching();
 
 if (false === a_daemonize())  {
     // 守护进程失败，删除pid
