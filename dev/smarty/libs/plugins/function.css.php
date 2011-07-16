@@ -3,17 +3,10 @@
 //  {css name="layout, index"}
 //
 function smarty_function_css($params, $template) {
-    if (empty($params["file"])) {
+    if (empty($params["name"])) {
 	//参数错误，返回空字符串
-
 	return "";
     }
-
-    //是否为内嵌
-    if ($params["inner"] === true) {
-	return smarty_function_innercss($params, $template);
-    }
-
 
     //外联css
     $csses  = array();

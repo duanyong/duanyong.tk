@@ -17,9 +17,46 @@ server {
     error_page 413              /413.shtml;
     error_page 500 502 503 504  /50x.html;
 
+
+    #启用压缩，但IE7以下不压缩
+    gzip on;
+    gzip-types	    text/plain application/xml;
+    gzip-disable    "MSID [1-6]\.";
+
+
+    #img、css与js文件永久缓存
+    location /img/ {
+	rewrite /img/(*)([.v0-9]).(*)$   /img/$1.$2	break;
+
+	return 403;
+    }
+
+    location /js/ {
+	rewrite /js/(*)([.v0-9]).(*)$   /js/$1.$2	break;
+
+	return 403;
+    }
+
+    location /css/ {
+	rewrite /css/(*)([.v0-9]).(*)$   /css/$1.$2	break;
+
+	return 403;
+    }
+
+
+    # This block will catch static file requests, such as images, css, js
+    location ~* \.(?:ico|css|js|gif|jpe?g|png)$ {
+	# Some basic cache-control for static files to be sent to the browser
+	expires	    max;
+	access_log  off;
+	add_header  Pragma public;
+	add_header  Cache-Control "public, must-revalidate, proxy-revalidate";
+    }
+
+
     # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
     location ~ \.php$ {
-        include         /var/www/duanyong/dev/conf/fastcgi_params;
+        include         $document_root/dev/conf/fastcgi_params;
         fastcgi_pass    127.0.0.1:9000;
         fastcgi_index   index.php;
     }
