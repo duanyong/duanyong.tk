@@ -7,8 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 require_once(__DIR__ . "/devinc.all.php");
-
-$pid_file = "/tmp/devwatch.pid";
+require_once(__DIR__ . "/devinc.tracker.php");
 
 define("JS_DIR", ROOT_DIR . "/js/");
 define("CSS_DIR", ROOT_DIR . "/css/");
@@ -43,7 +42,7 @@ $depends = array();
 
 
 function a_devwatch_init() {
-    if (is_file($pid_file)
+    if (is_file("/var/tmp/devwatch.pid")
     ) {
 	return a_log("daemon is running for /tmp/devwatch.pid");
     }
@@ -60,7 +59,9 @@ function a_devwatch_init() {
 	}
     }
 
-    var_dump($depends);
+
+    //监制ROOT_DIR目录，并指定目录或者文件发生变化时需要的回调函数
+    a_tracker_add(ROOT_DIR, "f_devwatch_inotify_callback");
 }
 
 
@@ -139,15 +140,19 @@ function a_devwatch_filter($file) {
 	return false;
     }
 
-    //file name: dev.xx.js|css or file end line has {devwatch:xxxx}
     if ($prefix !== "dev"
-	&& $postfix !== "tpl"
-	&& a_devwatch_static($file) === false
+	&& in_array($postfix, array("js", "css")) 
     ) {
+	//非dev的js和css文件不监视
 	return false;
+
+    } else if ($postfix !== "tpl") {
+	//非tpl文件不监视
+	return false;
+
     }
 
-    return true;
+    return a_devwatch_static($file);
 }
 
 
@@ -417,61 +422,11 @@ function a_watch_general_css($css) {
 }
 
 
-// 生成守护进程
-function a_daemonize() {
-    global $pid_file;
+//接受inotify改变的文件
+function f_devwatch_inotify_callback(&$event) {
 
-    // 查看执行的结果
-    $pid = pcntl_fork();
-
-    if ($pid < 0 ) {
-	// 执行失败
-	return false;
-
-    } else if ($pid) {
-
-	// 在父进程中，一秒后醒过来
-	usleep(1);
-
-	// 退出父进程
-	exit(0);
-    }
-
-
-    // 得到程序的ID
-    if (( $sid = posix_setsid() ) < 1) {
-	// 获取执行环境失败
-	return false;
-    }
-
-    file_put_contents($pid_file, $pid);
-    file_put_contents("/tmp/log","sleep: {$pid}, {$sid}\n", FILE_APPEND);
-
-    usleep(1);
-
-    // 关闭各终端
-    if (defined('STDIN')) {
-	fclose(STDIN);
-    }
-
-    if (defined('STDOUT')){
-	fclose(STDOUT);
-    }
-
-    if (defined('STDERR')) {
-	fclose(STDERR);
-    }
+    var_dump($event);
 }
 
 
-if (false === a_daemonize())  {
-    // 守护进程失败，删除pid
-    global $pid_file;
-
-    @unlink($pid_file);
-}
-
-
-register_shutdown_function("f_daemon_stop");
-
-//a_devwatch_init();
+a_devwatch_init();

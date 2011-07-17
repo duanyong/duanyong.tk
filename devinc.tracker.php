@@ -51,47 +51,33 @@ function a_tracker_signle() {
 ////////////////////////////////////////////////////////////////////////////////
 // 增加监控文件
 //  必须要文件列表（files）和回调函数（callback）
+//  $dir	目录或者为文件列表
+//  $callback	发生变化时的函数
 //
-function a_tracker_add($arr=false) {
-    if (a_bad_array($arr)
-	|| (
-	    a_bad_array($arr["files"], $files)
-	    && a_bad_string($arr["files"], $files)
-	)
-	|| a_bad_string($arr["callback"], $callback)
+function a_tracker_add($dir, $callback) {
+    if (a_bad_string($callback)
+	|| !( $fd = a_tracker_signle() )
     ) {
 	return a_log();
     }
 
-    //没有监听的句柄
-    if (false === ( $fd = a_tracker_signle() )) {
-	//创建不了，有可能是没有加载php inotify模块
-
-	return false;
+    if (!is_array($dir)) {
+	$dir = array($dir);
     }
 
     global $watched;
     global $watching;
     global $descriptor;
 
-    if (!a_bad_string($files)) {
-	$list[] = &$files;
-    } else {
-	$list = &$files;
-    }
 
     //将需要监控的文件存储起来
-    foreach ($list as &$file) {
-	$info = pathinfo($file);
-	$file = $info["dirname"] . "/" . $info["basename"];
-
+    foreach ($dir as &$file) {
 	if (!file_exists($file)
 	    || isset($watching[$file])
 	) {
 	    //文件、目录并不存在或者已经监控过了
 	    continue;
 	}
-
 
 	//目录需要创建，删除
 	$wd = inotify_add_watch($fd, $file, IN_CREATE | IN_MODIFY | IN_DELETE);
@@ -130,9 +116,10 @@ function a_tracker_go() {
 
     while(true) {
 	if (inotify_queue_len($fd)) {
-	    //内核检测到有事件（创造、修改或者删除等）
+	    //内核检测到有事件（新建、修改或者删除等）
 
 	    $events = inotify_read($fd);
+	    var_dump($events);
 
 	    foreach ($events as &$event) {
 		//检查每个事件是否有对应的文件以及回调函数
