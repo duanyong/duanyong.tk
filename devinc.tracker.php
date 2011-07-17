@@ -93,14 +93,8 @@ function a_tracker_add($arr=false) {
 	}
 
 
-	if (is_file($file)) {
-	    //文件只监控修改
-	    $wd = inotify_add_watch($fd, $file, IN_MODIFY);
-
-	} else {
-	    //目录需要创建，删除
-	    $wd = inotify_add_watch($fd, $file, IN_CREATE | IN_DELETE);
-	}
+	//目录需要创建，删除
+	$wd = inotify_add_watch($fd, $file, IN_CREATE | IN_MODIFY | IN_DELETE);
 
 	//将监控的id和文件对应起来
 	//方便event里只需要取wd时就可以知道是那个监控的对象发生了变化
