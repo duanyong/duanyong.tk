@@ -38,187 +38,69 @@ define("CSS_DIR", ROOT_DIR . "/css/");
 //	    被通知是js，且不为静态文件（devwatch:js），不做任何处理
 //	    被通知是js，且是一静态文件（devwatch:js），重新生成js文件
 //
-$depends = array();
 
 
-function a_devwatch_init() {
-    if (is_file("/var/tmp/devwatch.pid")
-    ) {
+function a_devwatch_init(&$depends) {
+    if (is_file("/var/tmp/devwatch.pid")) {
 	return a_log("daemon is running for /tmp/devwatch.pid");
     }
 
-    global $depends;
-
-    $files = array();
-
-    a_devwatch_eachfile(ROOT_DIR, $files);
-
-    foreach ($files as $file) {
-	if (a_devwatch_filter($file)) {
-	     a_devwatch_depend($file, $depends);
-	}
-    }
-
-
-    //监制ROOT_DIR目录，并指定目录或者文件发生变化时需要的回调函数
-    a_tracker_add(ROOT_DIR, "f_devwatch_inotify_callback");
+    a_devwatch_depend_files($depends);
 }
 
 
+//返回目录下所有具有依赖关系的文件(dev.*.js, dev.*.css, tpl)
+function a_devwatch_depend_files(&$depends) {
+    //得到所有的tpl文件
+    $js  = glob(JS_DIR . "dev.*.js");
+    $css = glob(CSS_DIR . "dev.*.css");
+    $tpl = a_devwatch_depend_tpl(ROOT_DIR);
 
-//不遍历的目录
-$no_each_dir = array();
-$no_each_dir[] = ROOT_DIR . "/img";
-$no_each_dir[] = ROOT_DIR . "/dev";
 
-
-//不遍历的文件
-$no_each_file = array(
-    "php",
-    "html",
-    "shtml",
-);
-
-//遍历目录下非隐藏的所有的文件
-function a_devwatch_eachfile($dir, &$files) {
-    if (!is_dir($dir)
-	|| !( $handle = @opendir($dir) )
-    ) {
-	return a_log();
-    }
-
-    //检查目录是否在不需要遍历
-    global $no_each_dir;
-    global $no_each_file;
-
-    if (!( $info = pathinfo($dir))
-	|| in_array($info["dirname"] . "/" . $info["filename"], $no_each_dir)
-    ) {
-	return ;
-    }
-
-    //得到每个文件
-    while (( $file = readdir($handle) )) {
-	if (strpos($file, ".") === 0) {
-	    //以.开始的隐藏咯过，包括.和..
+    //分析所有可能产生依赖的文件，确立其依赖关系
+    foreach (array_merge($js, $css, $tpl) as $file) {
+	if (pathinfo($file, PATHINFO_EXTENSION) !== "tpl"
+	    && !( $chars = file_get_contents($file) )
+	    && !( preg_match("/\{\*devwatch\:[ |\S]+\*\}/", $chars) )
+	) {
+	    //非tpl文件且文件中没有{devwatch:xxxx}指令不需要分析其依赖关系
 	    continue;
 	}
 
-	if (is_dir($file)) {
-	    a_devwatch_eachfile($dir . "/" . $file, $files);
-
-	} else {
-	    $info = pathinfo($file);
-
-	    if (!isset($info["extension"])
-		|| !in_array($info["extension"], $no_each_file)
-	    ) {
-		$files[] = $dir . "/" . $file;
-	    }
-	}
+	a_devwatch_depend($file, $depends);
     }
-
-    @closedir($dir);
 }
 
 
-
-//排除不需要监听的文件
-//  1、隐藏文件或者隐藏目录
-//  2、不以dev开头的js和css文件
-function a_devwatch_filter($file) {
-    $prefix	= null;
-    $postfix	= null;
-    $basename	= null;
-
-    if (!is_file($file)
-	|| !( $basename = basename($file) )
-	|| !( $postfix	= substr($basename, strrpos($basename, ".") + 1, strlen($basename)) )
-	|| !( $prefix	= substr($basename, 0, strpos($basename, ".")) )
-
-    ) {
-	return false;
+//返回项目可能产生依赖关系的tpl文件
+function a_devwatch_depend_tpl($dir) {
+    if (!is_dir($dir)) {
+	return a_log();
     }
 
-    if ($prefix !== "dev"
-	&& in_array($postfix, array("js", "css")) 
-    ) {
-	//非dev的js和css文件不监视
-	return false;
+    $ret = array();
 
-    } else if ($postfix !== "tpl") {
-	//非tpl文件不监视
-	return false;
+    //不需要分析依赖关系的目录
+    static $ignore_dir = array();
+    $ignore_dir[] = ROOT_DIR . "/img";
+    $ignore_dir[] = ROOT_DIR . "/dev";
 
-    }
-
-    return a_devwatch_static($file);
-}
-
-
-//检查文件是否以{devwatch:xxxx}结尾
-function a_devwatch_static($file) {
-    if (! ( $filesize = filesize($file) )
-	|| $filesize > 3 * 1024 * 1204
-    ) {
-	return a_log("file to big.");
-    }
-
-
-    if (( $handle = @fopen($file, "r") )) {
-	//移动到{devwatch:}前
-	$pos    = 0;
-	$index  = false;
-	$chars;
-
-	do {
-	    $pos += 256;
-
-	    if ($pos > $filesize) {
-		$pos = $filesize;
-	    }
-
-	    if (fseek($handle, $pos * -1, SEEK_END) !== 0) {
-		//设置文件指针出错
-		$index = false;
-
-		break;
-	    }
-
-	    //在字针处取最到文件末尾
-	    $chars = fread($handle, $pos);
-	    $index = strrpos($chars, "\n", -2);
-
-	    if ($index === false
-		&& $pos === $filesize
-	    ) {
-		//整行都没有找到换行符说明整个文件都没有换行
-
-		break;
-	    }
-
-	} while ($index === false);
-
-
-	@fclose($handle);
-
-	//取到{}之间的内容，是否符合{devwatch: xxxx}的格式 
-	if ( $index === false
-	    || !( $chars = substr($chars, $index) )
-	    || !( preg_match("/\{devwatch\:[ |\S]+\}/", $chars) )
+    //取得所有的tpl文件
+    foreach (glob($dir . "/*") as $file) {
+	if (is_dir($file)
+	    && !in_array($file, $ignore_dir)
 	) {
+	    $ret = array_merge($ret, a_devwatch_depend_tpl($file));
 
-	    //不是静态文件
-	    return false;
+	} else if (pathinfo($file, PATHINFO_EXTENSION) === "tpl") {
+	    //非忽略的文件类型
+	    $ret[] = $file;
 	}
-
-	//符合devwatch字符串匹配
-	return true;
     }
 
-    //文件打开出错
-    return false;
+    return $ret;
 }
+
 
 
 //分析文件的依赖关系
@@ -234,8 +116,6 @@ function a_devwatch_depend($file, &$depends) {
     ) {
 	return a_log("not file or depend not array object");
     }
-
-    echo "depend:" . $file . "\n";
 
     $regs   = null;
     $line   = null;
@@ -341,35 +221,25 @@ function a_watch_general_js($js) {
 	return a_log();
     }
 
-    $all    = scandir(JS_DIR);
-    $regx   = "/^dev\.{$js}[.|\S]*\.js$/";
-    $path   = JS_DIR . $js . ".js";
+    $text = "//{$js}.js\n//The Love, The Lover, Thangs.\n//General at " . date("Y-m-d H:i:s") . "\n\n\n";
+    $path = JS_DIR . $js . ".js";
+    $base = JS_DIR . "dev.{$js}.js";
 
-    $files  = array();
-    $first  = JS_DIR . "dev." . $js . ".js";
-
-    foreach ($all as $key => $file) {
-	if (strpos($file, ".") === 0
-	    || is_dir($file)
-	    || !preg_match($regx, $file)
-	    || $first === $file
-	) {
-	    //隐藏文件不管
-	    continue;
-	}
-
-	$files[$key] = JS_DIR . $file;
+    if (is_readable($base)) {
+	//确保dev.xxxx.js类似的根文件永远处于第一位
+	$text .= file_get_contents($base);
     }
 
-    //dev.xxxx.js类似的根文件永远处于第一位
-    $files[0] = $first;
+    //写入到base.js中
+    file_put_contents($path, $text);
 
+    //得到所有的dev.base.js dev.base.xxxx.js
+    $all = glob(JS_DIR . "dev.{$js}*.js");
 
-    //清除以前可能存在的文件
-    file_put_contents($path, "//{$js}.js\n//The Love, The Lover, Thangs.\n//General at " . date("Y-m-d H:i:s"));
-
-    foreach ($files as $file) {
-	if (!is_readable($file)) {
+    foreach ($all as $file) {
+	if (!is_readable($file)
+	    || $file === $base
+	) {
 	    continue;
 	}
 
@@ -384,36 +254,25 @@ function a_watch_general_css($css) {
 	return a_log();
     }
 
+    $text = "/* {$css}.css */\n/* The Love, The Lover, Thangs. */\n/* General at " . date("Y-m-d H:i:s") . " */\n\n\n";
+    $path = CSS_DIR . $css . ".css";
+    $base = CSS_DIR . "dev.{$css}.css";
 
-    $all    = scandir(CSS_DIR);
-    $regx   = "/^dev\.{$css}[.|\S]*\.css/";
-    $path   = CSS_DIR . $css . ".css";
-
-    $files  = array();
-    $first  = CSS_DIR . "dev." . $css . ".css";
-
-    foreach ($all as $key => $file) {
-	if (strpos($file, ".") === 0
-	    || is_dir($file)
-	    || !preg_match($regx, $file)
-	    || $first === $file
-	) {
-	    //隐藏文件不管
-	    continue;
-	}
-
-	$files[$key] = CSS_DIR . $file;
+    if (is_readable($base)) {
+	//确保dev.xxxx.css类似的根文件永远处于第一位
+	$text .= file_get_contents($base);
     }
 
-    //dev.xxxx.css类似的根文件永远处于第一位
-    $files[0] = $first;
+    //写入到base.css中
+    file_put_contents($path, $text);
 
+    //得到所有的dev.base.css dev.base.xxxx.css
+    $all = glob(CSS_DIR . "dev.{$css}*.css");
 
-    //清除以前可能存在的文件
-    file_put_contents($path, "/* {$css}.css */\n/* The Love, The Lover, Thangs. */\n/* General at " . date("Y-m-d H:i:s") . " */");
-
-    foreach ($files as $file) {
-	if (!is_readable($file)) {
+    foreach ($all as $file) {
+	if (!is_readable($file)
+	    || $file === $base
+	) {
 	    continue;
 	}
 
@@ -422,11 +281,14 @@ function a_watch_general_css($css) {
 }
 
 
-//接受inotify改变的文件
-function f_devwatch_inotify_callback(&$event) {
 
-    var_dump($event);
+function a_devwatch_callback($event) {
+
 }
 
 
-a_devwatch_init();
+$depends = array();
+
+a_devwatch_init($depends);
+
+a_tracker_add(array_keys($depends), "a_devwatch_callback");

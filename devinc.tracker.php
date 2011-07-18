@@ -37,7 +37,11 @@ function a_tracker_init() {
 
     global $inotify;
 
-    return $inotify ? $inotify : inotify_init();
+    if (!$inotify) {
+	$inotify = inotify_init();
+    }
+
+    return $inotify;
 }
 
 
@@ -47,9 +51,9 @@ function a_tracker_init() {
 //  $dir	监听的目录
 //  $callback	发生变化时的函数
 //
-function a_tracker_add($dir, $callback) {
+function a_tracker_add($files, $callback) {
     if (a_bad_string($callback)
-	|| !is_dir($dir)
+	|| !is_array($files)
 	|| !( $inotify = a_tracker_init() )
     ) {
 	return a_log();
@@ -59,58 +63,30 @@ function a_tracker_add($dir, $callback) {
     global $descriptor;
 
 
-    //列表目录下子目录，监听
-    $dirs = f_tracker_only_dirs($dir);
-    $dirs[] = $dir;
-
-
     //将需要监控的文件存储起来
-    foreach ($dirs as $dir) {
-	if (isset($watching[$dir])) {
-	    //目录已监听
+    foreach ($files as $f) {
+	if (isset($watching[$f])
+	    || !file_exists($f)
+	) {
+	    //目录已监听或者目标不存在
 	    continue;
 	}
 
 	//目录需要创建，删除
-	$watcher = inotify_add_watch($inotify, $dir, IN_ALL_EVENTS);
-	//$watcher = inotify_add_watch($inotify, $dir, IN_CREATE | IN_MODIFY | IN_DELETE);
+	$watcher = inotify_add_watch($inotify, $f, IN_ALL_EVENTS);
+	//$watcher = inotify_add_watch($inotify, $f, IN_CREATE | IN_MODIFY | IN_DELETE);
 
 	//将监控的id和文件对应起来
 	//方便event里只需要取wd时就可以知道是那个监控的对象发生了变化
-	$descriptor[$watcher]	    = $dir;
-	$watching[$dir]["descript"] = $watcher;
-	$watching[$dir]["callback"] = $callback;
+	$descriptor[$watcher]	    = $f;
+	$watching[$f]["descript"]   = $watcher;
+	$watching[$f]["callback"]   = $callback;
     }
 
 
     //开始监听
     a_tracker_go();
 }
-
-
-////////////////////////////////////////////////////////////////////////////////
-//返回目录及子目录
-//
-function f_tracker_only_dirs($dir) {
-    if (!is_dir($dir)) {
-	return a_log();
-    }
-
-    static $ignore_dirs = array();
-    $ignore_dirs[] = ROOT_DIR . "/img";
-    $ignore_dirs[] = ROOT_DIR . "/dev";
-
-
-    $dirs = glob($dir . "/*", GLOB_ONLYDIR);
-
-    foreach ($dirs as $file) {
-	$dirs = array_merge($dirs, f_tracker_only_dirs($file));
-    }
-
-    //TODO: 略过不需要监听的目录
-    return $dirs;
-}
-
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +115,7 @@ function a_tracker_go() {
 	if (inotify_queue_len($inotify)) {
 	    //内核检测到有事件（新建、修改或者删除等）
 	    $events = inotify_read($inotify);
+
 
 	    foreach ($events as &$event) {
 		//检查每个事件是否有对应的文件以及回调函数
@@ -201,4 +178,3 @@ function a_tracker_go() {
 }
 
 
-a_tracker_add(ROOT_DIR, "a_devwatch_callback");
