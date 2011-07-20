@@ -45,35 +45,21 @@ function a_devwatch_init(&$depends) {
 	return a_log("daemon is running for /tmp/devwatch.pid");
     }
 
-    a_devwatch_depend_files($depends);
-}
-
-
-//返回目录下所有具有依赖关系的文件(dev.*.js, dev.*.css, tpl)
-function a_devwatch_depend_files(&$depends) {
     //得到所有的tpl文件
     $js  = glob(JS_DIR . "dev.*.js");
     $css = glob(CSS_DIR . "dev.*.css");
-    $tpl = a_devwatch_depend_tpl(ROOT_DIR);
+    $tpl = a_devwatch_all_tpl(ROOT_DIR);
 
+    //所有的文件
+    $files = array_merge($js, $css, $tpl);
 
-    //分析所有可能产生依赖的文件，确立其依赖关系
-    foreach (array_merge($js, $css, $tpl) as $file) {
-	if (pathinfo($file, PATHINFO_EXTENSION) !== "tpl"
-	    && !( $chars = file_get_contents($file) )
-	    && !( preg_match("/\{\*devwatch\:[ |\S]+\*\}/", $chars) )
-	) {
-	    //非tpl文件且文件中没有{devwatch:xxxx}指令不需要分析其依赖关系
-	    continue;
-	}
-
-	a_devwatch_depend($file, $depends);
-    }
+    //将文件切片分析其依赖关系
+    a_devwatch_slice_files($files, $depends);
 }
 
 
 //返回项目可能产生依赖关系的tpl文件
-function a_devwatch_depend_tpl($dir) {
+function a_devwatch_all_tpl($dir) {
     if (!is_dir($dir)) {
 	return a_log();
     }
@@ -102,13 +88,40 @@ function a_devwatch_depend_tpl($dir) {
 }
 
 
+//将所有文件切片分析确定文件与文件的依赖关系
+//  只分析tpl和非tpl中包含{*devwatch: xxxx*}指令的文件
+function a_devwatch_slice_files(&$files, &$depends) {
+    if (a_bad_array($files)
+	|| a_bad_array($depends)
+    ) {
+	return a_log();
+    }
 
-//分析文件的依赖关系
+    //分析所有可能产生依赖的文件，确立其依赖关系
+    foreach ($files as $file) {
+	if (!is_file($file)
+	    || (
+		( pathinfo($file, PATHINFO_EXTENSION) !== "tpl" )
+		&& !( $chars = file_get_contents($file) )
+		&& !( preg_match("/\{\*devwatch\:[ |\S]+\*\}/", $chars) )
+	    )
+	) {
+	    //非文件、非tpl文件且文件中没有{devwatch:xxxx}指令不需要分析其依赖关系
+	    continue;
+	}
+
+	a_devwatch_search_relation($file, $depends);
+    }
+}
+
+
+
+//分析单个文件的依赖关系
 //  文件形成依赖关系有下面的语句产生
 //	1、{js name="xxxx, yyyy"}	依赖js文件
 //	2、{css name="xxxx, yyyy"}	依赖css文件
 //	3、{include file="/xxxx.tpl"}	依赖xxxx.tpl文件
-function a_devwatch_depend($file, &$depends) {
+function a_devwatch_search_relation($file, &$depends) {
     if (!is_array($depends)
 	|| !is_file($file)
 	|| !is_readable($file)
@@ -145,7 +158,7 @@ function a_devwatch_depend($file, &$depends) {
 }
 
 
-//分析{js name="xxxx, yyyy, zzzz"}，并形成依赖关系
+//依赖js，分析{js name="xxxx, yyyy, zzzz"}语句，并形成依赖关系
 function a_devwatch_depend_js($keys, &$file, &$depends) {
     if (a_bad_string($keys)) {
 	return a_log();
@@ -165,7 +178,8 @@ function a_devwatch_depend_js($keys, &$file, &$depends) {
     }
 }
 
-//分析{css name="xxxx, yyyy, zzzz"}，并形成依赖关系
+
+//依赖css，分析css{css name="xxxx, yyyy, zzzz"}语句，并形成依赖关系
 function a_devwatch_depend_css($keys, &$file, &$depends) {
     if (a_bad_string($keys)) {
 	return a_log();
@@ -186,7 +200,7 @@ function a_devwatch_depend_css($keys, &$file, &$depends) {
 }
 
 
-//分析{include file="/xxxx.tpl"}，并形成依赖关系
+//依赖include，分析{include file="/xxxx.tpl"}语句，并形成依赖关系
 function a_devwatch_depend_include($inc, &$file, &$depends) {
     if (a_bad_string($inc)) {
 	return a_log();
@@ -221,7 +235,7 @@ function a_watch_general_js($js) {
 	return a_log();
     }
 
-    $text = "//{$js}.js\n//The Love, The Lover, Thangs.\n//General at " . date("Y-m-d H:i:s") . "\n\n\n";
+    static $text = "//{$js}.js\n//The Love, The Lover, Thangs.\n//General at " . date("Y-m-d H:i:s") . "\n\n\n";
     $path = JS_DIR . $js . ".js";
     $base = JS_DIR . "dev.{$js}.js";
 
@@ -254,7 +268,7 @@ function a_watch_general_css($css) {
 	return a_log();
     }
 
-    $text = "/* {$css}.css */\n/* The Love, The Lover, Thangs. */\n/* General at " . date("Y-m-d H:i:s") . " */\n\n\n";
+    static $text = "/* {$css}.css */\n/* The Love, The Lover, Thangs. */\n/* General at " . date("Y-m-d H:i:s") . " */\n\n\n";
     $path = CSS_DIR . $css . ".css";
     $base = CSS_DIR . "dev.{$css}.css";
 
@@ -281,14 +295,101 @@ function a_watch_general_css($css) {
 }
 
 
+//得到项目下所有的目录
+function a_devwatch_exhibit_directory($dir) {
+    if (!is_dir($dir)) {
+	return array();
+    }
 
-function a_devwatch_callback($event) {
+    //得到目录下所有的子目录
+    $dirs = glob($dir . "/*", GLOB_ONLYDIR);
 
+    //还需要遍历子目录
+    foreach ($dirs as $file) {
+	$dirs = array_merge($dirs, a_devwatch_exhibit_directory($file));
+    }
+
+    $dirs[] = $dir;
+
+    return array_unique($dirs);
 }
 
 
+
+//监听项目目录，如有文件发生变化立即处理
+function a_devwatch_tracker() {
+    $dirs = a_devwatch_exhibit_directory(ROOT_DIR);
+
+    //排除不必监视的目录，如dev/img等
+    static $ignore = array();
+
+    $ignores[] = ROOT_DIR . "/img";
+    $ignores[] = ROOT_DIR . "/dev";
+
+
+    a_tracker_add($dirs, "a_devwatch_callback");
+}
+
+
+function a_devwatch_callback($events) {
+    //目录的创建、更名、删除操作会触发回调
+    //文件的创建，修改，删除操作会触发回调
+
+    foreach (array_keys($events) as $file) {
+	//判定是目录还是文件
+	if (( $ext = pathinfo($file, PATHINFO_EXTENSION) )) {
+	    //取文件名的后缀，只要有值肯定是文件
+
+	    //1、是否是有依赖关系的tpl文件
+	    if ($ext === "tpl") {}
+	}
+    }
+    var_dump($events);
+}
+
+
+function a_devwatch_tracker_file($) {}
+
+
+
 $depends = array();
+a_devwatch_tracker();
 
-a_devwatch_init($depends);
 
-a_tracker_add(array_keys($depends), "a_devwatch_callback");
+//a_devwatch_init($depends);
+
+		/*
+		switch (true) {
+		case (IN_CREATE & $mask):
+		case (IN_MODIFY & $mask):
+
+		    break;
+
+		case (IN_DELETE & $mask):
+		    //有删除操作，如果是目录的话，需要删除
+		    if (is_dir($name)) {
+			//目录是末尾是否有/，
+			if (strrpos($name, "/") !== mb_strlen($name)-1) {
+			    //没有，需要手动添加
+			    $name .= "/";
+			}
+
+			//被删除的目录是否也是目录
+			if (is_dir($name . $file)) {
+			    //删除监听事件和当前被删除的监听目录
+
+			    unset($watching[$name]);
+			    unset($descriptor[$wd]);
+
+			    @inotify_add_watch($fd, $wd);
+			}
+		    }
+
+		    break;
+
+		default:
+		    //其它操作直接略过，不需要回调函数
+		    continue;
+		}
+		 */
+
