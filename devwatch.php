@@ -72,13 +72,13 @@ function a_devwatch_all_tpl($dir) {
     $ignore_dir[] = ROOT_DIR . "/dev";
 
     //取得所有的tpl文件
-    foreach (glob($dir . "/*") as $file) {
+    foreach (glob($dir . "/*.tpl") as $file) {
 	if (is_dir($file)
 	    && !in_array($file, $ignore_dir)
 	) {
 	    $ret = array_merge($ret, a_devwatch_depend_tpl($file));
 
-	} else if (pathinfo($file, PATHINFO_EXTENSION) === "tpl") {
+	} else {
 	    //非忽略的文件类型
 	    $ret[] = $file;
 	}
