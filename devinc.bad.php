@@ -66,13 +66,14 @@ function a_bad_0id($id, &$var=false) {
 
 function a_bad_string($str, &$var=false) {
     if (!is_string($str)
+	|| $str !== strval($str)
 	|| empty($str)
     ) {
 	return true;
     }
 
     if ($var !== false) {
-	$var = $str;
+	$var = strval($str);
     }
 
     
@@ -81,7 +82,9 @@ function a_bad_string($str, &$var=false) {
 
 
 function a_bad_0string($str, &$var=false) {
-    if (!is_string($str)) {
+    if (!is_string($str)
+	|| $str !== strval($str)
+    ) {
 	return true;
     }
 
@@ -188,14 +191,12 @@ function a_bad_user($uid, &$user=false) {
 	return a_log();
     }
 
-    // 可能没有数据
+    //可能没有数据
     if (a_bad_table_id("user", $uid, $user) ) {
 
 	return false;
     }
 
-    // 用户是否被禁言
+    //用户是否被禁言
     return $user["status"] != 44;
 }
-
-

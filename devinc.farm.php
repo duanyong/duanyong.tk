@@ -29,3 +29,13 @@ $config["farm"]	    = array(
     "127.0.0.1",
     "192.168.1.104",
 );
+
+//压缩的总开关
+//如需要不压缩此
+$config["compress"]	= true;
+
+$config["compress_js"]	= true;
+$config["compress_css"] = true;
+$config["compress_tpl"] = true;
+
+

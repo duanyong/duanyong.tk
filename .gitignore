@@ -1,14 +1,12 @@
+*.swo
 *.swp
 
 ?.php
 ?.tpl
 
 # aa.js, cc.css
-
 *.js
 *.css
 !dev.*.js
 !dev.*.css
 
-*.tpl.php
-*.php.php

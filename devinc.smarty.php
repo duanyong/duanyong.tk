@@ -14,7 +14,7 @@
 require_once(ROOT_DIR . '/dev/smarty/libs/Smarty.class.php');
 
 
-function a_smarty($tpl, $arg) {
+function a_smarty($shtml, $arg) {
     $smarty = new Smarty();
 
     $smarty->setCacheDir(ROOT_DIR . "/cache");
@@ -27,5 +27,5 @@ function a_smarty($tpl, $arg) {
 	$smarty->assign($key, $value);
     }
 
-    $smarty->display($tpl);
+    $smarty->display($shtml);
 }

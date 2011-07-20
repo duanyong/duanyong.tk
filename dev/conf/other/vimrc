@@ -76,3 +76,13 @@ nmap <C-o> :tabnew
 nmap <Tab> :tabn<CR>
 nmap <S-Tab> :tabp<CR>
 
+
+function Php_init()
+    nmap <C-j> :!php -l %<CR>
+    nmap <C-p> :!php %<CR>
+    nmap <K> :pman $<CR>
+
+endfunction
+
+call Php_init()
+
