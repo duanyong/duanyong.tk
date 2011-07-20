@@ -3,6 +3,10 @@
 // 监控css和js文件的变化并生成对应的文件
 //  将多个文件粘合在一起，如dev.base.form.js 生成dev.base.js文件
 //
+//  依赖: 基础文件
+//
+//
+//
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -48,43 +52,13 @@ function a_devwatch_init(&$depends) {
     //得到所有的tpl文件
     $js  = glob(JS_DIR . "dev.*.js");
     $css = glob(CSS_DIR . "dev.*.css");
-    $tpl = a_devwatch_all_tpl(ROOT_DIR);
+    $tpl = a_devwatch_exhibit_tpl(ROOT_DIR);
 
     //所有的文件
     $files = array_merge($js, $css, $tpl);
 
     //将文件切片分析其依赖关系
     a_devwatch_slice_files($files, $depends);
-}
-
-
-//返回项目可能产生依赖关系的tpl文件
-function a_devwatch_all_tpl($dir) {
-    if (!is_dir($dir)) {
-	return a_log();
-    }
-
-    $ret = array();
-
-    //不需要分析依赖关系的目录
-    static $ignore_dir = array();
-    $ignore_dir[] = ROOT_DIR . "/img";
-    $ignore_dir[] = ROOT_DIR . "/dev";
-
-    //取得所有的tpl文件
-    foreach (glob($dir . "/*.tpl") as $file) {
-	if (is_dir($file)
-	    && !in_array($file, $ignore_dir)
-	) {
-	    $ret = array_merge($ret, a_devwatch_depend_tpl($file));
-
-	} else {
-	    //非忽略的文件类型
-	    $ret[] = $file;
-	}
-    }
-
-    return $ret;
 }
 
 
@@ -235,9 +209,9 @@ function a_watch_general_js($js) {
 	return a_log();
     }
 
-    static $text = "//{$js}.js\n//The Love, The Lover, Thangs.\n//General at " . date("Y-m-d H:i:s") . "\n\n\n";
     $path = JS_DIR . $js . ".js";
     $base = JS_DIR . "dev.{$js}.js";
+    $text = "//{$js}.js\n//The Love, The Lover, Thangs.\n//General at " . date("Y-m-d H:i:s") . "\n\n\n";
 
     if (is_readable($base)) {
 	//确保dev.xxxx.js类似的根文件永远处于第一位
@@ -268,9 +242,9 @@ function a_watch_general_css($css) {
 	return a_log();
     }
 
-    static $text = "/* {$css}.css */\n/* The Love, The Lover, Thangs. */\n/* General at " . date("Y-m-d H:i:s") . " */\n\n\n";
     $path = CSS_DIR . $css . ".css";
     $base = CSS_DIR . "dev.{$css}.css";
+    $text = "/* {$css}.css */\n/* The Love, The Lover, Thangs. */\n/* General at " . date("Y-m-d H:i:s") . " */\n\n\n";
 
     if (is_readable($base)) {
 	//确保dev.xxxx.css类似的根文件永远处于第一位
@@ -292,6 +266,92 @@ function a_watch_general_css($css) {
 
 	file_put_contents($path, "\n\n\n" . file_get_contents($file), FILE_APPEND);
     }
+}
+
+
+//tpl的位置生成shtml或者html文件文件（用smarty生成四种文件格式：js, css, html, shtml）
+function a_watch_general_tpl($tpl, $ext) {
+    if (!file_exists($tpl)
+	|is_readable($tpl)
+    ) {
+	return a_log();
+    }
+
+    //没有指定采用默认的shtml
+    if (!in_array($ext , array("js", "css", "html", "shtml"))) {
+	$ext = "shtml";
+    }
+
+
+    try {
+	$content = a_smarty($tpl);
+
+    } catch (Exception e) {
+	return a_log(a->getMessage());
+    }
+
+
+    //是否需要压缩
+    $path = pathinfo($tpl);
+
+
+    //生成/var/www/duanyong/diary/xxxx.shtml
+    file_put_contents($path["dirname"] . "/" . $path["filename"] . $ext, $content);
+}
+
+
+
+//用smarty生成其它文件（如:/js/citydata.js）
+function a_watch_general_tpl($tpl) {
+    if (!file_exists($tpl)
+	|is_readable($tpl)
+    ) {
+	return a_log();
+    }
+
+
+    $content = null;
+
+    try {
+	$content = a_smarty($tpl);
+
+    } catch (Exception e) {
+	a_log(a->getMessage());
+    }
+
+    //是否需要压缩
+
+    file_put_contents($tpl, $content);
+}
+
+
+//返回项目可能产生依赖关系的tpl文件
+function a_devwatch_exhibit_tpl($dir) {
+    if (!is_dir($dir)) {
+	return a_log();
+    }
+
+    $ret = array();
+
+    //不需要分析依赖关系的目录
+    static $ignore_dir = array();
+    $ignore_dir[] = ROOT_DIR . "/img";
+    $ignore_dir[] = ROOT_DIR . "/dev";
+
+    //取得所有的tpl文件
+    foreach (glob($dir . "/*.tpl") as $file) {
+	if (is_dir($file)
+	    && !in_array($file, $ignore_dir)
+	) {
+	    $ret = array_merge($ret, a_devwatch_depend_tpl($file));
+
+	} else {
+	    //非忽略的文件类型
+	    $ret[] = $file;
+	}
+    }
+
+    return $ret;
 }
 
 
@@ -335,20 +395,37 @@ function a_devwatch_callback($events) {
     //目录的创建、更名、删除操作会触发回调
     //文件的创建，修改，删除操作会触发回调
 
-    foreach (array_keys($events) as $file) {
-	//判定是目录还是文件
-	if (( $ext = pathinfo($file, PATHINFO_EXTENSION) )) {
-	    //取文件名的后缀，只要有值肯定是文件
+    var_dump($events);
+    return ;
+    static $regx = "/{\*devwatch\:([ |.|\/|\S]*)\*\}/";
 
-	    //1、是否是有依赖关系的tpl文件
-	    if ($ext === "tpl") {}
+    foreach (array_keys($events) as $file) {
+	if (f_bad_array($events[$file], $event)
+	    || f_bad_id($event["wd"], $wd)
+	) {
+	    continue;
+	}
+
+	//判定是目录还是文件
+	if ($event["is_file"]) {
+	    //取文件名的后缀，只要有值肯定是文件
+	    $path = $file
+
+	    //只要文件中有{*devwatch: xxxx*}就需要生成新文件
+	    if (preg_match($regx, $content, $match) ) {
+	    }
 	}
     }
-    var_dump($events);
 }
 
 
-function a_devwatch_tracker_file($) {}
+
+function a_devwatch_xxxx() {
+}
+
+
+
+function a_devwatch_tracker_file($file) {}
 
 
 

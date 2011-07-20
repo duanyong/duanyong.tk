@@ -31,6 +31,7 @@
 //		    name	: 发生变化的文件名
 //		    source	: 事件源（自定义属性）
 //		    cookie	: 未知
+//		    is_file	: true / false
 //		);
 //
 //
