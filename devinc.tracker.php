@@ -190,6 +190,19 @@ function a_tracker_go() {
 		 *	    array($event),
 		 *	),
 		 *  );
+		 *
+		 *  $event = array(
+		 *	"wd"	    : $wd,
+		 *	"mask"	    : $mask,
+		 *	"cookie"    : $cookie,
+		 *	"create"    : 2,	(create / modify / delete 三者只有其中一种, 自定义)
+		 *	"modify"    : 68,	(create / modify / delete 三者只有其中一种, 自定义)
+		 *	"delete"    : 512,	(create / modify / delete 三者只有其中一种, 自定义)
+		 *	"source"    : 事件源,一般为目录	(自定义)
+		 *	"is_dir"    : true / false,	(自定义)
+		 *  )
+		 *
+		 *
 		 * */
 	    }
 
@@ -249,6 +262,8 @@ function a_tracker_events_unique(&$events) {
 		$ret[$name]["mask"]	= $e["mask"];
 		$ret[$name]["create"]   = $e["mask"];
 	    }
+
+	    $ret[$name]["is_dir"] = $e["mask"] & IN_ISDIR;
 	}
 
 	//一定要unset掉变量
