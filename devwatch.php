@@ -52,7 +52,7 @@ define("CSS_DIR", ROOT_DIR . "/css/");
 $js_regx  = "/\{js name\=\"(\S+[,| |\S+]*)\"\}/";
 $css_regx = "/\{css name\=\"(\S+[,| |\S+]*)\"\}/";
 $inc_regx = "/\{include file\=\"[ ]*(\S+\.tpl)\"\}/";
-$dev_regx = "/\{\*devwatch\:[ |\S]+\*\}/";
+$dev_regx = "/\{\*devwatch\:[ |(\S)]+\*\}/";
 
 
 function a_devwatch_init(&$depends) {
@@ -301,7 +301,7 @@ function a_watch_general_tpl($tpl) {
 	|| !( $name = $match[1] )
 	|| !( $name = str_replace(" ", "", $name) )
 
-	//不以dev开头，不以tpl结尾
+	//生成的文件不以dev开头，不以tpl结尾
 	|| !preg_match("/^dev\S+|\S*tpl$|^dev\S*tpl$/", $name)
 
     ) {
@@ -318,41 +318,27 @@ function a_watch_general_tpl($tpl) {
     // {*devwatch: index.shtml*}
 
 
+    $pos  = 0;
     $info = pathinfo($tpl);
 
-    if (false === strrpos($name, ".")) {
-	//{*devwatch: js*}
+    if (false === ( $pos = strrpos($name, ".") )) {
+	//类似{*devwatch: js*}
 	//没有文件名只有后缀，采用tpl的文件名
+	$filename = $info["dirname"] . "/" . $info["filename"] . "." . $name;
 
-	//tpl文件名有可能是dev.base.form.js或者dev.base.js或者base.tpl或者devwatch.tpl
-	//
-	if (preg_match("^[dev\.]+(\S)")) {}
-	$filename str_replace("dev.", "", $info["filename"]);
-
-	//如果
-
-
-	$name = $info["filename"] . $name;
+    } else {
+	//类似{*devwatch: index.js*}
+	//取$tpl的路径，与指定输入的文件名称拼接，得到路径
+	$filename = $info["dirname"] . "/" . $name;
     }
 
-
-	|| !( $info = $info["dirname"] . "/" . $info["filename"] . "." . $match[1] )
-
-
-    //得到文件真正的路径{*devwatch: data.js*}，生成tpl所在目录/data.js
-    $info = $info["dirname"] . "/" . $info["filename"] . "." . $match[1];
-
-    if (!is_writeable($info)) {
-	return a_log("cann't writable to path: {$info}, please check it.");
-    }
-
-
-    try {
-	//写入/var/www/duanyong/js/xxxx.js
-	file_put_contents($info, f_smarty($tpl));
-
-    } catch (Exception $e) {
-	return a_log($e->getMessage());
+    if (is_writeable($filename)) {
+	try {
+	    //写入/var/www/duanyong/js/xxxx.js
+	    file_put_contents($info, f_smarty($tpl));
+	} catch (Exception $e) {
+	    return a_log("cann't writable to path: {$info}, please check it.");
+	}
     }
 }
 
@@ -534,7 +520,7 @@ function a_devwatch_callback($events) {
 	    }
  
 
-	    //查看文件在 XXX 旧的 XXX 依赖关系列表中是否有信赖关系。
+	    //查看文件在 XXX 旧的 XXX 依赖关系列表中是否存在 
 	    //	发生变化的文件在依赖链条上的底端，需要将上面所有的文件都检查，只要遇到{*devwatch: xxxx*}的文件都需要重新生成，
 	    //	另外要注意有可能依赖链条中有交叉情况（如foot.tpl和header.tpl依赖其它文件），所有在此需要标记已处理过的
 	    //	文件就不需要再次处理（因为都是同一文件引起变化）。如下图所示：
@@ -566,6 +552,7 @@ function a_devwatch_callback($events) {
 			continue;
 		    }
 
+		    //有没{*devwatch: xxxx*}指令，重新生成
 		    if (preg_match($dev_regx, $content, $match)) {
 
 		    }
@@ -573,7 +560,7 @@ function a_devwatch_callback($events) {
 		    
 
 		    if (isset($depends[$d])) {
-			foreach ($depends[$d])) {}
+			foreach ($depends[$d]) {}
 
 			$dps = array_merge($dps, $depends[$d]);
 
