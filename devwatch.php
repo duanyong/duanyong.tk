@@ -347,32 +347,6 @@ function a_watch_general_tpl($tpl) {
 }
 
 
-
-//用smarty生成其它文件（如:/js/citydata.js）
-//TODO:
-function a_watch_general_other($tpl) {
-    if (!file_exists($tpl)
-	|| !is_readable($tpl)
-    ) {
-	return a_log();
-    }
-
-
-    $content = null;
-
-    try {
-	$content = a_smarty($tpl);
-
-    } catch (Exception $e) {
-	a_log($e->getMessage());
-    }
-
-    //是否需要压缩
-
-    ///file_put_contents($tpl, $content);
-}
-
-
 //返回项目可能产生依赖关系的tpl文件
 function a_devwatch_exhibit_tpl($dir) {
     if (!is_dir($dir)) {
@@ -552,22 +526,17 @@ function a_devwatch_callback($events) {
 		foreach ($dps as $d) {
 		    if (!is_readable($d)
 			|| !( $content = file_get_contents($d) )
+
+			//已做过处理
+			|| $dones[$d]
 		    ) {
 			continue;
 		    }
 
-		    //有没{*devwatch: xxxx*}指令，重新生成
+
+		    //有{*devwatch: xxxx*}指令，重新生成
 		    if (preg_match($dev_regx, $content, $match)) {
-
-		    }
-
-		    
-
-		    if (isset($depends[$d])) {
-			//foreach ($depends[$d]) {}
-
-			$dps = array_merge($dps, $depends[$d]);
-
+			a_watch_general_tpl($d);
 		    }
 		}
 
@@ -590,7 +559,7 @@ function a_devwatch_tracker_file($file) {}
 
 
 $depends = array();
-//a_devwatch_tracker();
+a_devwatch_tracker();
 
 
 //a_devwatch_init($depends);

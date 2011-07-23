@@ -1,8 +1,15 @@
 #!/bin/bash
 
-tail -f /var/log/php/cgi.error.log > /tmp/.log &
-tail -f /var/log/php/cli.error.log > /tmp/.log &
+#tail -f /var/log/php/cgi.error.log > /tmp/.log &
+#tail -f /var/log/php/cli.error.log > /tmp/.log &
 
-tail -f /tmp/.log
+#tail -f /tmp/.log
+
+
+安装php扩展inotify
+
+1、下载inotify http://pecl.php.net/package/inotify
+2、按照http://www.php.net/manual/zh/install.pecl.phpize.php的方法安装
+3、在/etc/phh5/cgi/conf.d目录中复制mysql.ini，改为extension=inotify.so
 
 
