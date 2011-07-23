@@ -52,7 +52,7 @@ define("CSS_DIR", ROOT_DIR . "/css/");
 $js_regx  = "/\{js name\=\"(\S+[,| |\S+]*)\"\}/";
 $css_regx = "/\{css name\=\"(\S+[,| |\S+]*)\"\}/";
 $inc_regx = "/\{include file\=\"[ ]*(\S+\.tpl)\"\}/";
-$dev_regx = "/\{\*devwatch\:[ |(\S)]+\*\}/";
+$dev_regx = "/\{\*devwatch\:([ |\S]+)\*\}/";
 
 
 function a_devwatch_init(&$depends) {
@@ -286,10 +286,10 @@ function a_watch_general_css($css) {
 
 //生成{*devwatch: xxxx*}的文件（用smarty生成四种文件格式：js, css, html, shtml）
 //
-//  注意：  xxxx不能以dev开头，不心.tpl结尾
+//  注意：  xxxx不能以dev开头，不心tpl结尾
 //	    文件名默认可以不指定，采用tpl的文件名替换
-//  {*devwatch: js*}
-//  {*devwatch: data.js*}
+//		{*devwatch: js*}
+//		{*devwatch: data.js*}
 //
 function a_watch_general_tpl($tpl) {
     global $dev_regx;
@@ -302,7 +302,7 @@ function a_watch_general_tpl($tpl) {
 	|| !( $name = str_replace(" ", "", $name) )
 
 	//生成的文件不以dev开头，不以tpl结尾
-	|| !preg_match("/^dev\S+|\S*tpl$|^dev\S*tpl$/", $name)
+	|| preg_match("/^dev\S+|\S*tpl$|^dev\S*tpl$/", $name)
 
     ) {
 	return false;
@@ -318,8 +318,9 @@ function a_watch_general_tpl($tpl) {
     // {*devwatch: index.shtml*}
 
 
-    $pos  = 0;
-    $info = pathinfo($tpl);
+    $pos	= 0;
+    $info	= pathinfo($tpl);
+    $filename	= null;
 
     if (false === ( $pos = strrpos($name, ".") )) {
 	//类似{*devwatch: js*}
@@ -332,13 +333,16 @@ function a_watch_general_tpl($tpl) {
 	$filename = $info["dirname"] . "/" . $name;
     }
 
-    if (is_writeable($filename)) {
-	try {
-	    //写入/var/www/duanyong/js/xxxx.js
-	    file_put_contents($info, f_smarty($tpl));
-	} catch (Exception $e) {
-	    return a_log("cann't writable to path: {$info}, please check it.");
-	}
+    if (false === ( $content = a_smarty_tpl($tpl) )) {
+	//tpl报错，不进行文件写入
+	return false;
+    }
+
+    try {
+	//写入/var/www/duanyong/js/xxxx.js
+	file_put_contents($filename, $content);
+    } catch (Exception $e) {
+	return a_log("cann't writable to path: {$filename}, please check it.");
     }
 }
 
@@ -560,7 +564,7 @@ function a_devwatch_callback($events) {
 		    
 
 		    if (isset($depends[$d])) {
-			foreach ($depends[$d]) {}
+			//foreach ($depends[$d]) {}
 
 			$dps = array_merge($dps, $depends[$d]);
 
@@ -586,7 +590,7 @@ function a_devwatch_tracker_file($file) {}
 
 
 $depends = array();
-a_devwatch_tracker();
+//a_devwatch_tracker();
 
 
 //a_devwatch_init($depends);

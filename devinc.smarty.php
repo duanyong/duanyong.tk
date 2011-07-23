@@ -11,21 +11,55 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-require_once(ROOT_DIR . '/dev/smarty/libs/Smarty.class.php');
+require_once(ROOT_DIR . '/dev/smarty/Smarty.class.php');
 
 
-function a_smarty($shtml, &$arg=array()) {
-    $smarty = new Smarty();
-
-    $smarty->setCacheDir(ROOT_DIR . "/cache");
-    $smarty->setConfigDir(ROOT_DIR . "/dev/smarty/configs");
-    $smarty->setCompileDir(ROOT_DIR . "/dev/smarty/templates_c");
-    $smarty->setTemplateDir(ROOT_DIR . "/dev/smarty/templates");
-
-
-    foreach ($arg as $key => $value) {
-	$smarty->assign($key, $value);
+function a_smarty($tpl, &$assign=false) {
+    if (!is_file($tpl)
+	|| !is_readable($tpl)
+    ) {
+	return a_log();
     }
 
-    $smarty->display($shtml);
+
+    //生成新的Smarty对象，渲染页面
+    $smarty = new Smarty();
+
+    $smarty->setCacheDir(TMP_DIR);
+    $smarty->setCompileDir(TMP_DIR . SEPARATOR . ".templates_c");
+    $smarty->setTemplateDir(ROOT_DIR);
+    $smarty->addPluginsDir(ROOT_DIR . "/dev/smarty/userplugins");
+
+    if (a_bad_array($assign)) {
+	$smarty->assign($assign);
+    }
+
+    $smarty->display($tpl);
+}
+
+
+//返回渲染tpl后的签字串
+function a_smarty_tpl($tpl) {
+    if (!is_file($tpl)
+	|| !is_readable($tpl)
+    ) {
+	return a_log();
+    }
+
+
+    //生成新的Smarty对象，渲染页面
+    $smarty = new Smarty();
+
+    $smarty->setCacheDir(TMP_DIR);
+    $smarty->setCompileDir(TMP_DIR . SEPARATOR . ".templates_c");
+    $smarty->setTemplateDir(ROOT_DIR);
+    $smarty->addPluginsDir(ROOT_DIR . "/dev/smarty/userplugins");
+
+    try {
+	return  $smarty->fetch ($tpl);
+
+    } catch (SmartyException $se) {
+
+	return a_log($se->getMessage());
+    }
 }

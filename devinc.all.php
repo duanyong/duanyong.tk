@@ -23,6 +23,12 @@
 //项目根目录
 define("ROOT_DIR", "/var/www/duanyong");
 
+//系统临时目录
+define("TMP_DIR", "/tmp");
+
+//系统路径分隔符
+define("SEPARATOR", "/");
+
 
 //配置文件
 require_once(ROOT_DIR. '/devinc.farm.php');
@@ -36,3 +42,7 @@ require_once(ROOT_DIR . '/devinc.action.php');
 
 //数据库文件
 require_once(ROOT_DIR . '/devdb.mysql.php');
+
+
+//smarty模板
+require_once(ROOT_DIR . '/devinc.smarty.php');
