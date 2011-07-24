@@ -23,6 +23,7 @@
 //项目根目录
 define("ROOT_DIR", "/var/www/duanyong");
 
+
 //系统临时目录
 define("TMP_DIR", "/tmp");
 
