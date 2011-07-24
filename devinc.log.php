@@ -1,8 +1,8 @@
 <?php
 ////////////////////////////////////////////////////////////////////////////////
 // devinc.log.php
-//	日志文件，输出格式为
-//	2011-01-01 01:01:01 NOTICE [/user/devapi.user.php:18] Warn arg
+//	日志文件的输出格式为
+//	2011-01-01 01:01:01 NOTICE [/user/devapi.user.php:18] wrong arg
 //
 //
 //      E_USER_NOTICE	- 默认。用户生成的 run-time 通知。脚本发现了可能的错误，也有可能在脚本运行正常时发生。
@@ -60,7 +60,7 @@ $log_leves  = array(
 //E_USER_NOTICE	- 默认。用户生成的 run-time 通知。脚本发现了可能的错误，也有可能在脚本运行正常时发生。
 function a_log($log=false) {
     if ($log === false) {
-	// 函数的参数调用
+	//函数的参数调用
 
 	return trigger_error("wrong arg", E_USER_WARNING) && false;
     }
@@ -86,7 +86,7 @@ function a_warn($log=false) {
 function a_error($log) {
     trigger_error($log, E_USER_ERROR) && false;
 
-
+    //中断脚本执行，返回PHP E_ERROR错误
     exit(E_ERROR);
 }
 
@@ -112,7 +112,7 @@ function a_log_append(&$msg) {
     global $log_file, $log_cli, $log_on;
 
     if ($log_cli) {
-	//选择标准输出还是错误输出
+	//TODO:选择标准输出还是错误输出
 	fwrite(STDOUT, "\n" . $msg);
     }
 
@@ -122,8 +122,7 @@ function a_log_append(&$msg) {
 }
 
 
-//自定义错误处理函数
-//  输入到站点运行时的错误日志/var/nginx/duanyong.running.log
+//自定义日志输出函数
 function a_log_hander(&$leve, &$msg) {
     //对句暴露的日志函数
     static $names = null;
@@ -138,12 +137,11 @@ function a_log_hander(&$leve, &$msg) {
 
 
 
-    //error_backtrace中file属性为绝对路径，需要将绝对路径换成项目的相对路径。
-    //因为日志按项目的其对路径输出。如
-    //  /home/duanyong/workspace/duanyong/login.php 应输出为/login.php
-    static $pdir = false;
+    //因为日志按项目的相对路径输出。如/home/duanyong/workspace/duanyong/login.php 应输出为/login.php
+    //debug_backtrace中file属性为绝对路径，需要将绝对路径换成项目的相对路径。
+    static $pdir = null;
 
-    if (false === $pdir) {
+    if (!$pdir) {
 	if (is_link(ROOT_DIR)) {
 	    //获取真正的系统路径
 	    $pdir = readlink(ROOT_DIR);
@@ -155,7 +153,6 @@ function a_log_hander(&$leve, &$msg) {
     }
 
     global $log_leves;
-
     if (!isset($log_leves[$leve])) {
 	return a_log('This [' . $leve . '] unavail log leves');
     }
@@ -167,7 +164,7 @@ function a_log_hander(&$leve, &$msg) {
 
     $traces = debug_backtrace();
 
-    //提取错误信息，从数组中提取函数名为a_log, a_warn, a_error进行输出
+    //提取错误信息，从数组中提取函数名为a_log, a_warn, a_error得到文件的名和出错行数进行输出
     foreach ($traces as &$trace) {
 	if (isset($trace["function"])
 	    && ( $name = $trace["function"] )

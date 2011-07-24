@@ -35,7 +35,7 @@ define("SEPARATOR", "/");
 require_once(ROOT_DIR. '/devinc.farm.php');
 
 
-//基础的php文件
+//基础的php文件（顺序不能乱）
 require_once(ROOT_DIR . '/devinc.bad.php');
 require_once(ROOT_DIR . '/devinc.log.php');
 require_once(ROOT_DIR . '/devinc.smarty.php');
