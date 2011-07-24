@@ -20,7 +20,7 @@ server {
 
     #启用压缩，但IE7以下不压缩
     gzip on;
-    gzip-types	    text/plain application/xml;
+    #gzip-types	    "text/plain" "application/xml";
     gzip-disable    "MSID [1-6]\.";
 
 
