@@ -247,7 +247,7 @@ function a_db_conn() {
 	return a_warn();
     }
 
-    //TODO 优先选择状态好的数据库
+    //TODO 服务器重启了怎么办？
 
     return mysql_pconnect($farm[0], $config["username"], $config["password"]); 
 }

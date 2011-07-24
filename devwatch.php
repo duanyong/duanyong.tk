@@ -322,7 +322,6 @@ function a_watch_general_tpl($tpl) {
     // {*devwatch: index.html*}
     // {*devwatch: index.shtml*}
 
-
     $pos	= 0;
     $info	= pathinfo($tpl);
     $filename	= null;
@@ -361,9 +360,11 @@ function a_devwatch_exhibit_tpl($dir) {
     $ret = array();
 
     //不需要分析依赖关系的目录
-    static $ignore_dir = array();
-    $ignore_dir[] = ROOT_DIR . "/img";
-    $ignore_dir[] = ROOT_DIR . "/dev";
+    static $ignore_dir;
+    if (!$ingore_dir) {
+	$ignore_dir[] = ROOT_DIR . "/img";
+	$ignore_dir[] = ROOT_DIR . "/dev";
+    }
 
     //取得所有的tpl文件
     foreach (glob($dir . "/*.tpl") as $file) {
@@ -424,16 +425,19 @@ function a_devwatch_callback(&$events) {
     //文件的创建，修改，删除操作会触发回调
     global $dev_regx, $depneds;
 
-    static $ignore = array(
-	"php",
-	"html",
-	"shtml",
-	"jpg",
-	"png",
+    static $ignore;
 
-	"swp",
-    );
+    if (!$ignore) {
+	$ignore = array(
+	    "php",
+	    "html",
+	    "shtml",
+	    "jpg",
+	    "png",
 
+	    "swp",
+	);
+    }
 
 
     $changes = array();
@@ -444,7 +448,6 @@ function a_devwatch_callback(&$events) {
 	) {
 	    continue;
 	}
-
 
 	//判定是目录还是文件
 	if (!$event["is_dir"]) {
@@ -473,12 +476,7 @@ function a_devwatch_callback(&$events) {
 		// {*devwatch: css*}
 		// {*devwatch: html*}
 		// {*devwatch: shtml*}
-
-		$file = $info["dirname"] . "/" . $info["filename"] . "." . $match[1];
-
-		//写入/var/www/duanyong/js/xxxx.js
-		file_put_contents($path, f_smarty($file));
-
+		a_watch_general_tpl($path);
 
 
 	    } else if (substr($info["filename"], 0, 4) === "dev.") {
@@ -494,10 +492,15 @@ function a_devwatch_callback(&$events) {
 		    //生成dev.base.js文件生成base.js
 
 		    a_watch_general_js($token);
+
+		    continue;
+
 		} else if ($info["extension"] === "css") {
 		    //生成dev.base.css文件生成base.css
 
 		    a_watch_general_css($token);
+
+		    continue;
 		}
 
 
@@ -556,9 +559,4 @@ function a_devwatch_callback(&$events) {
 }
 
 
-function a_devwatch_tracker_file($file) {}
-
-
-
-$depends = array();
 a_devwatch_tracker();

@@ -47,9 +47,9 @@ $log_cli    = php_sapi_name() === "cli";
 
 //日志等级
 $log_leves  = array(
-    E_USER_NOTICE   => 'NOTICE'	,
-    E_USER_WARNING  => 'WARNNING',
-    E_USER_ERROR    => 'ERROR',
+    E_USER_NOTICE   => 'NOTICE',
+    E_USER_WARNING  => 'WARNNG',
+    E_USER_ERROR    => 'ERROOR',
 );
 
 
@@ -159,7 +159,7 @@ function a_log_hander(&$leve, &$msg) {
 
 
     //2011-01-01 01:01:01 NOTICE [/user/devapi.user.php:18] warn arg
-    $log = date('Y-m-d h:i:s') .' ' . $leves[$leve];
+    $log = date('Y-m-d h:i:s') .' ' . $log_leves[$leve];
 
 
     $traces = debug_backtrace();

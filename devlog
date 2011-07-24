@@ -13,3 +13,6 @@
 3、在/etc/phh5/cgi/conf.d目录中复制mysql.ini，改为extension=inotify.so
 
 
+日志输出
+1、参考php debugg_backtrace
+

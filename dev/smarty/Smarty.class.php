@@ -335,9 +335,7 @@ class Smarty extends Smarty_Internal_Data {
         if ((!$this->caching || $_template->resource_object->isEvaluated) && (isset($this->autoload_filters['output']) || isset($this->registered_filters['output']))) {
             $_output = Smarty_Internal_Filter_Handler::runFilter('output', $_template->getRenderedTemplate(), $_template);
         } else {
-	    var_dump($_template);
             $_output = $_template->getRenderedTemplate();
-	    var_dump("hello");
         }
         $_template->rendered_content = null;
         if (isset($this->error_reporting)) {

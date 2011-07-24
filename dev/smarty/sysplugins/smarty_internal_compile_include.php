@@ -37,11 +37,6 @@ class Smarty_Internal_Compile_Include extends Smarty_Internal_CompileBase {
         // save posible attributes
         $include_file = $_attr['file'];
 
-	echo "\n\n\n\n\n\n\n";
-	var_dump($args);
-	var_dump($include_file);
-	echo "\n\n\n\n\n\n\n";
-
         $has_compiled_template = false;
         if ($compiler->smarty->merge_compiled_includes || $_attr['inline'] === true) {
 

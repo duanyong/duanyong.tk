@@ -8,25 +8,14 @@
 
     {css name="layout, index"}
     {js name="layout, index"}
-
-    {js	name="layout, index"}
-    {js	name="layout, index"}
-    {js	name="layout, index"}
-    {js	name="layout, index"}
-    {js	name="layout, index"}
 </head>
 <body>
     {* 导入header *}
-    {include file="/header.tpl"}
-
-
-
-
-
-
+    {include file="header.tpl"}
 
     {* 导入footer*}
-    {include file="/footer.tpl"}
+    {include file="footer.tpl"}
 </body>
 </html>
 
+{*devwatch: html*}
