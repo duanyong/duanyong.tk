@@ -12,4 +12,6 @@
 
 // 返回一个对话框
 var a_dialog = function() {
+
+
 };

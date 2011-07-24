@@ -28,6 +28,7 @@
 // 将表单域中不为空的值结合成json返回
 var a_form_serialize = function(form) {
     if (a_bad_element( form = a_$(form) )) {
+
 	return a_log();
     }
 

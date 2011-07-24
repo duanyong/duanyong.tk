@@ -23,14 +23,14 @@ function a_log($log=false) {
     if ($log === false) {
 	// 函数的参数调用
 
-	return trigger_error("wrong arg", E_USER_ERROR) && false;
+	//return trigger_error("wrong arg", E_USER_NOTICE);
     }
 
 
     // todo:
     // if (a_type($log) === "string") {}
 
-    return trigger_error($log, E_USER_ERROR) && false;
+    //return trigger_error($log, E_USER_ERROR) && false;
 }
 
 

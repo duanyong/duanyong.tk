@@ -219,6 +219,7 @@ function a_devwatch_depend_include($inc, &$file, &$depends) {
 
 
 //在ROOT_DIR/js目录生成需要的js文件
+//$js => base
 function a_watch_general_js($js) {
     if (a_bad_string($js)) {
 	return a_log();
@@ -248,6 +249,8 @@ function a_watch_general_js($js) {
 
 	file_put_contents($path, "\n\n\n" . file_get_contents($file), FILE_APPEND);
     }
+
+    a_log("general js done. " . $path);
 }
 
 
@@ -281,6 +284,8 @@ function a_watch_general_css($css) {
 
 	file_put_contents($path, "\n\n\n" . file_get_contents($file), FILE_APPEND);
     }
+
+    a_log("general js done. " . $css);
 }
 
 
@@ -414,28 +419,38 @@ function a_devwatch_tracker() {
 
 
 
-function a_devwatch_callback($events) {
+function a_devwatch_callback(&$events) {
     //目录的创建、更名、删除操作会触发回调
     //文件的创建，修改，删除操作会触发回调
-
     global $dev_regx, $depneds;
 
-    static $ignore = array("php", "html", "shtml", "jpg", "png");
+    static $ignore = array(
+	"php",
+	"html",
+	"shtml",
+	"jpg",
+	"png",
+
+	"swp",
+    );
+
 
 
     $changes = array();
 
     foreach (array_keys($events) as $file) {
-	if (f_bad_array($events[$file], $event)
-	    || f_bad_id($event["wd"], $wd)
+	if (a_bad_array($events[$file], $event)
+	    || a_bad_id($event["wd"], $wd)
 	) {
 	    continue;
 	}
 
+
 	//判定是目录还是文件
 	if (!$event["is_dir"]) {
 	    //文件
-	    if (!is_readable( $path = $event["source"] . "/" . $file )
+	    if (!( $path = $event["source"] . "/" . $file )
+		|| !is_readable($path)
 		|| !( $info = pathinfo($path) )
 		|| in_array($info["extension"], $ignore)
 	    ) {
@@ -443,12 +458,9 @@ function a_devwatch_callback($events) {
 	    }
 
 	    //将更改的文件累积起来，对单个文件处理完毕后重新分析其信赖关系
-	    $changes[] = $path;
-
-
+	    $changes[]	= $path;
 	    //获取文件内容，如有{*devwatch: xxxx*}指令需要重新生成文件
-	    $content = file_get_contents($path);
-
+	    $content	= file_get_contents($path);
 
 
 	    //发生更新的文件有下面几种情况需要处理
@@ -464,22 +476,19 @@ function a_devwatch_callback($events) {
 
 		$file = $info["dirname"] . "/" . $info["filename"] . "." . $match[1];
 
-		if (!is_writeable($file)) {
-		    a_log("cann't writable to path: {$file}, please check it.");
-
-		    continue;
-		}
-
 		//写入/var/www/duanyong/js/xxxx.js
 		file_put_contents($path, f_smarty($file));
 
 
 
-	    } else if (strpos($info["filename"], "dev.") === 0) {
-		//处理dev.xxxx.js / dev.xxxx.css 
-		$token = substr($info["filename"], strpos($info["filename"], "."));
+	    } else if (substr($info["filename"], 0, 4) === "dev.") {
+		//以dev.开头的文件
 
-		$token .= $info["extension"];
+
+		//处理dev.xxxx.zzzz.js / dev.xxxx.css ，取xxxx文件名
+		$token = explode(".", $info["filename"]);
+		$token = $token[1];
+
 
 		if ($info["extension"] === "js") {
 		    //生成dev.base.js文件生成base.js
@@ -490,7 +499,6 @@ function a_devwatch_callback($events) {
 
 		    a_watch_general_css($token);
 		}
-
 
 
 	    } else {
@@ -548,54 +556,9 @@ function a_devwatch_callback($events) {
 }
 
 
-
-function a_devwatch_xxxx() {
-}
-
-
-
 function a_devwatch_tracker_file($file) {}
 
 
 
 $depends = array();
 a_devwatch_tracker();
-
-
-//a_devwatch_init($depends);
-
-		/*
-		switch (true) {
-		case (IN_CREATE & $mask):
-		case (IN_MODIFY & $mask):
-
-		    break;
-
-		case (IN_DELETE & $mask):
-		    //有删除操作，如果是目录的话，需要删除
-		    if (is_dir($name)) {
-			//目录是末尾是否有/，
-			if (strrpos($name, "/") !== mb_strlen($name)-1) {
-			    //没有，需要手动添加
-			    $name .= "/";
-			}
-
-			//被删除的目录是否也是目录
-			if (is_dir($name . $file)) {
-			    //删除监听事件和当前被删除的监听目录
-
-			    unset($watching[$name]);
-			    unset($descriptor[$wd]);
-
-			    @inotify_add_watch($fd, $wd);
-			}
-		    }
-
-		    break;
-
-		default:
-		    //其它操作直接略过，不需要回调函数
-		    continue;
-		}
-		 */
-

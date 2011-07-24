@@ -6,4 +6,5 @@ var submit = function() {
 		console.log(this.getResponseHeader("Referer"));
 		}
 	    });
+
 }

@@ -206,9 +206,14 @@ function a_tracker_go() {
 		 * */
 	    }
 
-	    foreach (array_keys($es) as $callback) {
+
+	    foreach ($es as $callback => $events) {
 		//准备回调函数
-		@call_user_func($callback, a_tracker_events_unique($es[$callback]));
+		try {
+		    call_user_func_array($callback, array(a_tracker_events_unique($events)));
+		} catch (Exception $e) {
+		    a_log($e->getMessage());
+		}
 	    }
 	}
 
@@ -234,36 +239,20 @@ function a_tracker_events_unique(&$events) {
     foreach ($events as &$e) {
 	if (( $name = $e["name"] )) {
 	    //有文件名才检查，其它忽略
-	    if (!$ret[$name]) {
+	    if (!isset($ret[$name])) {
 		$ret[$name] = $e;
 	    }
 
-
 	    //与队列中的事件对比mask，根据mask的优先级决定是否保留原来的mask值
-	    $e1 = $ret[$name];
-
-	    if ($e["mask"] & IN_DELETE) {
-		//删除事件优先级最高，其它事件全部忽略
-		$ret[$name]["mask"]	= $e["mask"];
-		$ret[$name]["delete"]   = $e["mask"];
-
-		unset($ret[$name]["create"]);
-		unset($ret[$name]["modify"]);
-
-	    } else if ($e["mask"] & IN_MODIFY) {
-		//修改事件优先级低于删除，但高于创建
-		$ret[$name]["mask"]	= $e["mask"];
-		$ret[$name]["modify"]   = $e["mask"];
-
-		unset($ret[$name]["create"]);
-
-	    } else if ($e["mask"] & IN_CREATE) {
-		//新建事件优先级最低，排在最后
-		$ret[$name]["mask"]	= $e["mask"];
-		$ret[$name]["create"]   = $e["mask"];
-	    }
-
-	    $ret[$name]["is_dir"] = $e["mask"] & IN_ISDIR;
+	    //删除事件优先级最高，其它事件全部忽略
+	    $ret[$name]["wd"]	    = $e["wd"];
+	    $ret[$name]["mask"]	    = $e["mask"];
+	    $ret[$name]["delete"]   = $e["mask"] & IN_DELETE;
+	    $ret[$name]["modify"]   = $e["mask"] & IN_MODIFY;
+	    $ret[$name]["create"]   = $e["mask"] & IN_CREATE;
+	    $ret[$name]["source"]   = $e["source"];
+	    $ret[$name]["cookie"]   = $e["cookie"];
+	    $ret[$name]["is_dir"]   = $e["mask"] & IN_ISDIR;
 	}
 
 	//一定要unset掉变量
