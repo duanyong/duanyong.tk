@@ -4,6 +4,9 @@
 ?.php
 ?.tpl
 
+*.html
+*.shtml
+
 # aa.js, cc.css
 *.js
 *.css
