@@ -13,16 +13,11 @@ function smarty_function_css($params, $template) {
     $files  = explode(",", str_replace(" ", "", $params["name"]));
 
     foreach ($files as &$css) {
-	$file = ROOT_DIR . "/css/{$css}.css";
-
-	if (!file_exists($file)
-	    || !is_readable($file)
-	) {
-	    //文件不可读
-	    continue;
+	if (is_readable(ROOT_DIR . '/css/' . $css . '.css')) {
+	    //文件可读
+	    $csses[] = '<link rel="stylesheet" type="text/css" href="/css/' . $css  .'.css" media="screen"></link>';
 	}
 
-	$csses[] = "<link rel=\"stylesheet\" type=\"text/css\" href=\"{$css}\" media=\"screen\"></link>";
 
 	unset($css);
     }

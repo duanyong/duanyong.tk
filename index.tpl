@@ -6,7 +6,7 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <meta content="您手上的心情布袋" name="description"/> 
 
-    {css name="layout, index"}
+    {css name="layout"}
     {js name="layout, index"}
 </head>
 <body>

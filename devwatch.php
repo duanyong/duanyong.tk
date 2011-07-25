@@ -55,7 +55,7 @@ $inc_regx = "/\{include file\=\"[ ]*(\S+\.tpl)\"\}/";
 $dev_regx = "/\{\*devwatch\:([ |\S]+)\*\}/";
 
 
-function a_devwatch_init(&$depends) {
+function a_devwatch_init() {
     if (is_file("/var/tmp/devwatch.pid")) {
 	return a_log("daemon is running for /tmp/devwatch.pid");
     }
@@ -69,20 +69,18 @@ function a_devwatch_init(&$depends) {
     $files = array_merge($js, $css, $tpl);
 
     //将文件切片分析其依赖关系
-    a_devwatch_slice_files($files, $depends);
+    a_devwatch_slice_files($files);
 }
 
 
 //将所有文件切片分析确定文件与文件的依赖关系
 //  只分析tpl和非tpl中包含{*devwatch: xxxx*}指令的文件
-function a_devwatch_slice_files(&$files, &$depends) {
-    if (a_bad_array($files)
-	|| a_bad_array($depends)
-    ) {
+function a_devwatch_slice_files(&$files) {
+    if (a_bad_array($files)) {
 	return a_log();
     }
 
-    global $dev_regx;
+    global $dev_regx, $depends;
 
     //分析所有可能产生依赖的文件，确立其依赖关系
     foreach ($files as $file) {
@@ -250,7 +248,7 @@ function a_watch_general_js($js) {
 	file_put_contents($path, "\n\n\n" . file_get_contents($file), FILE_APPEND);
     }
 
-    a_log("general js done. " . $path);
+    a_log('general done: ' . str_replace(ROOT_DIR, '', $path));
 }
 
 
@@ -285,7 +283,8 @@ function a_watch_general_css($css) {
 	file_put_contents($path, "\n\n\n" . file_get_contents($file), FILE_APPEND);
     }
 
-    a_log("general js done. " . $css);
+
+    a_log('general done: ' . str_replace(ROOT_DIR, '', $path));
 }
 
 
@@ -345,6 +344,9 @@ function a_watch_general_tpl($tpl) {
     try {
 	//写入/var/www/duanyong/js/xxxx.js
 	file_put_contents($filename, $content);
+
+	a_log('general done: ' . str_replace(ROOT_DIR, '', $filename));
+
     } catch (Exception $e) {
 	return a_log("cann't writable to path: {$filename}, please check it.");
     }
@@ -360,8 +362,9 @@ function a_devwatch_exhibit_tpl($dir) {
     $ret = array();
 
     //不需要分析依赖关系的目录
-    static $ignore_dir;
-    if (!$ingore_dir) {
+    static $ignore_dir = null;
+
+    if (!$ignore_dir) {
 	$ignore_dir[] = ROOT_DIR . "/img";
 	$ignore_dir[] = ROOT_DIR . "/dev";
     }
@@ -423,7 +426,7 @@ function a_devwatch_tracker() {
 function a_devwatch_callback(&$events) {
     //目录的创建、更名、删除操作会触发回调
     //文件的创建，修改，删除操作会触发回调
-    global $dev_regx, $depneds;
+    global $dev_regx, $depends;
 
     static $ignore;
 
@@ -455,6 +458,7 @@ function a_devwatch_callback(&$events) {
 	    if (!( $path = $event["source"] . "/" . $file )
 		|| !is_readable($path)
 		|| !( $info = pathinfo($path) )
+		|| !$info["extension"]
 		|| in_array($info["extension"], $ignore)
 	    ) {
 		continue;
@@ -559,4 +563,17 @@ function a_devwatch_callback(&$events) {
 }
 
 
-a_devwatch_tracker();
+
+function a_devwatch_go() {
+    //关系初始化
+    a_devwatch_init();
+
+    //开始跟踪文件变化
+    a_devwatch_tracker();
+}
+
+
+
+$depends = array();
+
+a_devwatch_go();
