@@ -1,102 +1,18 @@
-@charset "utf-8";
-/* 定义body及靠左靠右浮动的框 */
+/* http://meyerweb.com/eric/tools/css/reset/ 
+ *    v2.0 | 20110126
+ *       License: none (public domain)
+ *       */
 
-body {
-    color: #969696;
-    margin: 0px;
-    font-size: 12px;
-    font-family: Tahoma, Arial, "微软雅黑", "黑体", "宋体";
-    background: #fff;
-}
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
 
-img {
-    border: none;
-    -ms-interpolation-mode: bicubic;
-}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
+body { line-height: 1; }
+ol, ul { list-style: none; }
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; }
+table { border-collapse: collapse; border-spacing: 0; }
 
+/* layout */
 
-.fl {
-    float: left;
-    margin: 0px;
-}
-
-.fr {
-    margin: 0px;
-    float: right;
-}
-
-.f15 {
-    color: #909090;
-    font-size: 15px;
-
-    border: 1px solid #fff;
-}
-
-#body {
-    width: 900px;
-    height: auto;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.border01 {
-}
-
-
-/* 头部 */
-#header {
-    text-align: right;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #a0bedc;
-}
-
-#header a {
-    padding-left: 4px;
-    padding-right: 4px;
-}
-
-#header span {
-    width: 75px;
-    height: 75px;
-    display: inline-block;
-    border: 3px solid white;
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
-/* 容器 */
-#container {
-    padding: 10px;
-
-    text-align: center;
-    margin-top: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
-/* 页脚 */  
-#footer {
-    font: Arial;
-    width: 900px;
-    height: 35px;
-    color: #6f6f6f;
-    margin-top: 20px;
-    margin-bottom: 10px;
-
-    overflow: hidden;
-    border-top:1px #d8d8d8 solid;
-
-    padding-top: 10px;
-    padding-left:5px;
-}
-
-/* 通用的登录框 */
-#minLogin {
-    width: 300px;
-    height: 100px;
-    border: 1px solid #afafaf;
-    margin-left: auto;
-    margin-right: auto;
-}
 

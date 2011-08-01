@@ -1,6 +1,0 @@
-	<div id="header">
-	    <a href="/login.shtml" style="display: none;" id="login">登录</a>
-	    <a href="/login.shtml" style="display: none;" id="exit">安全退出</a>
-	    <a href="/login.shtml" style="display: none;" id="return">返回</a>
-	</div>
-

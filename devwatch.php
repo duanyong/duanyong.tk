@@ -142,6 +142,8 @@ function a_devwatch_search_relation($file, &$depends) {
     }
 
     @closedir($dir);
+
+    var_dump($depends);
 }
 
 
@@ -311,6 +313,7 @@ function a_watch_general_tpl($tpl) {
     ) {
 	return false;
     }
+    var_dump($name);
 
     // {*devwatch: js*}
     // {*devwatch: css*}
@@ -340,6 +343,7 @@ function a_watch_general_tpl($tpl) {
 	//tpl报错，不进行文件写入
 	return false;
     }
+    var_dump($content);
 
     try {
 	//写入/var/www/duanyong/js/xxxx.js
@@ -464,6 +468,7 @@ function a_devwatch_callback(&$events) {
 		continue;
 	    }
 
+
 	    //将更改的文件累积起来，对单个文件处理完毕后重新分析其信赖关系
 	    $changes[]	= $path;
 	    //获取文件内容，如有{*devwatch: xxxx*}指令需要重新生成文件
@@ -534,9 +539,10 @@ function a_devwatch_callback(&$events) {
 	    //
 	    $dones = array();
 
-	    if (isset($depends[$file])) {
+	    if (isset($depends[$path])) {
 		//依赖关系是一张二维表，所有只要两次循环就可以拿到全部的依赖关系
-		$dps = $depends[$file];
+		$dps = $depends[$path];
+		var_dump($dps);
 
 		foreach ($dps as $d) {
 		    if (!is_readable($d)

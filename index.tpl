@@ -6,12 +6,13 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <meta content="您手上的心情布袋" name="description"/> 
 
-    {css name="layout"}
+    {css name="base"}
     {js name="layout, index"}
 </head>
 <body>
     {* 导入header *}
     {include file="header.tpl"}
+
 
 
     {* 导入footer*}
