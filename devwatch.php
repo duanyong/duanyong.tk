@@ -142,8 +142,6 @@ function a_devwatch_search_relation($file, &$depends) {
     }
 
     @closedir($dir);
-
-    var_dump($depends);
 }
 
 
@@ -313,7 +311,6 @@ function a_watch_general_tpl($tpl) {
     ) {
 	return false;
     }
-    var_dump($name);
 
     // {*devwatch: js*}
     // {*devwatch: css*}
@@ -343,7 +340,6 @@ function a_watch_general_tpl($tpl) {
 	//tpl报错，不进行文件写入
 	return false;
     }
-    var_dump($content);
 
     try {
 	//写入/var/www/duanyong/js/xxxx.js
@@ -542,14 +538,13 @@ function a_devwatch_callback(&$events) {
 	    if (isset($depends[$path])) {
 		//依赖关系是一张二维表，所有只要两次循环就可以拿到全部的依赖关系
 		$dps = $depends[$path];
-		var_dump($dps);
 
-		foreach ($dps as $d) {
+		foreach ($dps as $k => $d) {
 		    if (!is_readable($d)
 			|| !( $content = file_get_contents($d) )
 
 			//已做过处理
-			|| $dones[$d]
+			|| isset($dones[$d])
 		    ) {
 			continue;
 		    }
@@ -558,11 +553,12 @@ function a_devwatch_callback(&$events) {
 		    //有{*devwatch: xxxx*}指令，重新生成
 		    if (preg_match($dev_regx, $content, $match)) {
 			a_watch_general_tpl($d);
+
+			$dones[$path]  = true;
 		    }
 		}
 
 		$dps = array_unique($dps);
-
 	    }
 	}
     }
@@ -581,5 +577,7 @@ function a_devwatch_go() {
 
 
 $depends = array();
+
+a_log_off();
 
 a_devwatch_go();
