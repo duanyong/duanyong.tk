@@ -1,24 +1,21 @@
-<div id="header" class="md">
-    <div id="warp">
-    {*Logo *}
-	<div><a href="/"><img alt="aiyuji.com" title="aiyuji.com" src="/img/logo.png" /></a></div>
+<div id="header">
+    <div id="nav" class="md">
+	{* logo *}
+	<a class="left" href="/"><img alt="aiyuji.com" title="aiyuji.com" src="/img/logo.png" /></a>
 
-	<div>
-	    {* 导航图标 *}
-	    <div>
-		<a href="/home">首页</a>
-		<a href="/photo">相片</a>
-		<a href="/recording">日记</a>
-		<a href="/circles">圈子</a>
-	    </div>
-
-	    {* 搜索小框 *}
-	    <div></div>
-
-	    {* 用户登陆与登出 *}
+	{* 导航图标 *}
+	<div class="right">
+	    <ul id="nav-box">
+		<li><a href="/picture">图片</a></li>
+		<li><a href="/diary">日记</a></li>
+		<li><a href="/sound">语音</a></li>
+		<li><a href="/login">登录</a></li>
+		<li><a href="/reg">注册</a></li>
+	    </ul>
 	</div>
     </div>
 </div>
+
 
 
 <div id="content" class="md">

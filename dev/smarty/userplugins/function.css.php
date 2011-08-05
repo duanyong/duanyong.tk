@@ -22,5 +22,5 @@ function smarty_function_css($params, $template) {
 	unset($css);
     }
 
-    return implode("", $csses);
+    return implode('\n', $csses);
 }

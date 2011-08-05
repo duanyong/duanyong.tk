@@ -13,22 +13,13 @@
     {* 导入header *}
     {include file="header.tpl"}
 
+
     {* 宣传图 *}
     <div id="bom">
 	<img src="/img/bom.jpg" />
     </div>
 
-    {* 登陆区域 *}
-    <div id="login">
-	<form>
-	    <input type="text" name="" class="input w150" />
-	    <input type="password" name="" class="input w150" />
-	    <input type="submit" value="登录" class="input" />
-	</form>
-
-	<a>注册</a>
-    </div>
-
+    {**}
 
     {* 导入footer*}
     {include file="footer.tpl"}
