@@ -34,6 +34,16 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+function a_bad_username($username, &$var=false) {
+    //是为手机号码或者邮件地址正确
+    if ($var !== false) {
+	$var = $username;
+    }
+    
+    return false;
+}
+
+
 function a_bad_id($id, &$var=false) {
     if(!is_numeric($id)
 	|| ( $id = intval($id) ) <= 0

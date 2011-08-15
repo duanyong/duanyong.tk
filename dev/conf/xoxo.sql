@@ -26,17 +26,16 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `uid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `mobile` char(11) NOT NULL DEFAULT '' COMMENT '用户手机',
+  `username` char(64) NOT NULL DEFAULT '' COMMENT '用户手机',
   `password` char(32) NOT NULL DEFAULT '' COMMENT '用户密码',
   `name` varchar(32) NOT NULL DEFAULT '' COMMENT '用户姓名',
   `sex` boolean NOT NULL DEFAULT false COMMENT '用户性别',
-  `email` varchar(128) NOT NULL DEFAULT '' COMMENT '登录邮箱',
   `regip` varchar(32) NOT NULL DEFAULT '' COMMENT '注册IP',
   `count_diary` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '用户发的日记总数',
   `ctime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户注册时间',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '用户当前状态',
   PRIMARY KEY (`uid`),
-  KEY `email_index` (`email`)
+  KEY `username_index` (`username`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 

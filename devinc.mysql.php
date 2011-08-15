@@ -50,7 +50,7 @@ function a_db($table, &$v1, &$v2=false) {
 	// 按主键返回数据
 
 	if (a_bad_id($v1)) {
-	    return l_log();
+	    return a_log();
 	}
 
 	$ret = a_db_select($table, $v1);

@@ -7,11 +7,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-function a_user_by_mobile($mobile) {
-    if (a_bad_mobile($mobile)) {
+function a_user_by_username($username) {
+    if (a_bad_string($username)) {
 	return a_log();
     }
 
-    return a_db_query("select * from `user` where `mobile`='{$mobile}' limit 1;");
+    return a_db_query("select * from `user` where `username`='{$username}' limit 1;");
 }
 

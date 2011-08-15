@@ -3,7 +3,6 @@
  * 提供用户注册的程序
  *
  *  /db/devdb.user.php
- *  /user/devapi.user.php
  *
  * */
 
@@ -12,68 +11,45 @@ require_once(ROOT_DIR . "/db/devdb.user.php");
 require_once(ROOT_DIR . "/user/devapi.user.php");
 
 
-// 登录逻辑的必要值检查（邮箱、密码）
-if (a_bad_ajax()) {
-    //非正常提交，直接返回403
-
-    return false;
-}
+$arg	= array();
+$user	= array();
 
 
-
-$user = array(
-    "sex"	=> "",
-    "mobile"	=> "",
-    "password"	=> "",
-);
-
-
-$arg = array();
-
-
-if (a_bad_mobile($_POST["mobile"], $user["mobile"])) {
-    $arg["err"]["mobile"] = "邮箱做为登录账号，必须填写。";
+if (a_bad_username($_POST["username"], $user["username"])) {
+    exit(a_action_page("请填写您的手机或者邮箱做为登录账号"));
 }
 
 if (a_bad_string($_POST["password"], $user["password"])) {
-    $arg["err"]["password"] = "密码是保护账号的基本手段，必须填写。";
+    exit(a_action_page("请填写你的登录密码"));
 }
 
-if (a_bad_0id($_POST["sex"], $user["sex"])) {
-    $arg["err"]["sex"] = "请选择性别。";
-}
+
 
 
 // 取值完毕
 
 
 //检查数据库中的值是否存在
-if (( $data = a_user_by_mobile($user["mobile"]) )
-) {
-    // 数据库错误
-    $arg["err"]["mobile"] = "您提供的手机号码有问题，请联系管理员。";
+if (a_user_by_username($user["username"])) {
+    exit(a_action_page("对不起，此账号已被注册，请重新输入新的账号"));
 }
 
 
-if (isset($arg["err"])) {
-    // 有错误发生，返回错误
+$user["regip"]	    = a_action_ip();
+$user["ctime"]	    = a_action_time();
+$user["password"]   = md5($user["password"]);
 
-    exit(a_action_done());
+
+// 插入数据
+if (false === a_db("user:insert", $user)) {
+    //注册失败
+    exit(a_server_error());
 }
 
-$user["password"] = md5($user["password"]);
-
-if (false === (a_user_reg($user) )) {
-    //数据存储发生错误，提示用户
-
-    //报告错误
-    $arg["db"] = "对不起，服务器和她女朋友吵架了，能否帮助安抚下，谢啦。";
-
-    exit(a_action_done());
-}
 
 
 //一切正常，可以注册
 $arg["err"] = 0;
 
-exit(a_action_done());
+
+exit(a_action_redirect("/index.shtml", "注册成功，稍后回到首页", 1));

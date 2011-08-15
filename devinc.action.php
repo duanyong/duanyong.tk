@@ -22,7 +22,7 @@ function a_action_done() {
     global $_SERVER;
 
     //先做ajax判断，如果是直接返回json_encode($arg);
-    if (!a_bad_ajax()) {
+    if (!a_action_ajax()) {
 	//直接返回json格式
 
 	return json_encode($arg);
@@ -54,6 +54,13 @@ function a_action_done() {
 
     //交给smarty去渲染出页面
     a_smarty($tpl, $arg);
+}
+
+
+function a_action_page($msg=false) {
+    global $arg;
+
+
 }
 
 
@@ -117,4 +124,8 @@ function a_action_user() {
     }
 
     return true;
+}
+
+
+function a_server_error($msg=false, $back=false) {
 }

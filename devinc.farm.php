@@ -22,8 +22,8 @@ global $config;
 
 $config = array();
 
-$config["username"] = "duanyong";
-$config["password"] = "~!@#98$%^<>MNse].baW3xd&%_=j_BVCa";
+$config["username"] = "root";
+$config["password"] = "a";
 $config["database"] = "xoxo";
 $config["farm"]	    = array(
     "127.0.0.1",

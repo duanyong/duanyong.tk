@@ -13,16 +13,14 @@
     {* 导入header *}
     {include file="header.tpl"}
 
-    <form action="/reg.php" method="post">
-	账号：<input type="text" name="username" value="" /><br/>
-	密码：<input type="password" name="password" value="" /><br/>
-	姓名：<input type="text" name="name" /><br />
-	性别：<input type="radio" name="sex" value="fale" />男<input type="radio" name="sex" value="male" />女<br />
 
-	<input type="submit" value="提交" /><br/>
+    {* 宣传图 *}
+    <form id="login_form" action="/login.php" method="post">
+	账号：<input type="text" name="username" /><br />
+	密码：<input type="password" name="password" /><br />
+	记住密码：<input type="checkbox" name="expt" value="on" /><br />
+	<input type="submit" value="提交 " />
     </form>
-
-
 
     {* 导入footer*}
     {include file="footer.tpl"}

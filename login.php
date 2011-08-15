@@ -11,61 +11,64 @@ require_once(ROOT_DIR . "/db/devdb.user.php");
 require_once(ROOT_DIR . "/user/devapi.user.php");
 
 
-// 登录逻辑的必要值检查（邮箱、密码）
-if (a_bad_ajax()) {
-    //非正常提交，直接返回403
+$arg	= array();
 
-    return false;
+$user	= array();
+
+
+if (a_bad_username($_POST["username"], $username)) {
+    //没有输入用户名
+    exit(a_action_page("请输入登录账号"));
 }
 
-$arg = array();
 
-$user = array(
-    "rember"	=> "",
-    "mobile"	=> "",
-    "password"	=> "",
-);
-
-
-
-
-if (a_bad_mobile($_POST["mobile"], $user["mobile"])) {
-    $arg["err"]["mobile"] = "邮箱做为登录账号，必须填写。";
+if (a_bad_string($_POST["password"], $password)) {
+    //没有输入密码
+    exit(a_action_page("请输入登录密码"));
 }
 
-if (a_bad_string($_POST["password"], $user["password"])) {
-    $arg["err"]["password"] = "密码是保护账号的基本手段，必须填写。";
-}
-
-if (isset($_POST["rember"])) {
-    $user["rember"] = $_POST["rember"] === "1" ? 1 : 0;
-}
 
 
 // 取值完毕
 
 
+
 //检查数据库中的值是否存在
-if (!( $data = a_user_by_mobile($user["mobile"]) )) {
+if (false === ( $user = a_user_by_username($username) )) {
     // 数据库错误
-    $arg["err"]["mobile"] = "您提供的手机号码有问题，请联系管理员。";
+    exit(a_server_error());
 }
 
 
-if (isset($arg["err"])) {
-    // 有错误发生，返回错误
-
-    exit(a_action_done());
+if ($user["password"] !== md5($password)) {
+    //密码错误
+    exit(a_action_page("用户名或者密码错误，请重新输入"));
 }
 
 
-if (md5($user["password"]) !== $data["password"]) {
-    $arg["err"] = "输入的密码有误，请重新输入";
-}
-
-
-//一切正常，可以注册
+//密码和用户正确，
 $arg["err"] = 0;
 
 
-exit(a_action_redirect("/index.shtml", "登陆成功，稍后将会转到首页。", 3));
+
+//设置cookie
+if (empty($_POST["rem"])) {
+    $exp = 0;
+
+} else {
+    $exp = 30;
+}
+
+
+$exp = $exp * 86400 * 30 + time();
+
+setCookie("uid", $user["uid"], $exp);
+setCookie("key", $user["password"], $exp);
+
+
+
+//更新登录信息
+a_user_update_login($user);
+
+
+exit(a_action_redirect("/me", "登陆成功，稍后将会转到首页。", 3));

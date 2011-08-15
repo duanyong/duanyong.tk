@@ -42,7 +42,7 @@ require_once(ROOT_DIR . '/devinc.smarty.php');
 require_once(ROOT_DIR . '/devinc.action.php');
 
 //数据库文件
-require_once(ROOT_DIR . '/devdb.mysql.php');
+require_once(ROOT_DIR . '/devinc.mysql.php');
 
 
 //smarty模板
