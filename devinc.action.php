@@ -4,64 +4,126 @@
 //	页面操作相关的函数
 //
 //
-//	a_action_done($tpl)
-//	    接收smarty模板，将其渲染出来
+//	a_action_msg($msg)
+//	    显示提示的信息，然后返回页面
 //
-//	a_action_is_get()
-//	    返回true表示是GET请求
+//	a_action_page($tpl, $url, $stay)
+//	    显示提示的信息，然后返回页面
 //
-//	a_action_is_post()
-//	    返回true表示是POST请求
+//	a_action_redirect($msg)
+//	    显示提示的信息，然后返回页面
+//
+//	a_action_get()
+//	    返回get请求提交的数据
+//
+//	a_action_post()
+//	    返回post请求提交的数据
+//
+//	a_action_ajax()
+//	    返回ajax请求提交的数据
 //
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 
-function a_action_done() {
+//如果为ajax提交，直接返回json数据，否则返回页面
+function a_action_page($tpl=false, $url=false, $stay=false) {
     global $arg;
-    global $_SERVER;
 
-    //先做ajax判断，如果是直接返回json_encode($arg);
-    if (!a_action_ajax()) {
-	//直接返回json格式
-
-	return json_encode($arg);
+    if (a_action_ajax()) {
+	//ajax提交
+	return json_encode(array(
+	    "url"   => $url,
+	    "err"   => $arg["err"],
+	    "msg"   => $arg["msg"],
+	));
     }
 
 
-    if (a_bad_string($_SERVER["REQUEST_URI"], $tpl)) {
+    if ($tpl === false) {
+	global $_SERVER;
+
+	$tpl = $_SERVER["REQUEST_URI"];
+    }
+
+    if (a_bad_string($tpl)) {
 	return a_log();
     }
     
-    //从用户的请求URL中得到渲染那个tpl文件
-    $tpl = str_replace(".php", "", $tpl);
-    $tpl .= ".tpl";
 
+    //从用户的请求URL中得到渲染那个tpl文件
+    $tpl = str_replace(array(".php", ".tpl"), "", $tpl);
+    $tpl .= ".tpl";
 
     //取得tpl的绝对路径
     if (strpos($tpl, ROOT_DIR) !== 0) {
 	//构建文件的的绝对路径后给smarty渲染数据
-
-	$tpl = ROOT_DIR . $tpl;
+	$tpl = ROOT_DIR . '/' . $tpl;
     }
-
 
     if (a_bad_file($tpl)) {
 	//文件不可读
-
 	return a_log();
     }
+
+    if (isset($url)) {
+	$arg["url"] = $url;
+    }
+
 
     //交给smarty去渲染出页面
     a_smarty($tpl, $arg);
 }
 
 
-function a_action_page($msg=false) {
+function a_action_msg($msg=false) {
+    if (a_bad_string($msg)) {
+	//参数有问题
+	return a_log();
+    }
+
     global $arg;
 
+    $arg["msg"] = $msg;
 
+    if ($err) {
+	$arg["err"] = $err;
+    }
+
+    //得到referer，好让用户返回
+    if (a_bad_string($_SERVER["HTTP_REFERER"], $referer)) {
+	//是否以站内连接
+	$referer = "";
+    }
+
+
+    //如果设置err值，那么返回正确的页面，否则返回error.tpl页面
+    return a_action_page(!isset($arg["err"]) || $arg["err"] !== 0 ? "error.tpl" : false, $referer);
 }
+
+
+//页面跳转
+function a_action_redirect($url="/", $msg=false, $delay=false) {
+    if (a_bad_string($url)) {
+	return a_log();
+    }
+
+    header("Location: {$url}");
+
+    return "";
+}
+
+
+//服务器发生异常
+function a_server_error() {
+    global $arg;
+
+    $arg["err"] = "servererror";
+    $arg["msg"] = "对不起，服务器出现异常，给您带来不便请谅解。请稍后再试。";
+
+    return a_action_page();
+}
+
 
 
 function a_action_time() {
@@ -78,41 +140,14 @@ function a_action_ip() {
 }
 
 
-
-function a_action_redirect($url="/", $msg="", $delay=3) {
-    global $arg;
-
-    $arg["delay"]	= $delay;
-    $arg["errmsg"]	= $msg;
-    $arg["redirection"] = $url;
-
-
-    // 准备页面跳转
-    header("Status: 200");
-    header("Referer: {$url}");
-
-
-    a_action_done();
-}
-
-
 //TODO 
-//查看浏览器cookie中取得uid再和cookie中password与数据库中的密码是否匹配
+//查看浏览器cookie中取得uid，不检查是否与密码匹配
 function a_action_user() {
-    // 从浏览器的Cookie中取
-    return array(
-	"uid"	    => 1,
-	"mobile"    => "15821231614",
-    );
-
     // 可能没有数据
     if (a_bad_table_id("user", $uid, $user) ) {
 
 	return false;
     }
-
-    // 用户是否被禁言
-    return $user["status"] != 44;
 
     //只有._-及非数字开头的英文字母，数字符合要求
     if (a_bad_string($username)) {
@@ -127,5 +162,7 @@ function a_action_user() {
 }
 
 
-function a_server_error($msg=false, $back=false) {
+//返回ajax请求提交的数据
+function a_action_ajax() {
+    return false;
 }

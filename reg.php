@@ -6,9 +6,10 @@
  *
  * */
 
-require_once(__DIR__ . "/devinc.all.php");
-require_once(ROOT_DIR . "/db/devdb.user.php");
-require_once(ROOT_DIR . "/user/devapi.user.php");
+require_once __DIR__ . "/devinc.all.php";
+require_once ROOT_DIR . "/db/devdb.user.php";
+require_once ROOT_DIR . "/user/devapi.user.php";
+
 
 
 $arg	= array();
@@ -16,11 +17,13 @@ $user	= array();
 
 
 if (a_bad_username($_POST["username"], $user["username"])) {
-    exit(a_action_page("请填写您的手机或者邮箱做为登录账号"));
+    //没有填写账户
+    exit(a_action_msg("请填写您的手机或者邮箱做为登录账号"));
 }
 
 if (a_bad_string($_POST["password"], $user["password"])) {
-    exit(a_action_page("请填写你的登录密码"));
+    //没有填写密码
+    exit(a_action_msg("请填写你的登录密码"));
 }
 
 
@@ -31,7 +34,7 @@ if (a_bad_string($_POST["password"], $user["password"])) {
 
 //检查数据库中的值是否存在
 if (a_user_by_username($user["username"])) {
-    exit(a_action_page("对不起，此账号已被注册，请重新输入新的账号"));
+    exit(a_action_msg("对不起，此账号已被注册，请重新输入新的账号"));
 }
 
 

@@ -12,10 +12,18 @@
 
 //更新用户的登录信息
 function a_user_update_login(&$user) {
-    if (f_bad_id($user["uid"], $uid)) {
+    if (a_bad_id($user["uid"], $uid)) {
 	return a_log();
     }
 
 
 }
+
+
+//返回cookie中的用户名与密码匹配的用户，没有返回false
+function a_user_login() {
+
+}
+
+
 

@@ -18,13 +18,13 @@ $user	= array();
 
 if (a_bad_username($_POST["username"], $username)) {
     //没有输入用户名
-    exit(a_action_page("请输入登录账号"));
+    exit(a_action_msg("请输入登录账号"));
 }
 
 
 if (a_bad_string($_POST["password"], $password)) {
     //没有输入密码
-    exit(a_action_page("请输入登录密码"));
+    exit(a_action_msg("请输入登录密码"));
 }
 
 
@@ -42,12 +42,8 @@ if (false === ( $user = a_user_by_username($username) )) {
 
 if ($user["password"] !== md5($password)) {
     //密码错误
-    exit(a_action_page("用户名或者密码错误，请重新输入"));
+    exit(a_action_msg("用户名或者密码错误，请重新输入"));
 }
-
-
-//密码和用户正确，
-$arg["err"] = 0;
 
 
 
@@ -71,4 +67,7 @@ setCookie("key", $user["password"], $exp);
 a_user_update_login($user);
 
 
-exit(a_action_redirect("/me", "登陆成功，稍后将会转到首页。", 3));
+//密码和用户正确
+$arg["err"] = 0;
+
+exit(a_action_redirect("/home"));

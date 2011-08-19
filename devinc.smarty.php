@@ -18,7 +18,7 @@ function a_smarty_object() {
     $smarty = new Smarty();
 
     $smarty->setCacheDir(TMP_DIR);
-    $smarty->setCompileDir(TMP_DIR . SEPARATOR . ".templates_c");
+    $smarty->setCompileDir(TMP_DIR . "/.templates_c");
     $smarty->setTemplateDir(ROOT_DIR);
     $smarty->addPluginsDir(ROOT_DIR . "/dev/smarty/userplugins");
 
@@ -35,7 +35,7 @@ function a_smarty($tpl, &$assign=false) {
 
     $smarty = a_smarty_object();
 
-    if (a_bad_array($assign)) {
+    if (!empty($assign)) {
 	$smarty->assign($assign);
     }
 

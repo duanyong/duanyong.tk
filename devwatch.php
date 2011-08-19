@@ -369,12 +369,20 @@ function a_devwatch_exhibit_tpl($dir) {
 	$ignore_dir[] = ROOT_DIR . "/dev";
     }
 
+    $ext = null;
+
     //取得所有的tpl文件
-    foreach (glob($dir . "/*.tpl") as $file) {
+    foreach (glob($dir . "/*") as $file) {
+	if (!( $ext = pathinfo($file, PATHINFO_EXTENSION) )
+	    || in_array($ext, array("php", "html", "html", "gif", "png", "swp"))
+	) {
+	    continue;
+	}
+
 	if (is_dir($file)
 	    && !in_array($file, $ignore_dir)
 	) {
-	    $ret = array_merge($ret, a_devwatch_depend_tpl($file));
+	    $ret = array_merge($ret, a_devwatch_exhibit_tpl($file));
 
 	} else {
 	    //非忽略的文件类型
@@ -412,10 +420,12 @@ function a_devwatch_tracker() {
     $dirs = a_devwatch_exhibit_directory(ROOT_DIR);
 
     //排除不必监视的目录，如dev/img等
-    static $ignore = array();
+    static $ignore;;
 
-    $ignores[] = ROOT_DIR . "/img";
-    $ignores[] = ROOT_DIR . "/dev";
+    if (!$ignore) {
+	$ignores[] = ROOT_DIR . "/img";
+	$ignores[] = ROOT_DIR . "/dev";
+    }
 
 
     a_tracker_add($dirs, "a_devwatch_callback");
@@ -463,7 +473,6 @@ function a_devwatch_callback(&$events) {
 	    ) {
 		continue;
 	    }
-
 
 	    //将更改的文件累积起来，对单个文件处理完毕后重新分析其信赖关系
 	    $changes[]	= $path;
