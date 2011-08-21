@@ -58,7 +58,7 @@ function a_action_page($tpl=false, $url=false, $stay=false) {
     //取得tpl的绝对路径
     if (strpos($tpl, ROOT_DIR) !== 0) {
 	//构建文件的的绝对路径后给smarty渲染数据
-	$tpl = ROOT_DIR . '/' . $tpl;
+	$tpl = ROOT_DIR . ( strpos($tpl, '/') === 0 ? '' : '/' ) .  $tpl;
     }
 
     if (a_bad_file($tpl)) {
@@ -96,9 +96,17 @@ function a_action_msg($msg=false) {
 	$referer = "";
     }
 
+    if (!isset($arg['err'])
+	|| $arg['err'] === 0
+    ) {
+	$tpl = "";
+
+    } else {
+	$tpl = "/error.tpl";
+    }
 
     //如果设置err值，那么返回正确的页面，否则返回error.tpl页面
-    return a_action_page(!isset($arg["err"]) || $arg["err"] !== 0 ? "error.tpl" : false, $referer);
+    return a_action_page($tpl, $referer);
 }
 
 
@@ -121,7 +129,7 @@ function a_server_error() {
     $arg["err"] = "servererror";
     $arg["msg"] = "对不起，服务器出现异常，给您带来不便请谅解。请稍后再试。";
 
-    return a_action_page();
+    return a_action_page("/error.tpl");
 }
 
 
