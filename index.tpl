@@ -13,13 +13,10 @@
     {* 导入header *}
     {include file="header.tpl"}
 
-
     {* 宣传图 *}
     <div id="bom">
 	<img src="/img/bom.jpg" />
     </div>
-
-    {**}
 
     {* 导入footer*}
     {include file="footer.tpl"}

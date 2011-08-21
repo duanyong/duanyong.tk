@@ -9,7 +9,7 @@
 		<li><a href="/picture">图片</a></li>
 		<li><a href="/diary">日记</a></li>
 		<li><a href="/sound">语音</a></li>
-		<li><a href="/login">登录</a></li>
+		<li><a href="/login.html">登录</a></li>
 		<li><a href="/reg">注册</a></li>
 	    </ul>
 	</div>

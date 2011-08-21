@@ -13,10 +13,7 @@ require_once(ROOT_DIR . "/user/devapi.user.php");
 
 $arg	= array();
 
-$user	= array();
-
-
-if (a_bad_username($_POST["username"], $username)) {
+if (a_bad_string($_POST["username"], $username)) {
     //没有输入用户名
     exit(a_action_msg("请输入登录账号"));
 }

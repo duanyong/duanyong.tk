@@ -70,13 +70,12 @@ function a_action_page($tpl=false, $url=false, $stay=false) {
 	$arg["url"] = $url;
     }
 
-
     //交给smarty去渲染出页面
     a_smarty($tpl, $arg);
 }
 
 
-function a_action_msg($msg=false) {
+function a_action_msg($msg=false, $tpl=false) {
     if (a_bad_string($msg)) {
 	//参数有问题
 	return a_log();
@@ -86,24 +85,16 @@ function a_action_msg($msg=false) {
 
     $arg["msg"] = $msg;
 
-    if ($err) {
-	$arg["err"] = $err;
-    }
-
     //得到referer，好让用户返回
     if (a_bad_string($_SERVER["HTTP_REFERER"], $referer)) {
 	//是否以站内连接
 	$referer = "";
     }
 
-    if (!isset($arg['err'])
-	|| $arg['err'] === 0
-    ) {
-	$tpl = "";
-
-    } else {
+    if ($tpl === false) {
 	$tpl = "/error.tpl";
     }
+
 
     //如果设置err值，那么返回正确的页面，否则返回error.tpl页面
     return a_action_page($tpl, $referer);
