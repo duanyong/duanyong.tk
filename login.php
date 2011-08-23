@@ -37,7 +37,9 @@ if (false === ( $user = a_user_by_username($username) )) {
 }
 
 
-if ($user["password"] !== md5($password)) {
+if (empty($user)
+    || $user["password"] !== md5($password)
+) {
     //密码错误
     exit(a_action_msg("用户名或者密码错误，请重新输入"));
 }
@@ -49,11 +51,9 @@ if (empty($_POST["rem"])) {
     $exp = 0;
 
 } else {
-    $exp = 30;
+    $exp = 86400 * 30 + time();
 }
 
-
-$exp = $exp * 86400 * 30 + time();
 
 setCookie("uid", $user["uid"], $exp);
 setCookie("key", $user["password"], $exp);

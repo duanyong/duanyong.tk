@@ -40,6 +40,23 @@ CREATE TABLE `user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
+DROP TABLE IF EXISTS `user_secure`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_secure` (
+  `usid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `uid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户外键',
+  `reset` char(64) NOT NULL DEFAULT '' COMMENT '重置密码的方式。可以是手机也可以是邮箱地址',
+  `ctime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '绑定时间',
+  `log` varchar(10240) NOT NULL DEFAULT '' COMMENT '重置密码日志',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '用户安全信息的当前状态',
+  PRIMARY KEY (`usid`),
+  KEY `uid_index` (`uid`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户安全表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+
 DROP TABLE IF EXISTS `diary`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

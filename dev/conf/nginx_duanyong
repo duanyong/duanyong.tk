@@ -57,7 +57,7 @@ server {
     # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
     location ~ \.php$ {
         include         /var/www/duanyong/dev/conf/fastcgi_params;
-        fastcgi_pass    127.0.0.1:9000;
+        fastcgi_pass    unix:/tmp/php.socket;
         fastcgi_index   index.php;
     }
 }

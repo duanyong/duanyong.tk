@@ -167,6 +167,16 @@ function a_bad_mobile($mobile, &$var=false) {
 	return true;
     }
 
+    static $regx;
+
+    if (!$regx) {
+	$regx = "/^[13|15]\d{9}$/";
+    }
+
+    if (!preg_match($regx, $mobile)) {
+	return true;
+    }
+
     if ($var !== false) {
 	$var = $mobile;
     }
