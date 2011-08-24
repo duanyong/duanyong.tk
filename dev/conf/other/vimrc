@@ -17,7 +17,7 @@ function s:basic_config()
 	set wildmenu
 	set wildmode=list:longest
 
-	set hlsearch
+	" set hlsearch  " 不高亮搜索的条目
 	set incsearch
 	set noignorecase
 
