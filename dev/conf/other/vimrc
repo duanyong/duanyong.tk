@@ -1,88 +1,108 @@
-" 不要使用vi的键盘模式，而是vim自己的
-set nocompatible
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Config Basics
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" 去掉输入错误的提示声音
-set noeb
+function s:basic_config()
+    " 侦测文件类型载入对应的语法及缩进
+    syntax on
+    filetype on
+    filetype plugin on
+    filetype indent on
 
+    colorscheme default
 
-" 自动缩进
-set autoindent
-set cindent
-set smartindent
+	set nocompatible
+	set number
+	set ruler
+	set wildmenu
+	set wildmode=list:longest
 
-" 统一缩进为4
-set softtabstop=4
-set shiftwidth=4
+	set hlsearch
+	set incsearch
+	set noignorecase
 
-" 显示行号
-set number
+    set nowrap
+	set linebreak
+	set nobackup
+	set showmatch
 
-" 历史记录数
-set history=1000
+	set smartindent
+	set autoindent
+	set expandtab	    "replace tab with space
+	set smarttab	    "easy when ou use backspace
+	set tabstop=4
+	set shiftwidth=4
+	set numberwidth=4
+	set backspace=2
 
+	set fileencoding=utf-8
+	set fileencodings=utf-8,bgk
+	set fileformat=unix
+	set fileformats=unix,dos,mac
 
-" 搜索到文件的开始和结尾时不再继续搜索
-set nowrapscan
-
-"搜索忽略大小写
-set ignorecase
-
-"搜索逐字符高亮
-set hlsearch
-set incsearch
-
-
-"编码设置
-set enc=utf-8
-set fencs=utf-8,ucs-bom,shift-jis,gb18030,gbk,gb2312,cp936
-
-
-"语言设置
-set langmenu=zh_CN.UTF-8
-set helplang=cn
-
-" 高亮显示匹配的括号
-set showmatch
-
-" 匹配括号高亮的时间（单位是十分之一秒）
-set matchtime=5
-
-" 设置文件的目录为当前目录
-set autochdir
+    "ctrl + o 标签打开文件
+    nmap <C-o> :tabnew 
 
 
-
-" 侦测文件类型载入对应的语法及缩进
-syntax on
-filetype on
-filetype plugin on
-filetype indent on
-
-
-" ////////////////////////////////////////////////////////////////////////////////
-" 快键键
-
-
-" 按f5注释代码 F6取消注释
-nmap <F5> 0i//<Esc><CR>
-nmap <F6> 02x<Esc><CR>
-
-
-" Ctrl + o 标签打开文件
-nmap <C-o> :tabnew 
-
-
-" tab和Shift tab要标模式下切换标签
-nmap <Tab> :tabn<CR>
-nmap <S-Tab> :tabp<CR>
-
-
-function Php_init()
-    nmap <C-j> :!php -l %<CR>
-    nmap <C-p> :!php %<CR>
-    nmap <K> :pman $<CR>
+    "tab和Shift tab要标模式下切换标签
+    nmap <Tab> :tabn<CR>
+    nmap <S-Tab> :tabp<CR>
 
 endfunction
 
-call Php_init()
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Config File
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"config function of c file
+function s:filetype_c()
+    nmap <K> :!gcc -Wall % -O /tmp/main<CR>
+endfunction
+
+
+"config function of js file
+function s:filetype_js()
+endfunction
+
+
+"config function of css file
+function s:filetype_css()
+endfunction
+
+
+"config function of php file
+function s:filetype_php()
+    nmap <K> :!pman $<CR>
+    nmap <C-j> :!php -l %<CR>
+    nmap <C-p> :!php %<CR>
+
+endfunction
+
+
+"config function of nginx configure file
+function s:filetype_nginx()
+endfunction
+
+
+
+
+function s:new_file_c()
+endfunction
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Excute Part
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+call s:basic_config()
+
+
+"
+autocmd FileType c call s:filetype_c()
+autocmd FileType js call s:filetype_js()
+autocmd FileType css call s:filetype_css()
+autocmd FileType php call s:filetype_php()
+autocmd FileType nginx call s:filetype_nginx()
+
 
