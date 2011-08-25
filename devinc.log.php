@@ -43,7 +43,7 @@ $log_file   = "/var/log/nginx/duanyong.tk.log";
 $log_on	    = true;
 
 //是否在cli模式下运行
-$log_cli    = php_sapi_name() === "cli";
+$log_is_cli = php_sapi_name() === "cli";
 
 //日志等级
 $log_leves  = array(
@@ -103,16 +103,15 @@ function a_log_on() {
 function a_log_off() {
     global $log_on;
 
-    return $log_on = false;
+    return !( $log_on = false );
 }
 
 
 //追加日志到文件中。如果是cli模式，输出到标准输出
 function a_log_append(&$msg) {
-    global $log_file, $log_cli, $log_on;
+    global $log_file, $log_is_cli, $log_on;
 
-    if ($log_cli) {
-	//TODO:选择标准输出还是错误输出
+    if ($log_is_cli) {
 	fwrite(STDOUT, "\n" . $msg);
     }
 

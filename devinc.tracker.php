@@ -27,9 +27,9 @@
 //
 //		$event = array(
 //		    wd		: 监听的标识（纯数值）
+//		    dir	    : 事件源（自定义属性）
 //		    mask	: 何种事件（IN_MODIFY|IN_DELETE|IN_CREATE）
 //		    name	: 发生变化的文件名
-//		    source	: 事件源（自定义属性）
 //		    cookie	: 未知
 //		    is_file	: true / false
 //		);
@@ -165,7 +165,7 @@ function a_tracker_go() {
 
 
 		//事件源（自定义属性）
-		$event["source"] = $file;
+		$event['dir'] = $file;
 
 
 		if (!isset($es[$callback])) {
@@ -246,11 +246,11 @@ function a_tracker_events_unique(&$events) {
 	    //与队列中的事件对比mask，根据mask的优先级决定是否保留原来的mask值
 	    //删除事件优先级最高，其它事件全部忽略
 	    $ret[$name]["wd"]	    = $e["wd"];
+	    $ret[$name]["dir"]      = $e["dir"];
 	    $ret[$name]["mask"]	    = $e["mask"];
 	    $ret[$name]["delete"]   = $e["mask"] & IN_DELETE;
 	    $ret[$name]["modify"]   = $e["mask"] & IN_MODIFY;
 	    $ret[$name]["create"]   = $e["mask"] & IN_CREATE;
-	    $ret[$name]["source"]   = $e["source"];
 	    $ret[$name]["cookie"]   = $e["cookie"];
 	    $ret[$name]["is_dir"]   = $e["mask"] & IN_ISDIR;
 	}

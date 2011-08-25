@@ -16,10 +16,10 @@
 
     {* 宣传图 *}
     <form id="login_form" action="/login.php" method="post">
-	账号：<input type="text" name="username" /><br />
-	密码：<input type="password" name="password" /><br />
-	记住密码：<input type="checkbox" name="exp" value="on" /><br />
-	<input type="submit" value="提交 " />
+	    账号：<input type="text" name="username" /><br />
+	    密码：<input type="password" name="password" /><br />
+	    记住密码：<input type="checkbox" name="exp" value="on" /><br />
+	    <input type="submit" value="提交 " />
     </form>
 
     {* 导入footer*}
