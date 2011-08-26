@@ -4,8 +4,8 @@
 //
 function smarty_function_css($params, $template) {
     if (empty($params["name"])) {
-	//参数错误，返回空字符串
-	return "";
+        //参数错误，返回空字符串
+        return "";
     }
 
     //外联css
@@ -13,14 +13,14 @@ function smarty_function_css($params, $template) {
     $files  = explode(",", str_replace(" ", "", $params["name"]));
 
     foreach ($files as &$css) {
-	if (is_readable(ROOT_DIR . '/css/' . $css . '.css')) {
-	    //文件可读
-	    $csses[] = '<link rel="stylesheet" type="text/css" href="/css/' . $css  .'.css" media="screen"></link>';
-	}
+        if (is_readable(ROOT_DIR . '/css/' . $css . '.css')) {
+            //文件可读
+            $csses[] = '<link rel="stylesheet" type="text/css" href="/css/' . $css  .'.css" media="screen"></link>';
+        }
 
 
-	unset($css);
+        unset($css);
     }
 
-    return implode('\n', $csses);
+    return implode("\r\n", $csses);
 }

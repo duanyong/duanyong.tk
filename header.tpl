@@ -19,4 +19,3 @@
 
 
 <div id="content" class="md">
-

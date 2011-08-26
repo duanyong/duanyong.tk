@@ -4,22 +4,22 @@
 //
 function smarty_function_js($params, $template) {
     if (empty($params["name"])) {
-	//参数错误，返回空字符串
+        //参数错误，返回空字符串
 
-	return "";
+        return "";
     }
 
     $jses   = array();
     $files  = explode(",", str_replace(" ", "", $params["name"]));
 
     foreach ($files as &$js) {
-	//测试文件是否可读或者存在
-	if (is_readable(ROOT_DIR . '/js/' . $js . '.js')) {
-	    $jses[] = '<script type="text/javascript" src="/js/' . $js . '.js"></script>';
-	}
+        //测试文件是否可读或者存在
+        if (is_readable(ROOT_DIR . '/js/' . $js . '.js')) {
+            $jses[] = '<script type="text/javascript" src="/js/' . $js . '.js"></script>';
+        }
 
-	unset($js);
+        unset($js);
     }
 
-    return implode("\n", $jses);
+    return implode("\r\n", $jses);
 }
