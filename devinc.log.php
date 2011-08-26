@@ -112,13 +112,13 @@ function a_log_append(&$msg) {
     global $log_file, $log_is_cli, $log_on;
 
     if ($log_is_cli) {
-        fwrite(STDOUT, "\n" . $msg);
-    }
+        fwrite(STDOUT, $msg);
 
-    if (!is_writable($log_file)) {
-        fwrite(STDOUT, "  -------> -w:" . $log_file);
+        if (!is_writable($log_file)) {
+            fwrite(STDOUT, '  -------> -w:' . $log_file . "\n");
 
-        return false;
+            return false;
+        }
     }
 
     if ($log_on) {

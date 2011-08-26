@@ -380,7 +380,7 @@ function a_watch_general_tpl($tpl) {
 }
 
 
-//得到项目下所有的js文件（eg. dev.base.js）结尾的文件
+//得到项目下所有的js文件（eg. /var/www/duanyong/js/base.js）结尾的文件
 function a_devwatch_exhibit_js() {
     $ret = array();
 
@@ -396,7 +396,7 @@ function a_devwatch_exhibit_js() {
             $file = substr($file, 0, $pos);
         }
 
-        $ret[] = JS_DIR . $file . '.js';
+        $ret[] = JS_DIR . 'dev.' . $file . '.js';
     }
 
     return array_unique($ret);
@@ -419,7 +419,7 @@ function a_devwatch_exhibit_css() {
             $file = substr($file, 0, $pos);
         }
 
-        $ret[] = CSS_DIR . $file . '.css';
+        $ret[] = CSS_DIR . 'dev.' . $file . '.css';
     }
 
     return array_unique($ret);
