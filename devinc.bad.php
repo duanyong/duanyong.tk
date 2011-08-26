@@ -37,22 +37,22 @@
 function a_bad_username($username, &$var=false) {
     //是为手机号码或者邮件地址正确
     if ($var !== false) {
-	$var = $username;
+        $var = $username;
     }
-    
+
     return false;
 }
 
 
 function a_bad_id($id, &$var=false) {
     if(!is_numeric($id)
-	|| ( $id = intval($id) ) <= 0
+        || ( $id = intval($id) ) <= 0
     ) {
-	return true;
+        return true;
     }
 
     if ($var !== false) {
-	$var = $id;
+        $var = $id;
     }
 
     return false;
@@ -61,13 +61,13 @@ function a_bad_id($id, &$var=false) {
 
 function a_bad_0id($id, &$var=false) {
     if(!is_numeric($id)
-	|| ( $id = intval($id) ) < 0
+        || ( $id = intval($id) ) < 0
     ) {
-	return true;
+        return true;
     }
 
     if ($var !== false) {
-	$var = $id;
+        $var = $id;
     }
 
     return false;
@@ -76,44 +76,44 @@ function a_bad_0id($id, &$var=false) {
 
 function a_bad_string($str, &$var=false) {
     if (!is_string($str)
-	|| $str !== strval($str)
-	|| empty($str)
+        || $str !== strval($str)
+        || empty($str)
     ) {
-	return true;
+        return true;
     }
 
     if ($var !== false) {
-	$var = strval($str);
+        $var = strval($str);
     }
 
-    
+
     return false;
 }
 
 
 function a_bad_0string($str, &$var=false) {
     if (!is_string($str)
-	|| $str !== strval($str)
+        || $str !== strval($str)
     ) {
-	return true;
+        return true;
     }
 
     if ($var !== false) {
-	$var = $str;
+        $var = $str;
     }
 
     return false;
 }
 
-function a_bad_array($arr, &$var=false) {
+function a_bad_array(&$arr, &$var=false) {
     if (!is_array($arr)
-	|| empty($arr)
+        || empty($arr)
     ) {
-	return true;
+        return true;
     }
 
     if ($var !== false) {
-	$var = $arr;
+        $var = $arr;
     }
 
     return false;
@@ -122,20 +122,20 @@ function a_bad_array($arr, &$var=false) {
 
 function a_bad_table_id($table, $id, &$var=false) {
     if (a_bad_string($table)
-	|| a_bad_id($id)
+        || a_bad_id($id)
     ) {
-	return true;
+        return true;
     }
 
     if (false === ( $data = a_db($table, $id))) {
-	// 数据库发生错误，写日志
-	a_warn();
+        // 数据库发生错误，写日志
+        a_warn();
 
-	return true;
+        return true;
     }
 
     if ($var !== false) {
-	$var = $data;
+        $var = $data;
     }
 
     return false;
@@ -149,11 +149,11 @@ function a_bad_file($file) {
 
 function a_bad_email($email, &$var=false) {
     if (false === filter_var($email, FILTER_VALIDATE_EMAIL)) {
-	return true;
+        return true;
     }
 
     if ($var !== false) {
-	$var = $email;
+        $var = $email;
     }
 
     return false;
@@ -162,23 +162,23 @@ function a_bad_email($email, &$var=false) {
 
 function a_bad_mobile($mobile, &$var=false) {
     if (a_bad_id($mobile)
-	|| strlen($mobile) !== 11
+        || strlen($mobile) !== 11
     ) {
-	return true;
+        return true;
     }
 
     static $regx;
 
     if (!$regx) {
-	$regx = "/^[13|15]\d{9}$/";
+        $regx = "/^[13|15]\d{9}$/";
     }
 
     if (!preg_match($regx, $mobile)) {
-	return true;
+        return true;
     }
 
     if ($var !== false) {
-	$var = $mobile;
+        $var = $mobile;
     }
 
     return false;
@@ -208,13 +208,13 @@ function a_bad_ajax() {
 
 function a_bad_user($uid, &$user=false) {
     if (a_bad_id($uid)) {
-	return a_log();
+        return a_log();
     }
 
     //可能没有数据
     if (a_bad_table_id("user", $uid, $user) ) {
 
-	return false;
+        return false;
     }
 
     //用户是否被禁言

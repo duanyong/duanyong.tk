@@ -502,7 +502,7 @@ function a_devwatch_callback(&$events) {
         //目录操作还是文件操作
         if (!$event["is_dir"]) {
             //文件操作
-            a_devwatch_file_onchange($event['dir'] . $file, &$depends, &$done);
+            a_devwatch_file_onchange($event['dir'] . '/' . $file, &$depends, &$done);
 
         } else {
             //目录操作
@@ -526,18 +526,24 @@ function a_devwatch_callback(&$events) {
 //1、是tpl，$file为tpl的/var/www/duanyong/login.tpl（绝对路径）
 //2、是js或css文件，$file为/var/www/duanyong/base.js（自定义路径）
 function a_devwatch_file_onchange($file, &$depends, &$done) {
-    global $dev_regx, $not_tpl;
-
     if (!is_array($depends)
         || !is_array($done)
 
         || !( $info = pathinfo($file) )
-        || in_array($info['extension'], $not_tpl)
+        || !isset($info['extension'])
     ) {
         return a_log($file . ' isn\'t tpl file or cann\'t readable.');
     }
 
+    global $dev_regx, $not_tpl;
+    if (in_array($info['extension'], $not_tpl)) {
+        return false;
+    }
+
+    $do = false;
+
     //文件内容含有{*devwatch: xxxx*}指令需要重新生成文件
+
     $done[] = $file;
 
 
@@ -555,25 +561,50 @@ function a_devwatch_file_onchange($file, &$depends, &$done) {
         // {*devwatch: shtml*}
         a_watch_general_tpl($file);
 
+        $do = true;
+
     } else {
         //余下就是base.js或者layout.css文件需要更新
 
         //根据文件的后缀判断是js还是css文件
         if ($info['extension'] === 'js') {
+            $filename = $info['filename'];
+
+            if (strpos($filename, 'dev.') === 0) {
+                //以dev.base.form.js开头的取base真正的文件名
+                $filename = substr($filename, 4, strpos($filename, '.', 4) - 4);
+            }
+
             //生成dev.base.js文件生成base.js
-            a_watch_general_js($info['filename'] . '.js');
+            if (a_watch_general_js($filename . '.js')) {
+                $do = true;
+            }
 
         } else if ($info['extension'] === 'css') {
+            $filename = $info['filename'];
+
+            if (strpos($filename, 'dev.') === 0) {
+                //以dev.base.form.js开头的取base真正的文件名
+                $filename = substr($filename, 4, strpos($filename, '.', 4) - 4);
+            }
+
             //生成dev.base.css文件生成base.css
-            a_watch_general_css($info['filename'] . '.css');
+            if (a_watch_general_css($filename . '.css')) {
+                $do = true;
+            }
         }
     }
 
-    //处理完 {*devwatch: xxxx*} 和 {js name="base"}、{css name="layout"}
+
+    if ($do === false
+        && !isset($depends[$file])
+    ) {
+        //没处理过也没有依赖关系的文件，直接返回
+        return false;
+    }
 
 
-
-    //查看文件在 XXX 旧的 XXX 依赖关系列表中是否存在 
+    //处理完 {*devwatch: xxxx*} 和 {js name="base"}、{css name="layout"}，查看文件在 XXX 旧的 XXX 依赖关系列表中是否存在 
     //	发生变化的文件在依赖链条上的底端，需要将上面所有的文件都检查，只要遇到{*devwatch: xxxx*}的文件都需要重新生成，
     //	另外要注意有可能依赖链条中有交叉情况（如foot.tpl和header.tpl依赖其它文件），所有在此需要标记已处理过的
     //	文件就不需要再次处理（因为都是同一文件引起变化）。如下图所示：
@@ -593,9 +624,7 @@ function a_devwatch_file_onchange($file, &$depends, &$done) {
     //
     //
     //依赖关系是一张二维表，所有只要两次循环就可以拿到全部的依赖关系
-    if (isset($depends[$file])
-        && !a_bad_array($depends[$file], $dps)
-    ) {
+    if (!a_bad_array($depends[$file], $dps)) {
         foreach ($dps as $f) {
             if (in_array($f, $done)) {
                 continue;
@@ -648,7 +677,7 @@ function a_devwatch_tpl(&$depends) {
     //生成js文件
     $done = array();
 
-    foreach(a_devwatch_exhibit_tpl() as $tpl) {
+    foreach(a_devwatch_exhibit_tpl(ROOT_DIR) as $tpl) {
         if (!in_array($tpl, $done)) {
             //未生成过的tpl文件重新生成
             a_devwatch_file_onchange($tpl, $depends, $done);
@@ -664,7 +693,6 @@ $depends = a_devwatch_init();
 if (is_array($argv)
     && count($argv) > 1
 ) {
-    a_log($depends);
     if (in_array('-all', $argv)) {
         exit(a_devwatch_all($depends));
     }

@@ -28,15 +28,15 @@ function a_smarty_object() {
 
 function a_smarty($tpl, &$assign=false) {
     if (!is_file($tpl)
-	|| !is_readable($tpl)
+        || !is_readable($tpl)
     ) {
-	return a_log();
+        return a_log();
     }
 
     $smarty = a_smarty_object();
 
     if (!empty($assign)) {
-	$smarty->assign($assign);
+        $smarty->assign($assign);
     }
 
     $smarty->display($tpl);
@@ -46,19 +46,19 @@ function a_smarty($tpl, &$assign=false) {
 //返回渲染tpl后的签字串
 function a_smarty_tpl($tpl) {
     if (!is_file($tpl)
-	|| !is_readable($tpl)
+        || !is_readable($tpl)
     ) {
-	return a_log();
+        return a_log();
     }
 
 
     $smarty = a_smarty_object();
 
     try {
-	return  $smarty->fetch ($tpl);
+        return  $smarty->fetch ($tpl);
 
     } catch (SmartyException $se) {
 
-	return a_log($se->getMessage());
+        return a_log($se->getMessage());
     }
 }

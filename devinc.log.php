@@ -60,14 +60,14 @@ $log_leves  = array(
 //E_USER_NOTICE	- 默认。用户生成的 run-time 通知。脚本发现了可能的错误，也有可能在脚本运行正常时发生。
 function a_log($log=false) {
     if ($log === false) {
-	//函数的参数调用
+        //函数的参数调用
 
-	return trigger_error("wrong arg", E_USER_WARNING) && false;
+        return trigger_error("Wrong args", E_USER_WARNING) && false;
     }
 
 
     if (is_array($log)) {
-	$log = var_export($log, true);
+        $log = var_export($log, true);
     }
 
     return trigger_error($log, E_USER_NOTICE) && false;
@@ -112,11 +112,17 @@ function a_log_append(&$msg) {
     global $log_file, $log_is_cli, $log_on;
 
     if ($log_is_cli) {
-	fwrite(STDOUT, "\n" . $msg);
+        fwrite(STDOUT, "\n" . $msg);
+    }
+
+    if (!is_writable($log_file)) {
+        fwrite(STDOUT, "\nCant\'t writeable to " . $log_file);
+
+        return false;
     }
 
     if ($log_on) {
-	error_log("\n" . $msg, 3, $log_file);
+        error_log("\n" . $msg, 3, $log_file);
     }
 }
 
@@ -127,11 +133,11 @@ function a_log_hander(&$leve, &$msg) {
     static $names = null;
 
     if (!$names) {
-	$names = array(
-	    'a_log',
-	    'a_warn',
-	    'a_error',
-	);
+        $names = array(
+            'a_log',
+            'a_warn',
+            'a_error',
+        );
     }
 
 
@@ -141,19 +147,19 @@ function a_log_hander(&$leve, &$msg) {
     static $pdir = null;
 
     if (!$pdir) {
-	if (is_link(ROOT_DIR)) {
-	    //获取真正的系统路径
-	    $pdir = readlink(ROOT_DIR);
+        if (is_link(ROOT_DIR)) {
+            //获取真正的系统路径
+            $pdir = readlink(ROOT_DIR);
 
-	} else {
-	    //出错
-	    $pdir = ROOT_DIR;
-	}
+        } else {
+            //出错
+            $pdir = ROOT_DIR;
+        }
     }
 
     global $log_leves;
     if (!isset($log_leves[$leve])) {
-	return a_log('This [' . $leve . '] unavail log leves');
+        return a_log('This [' . $leve . '] unavail log leves');
     }
 
 
@@ -165,18 +171,18 @@ function a_log_hander(&$leve, &$msg) {
 
     //提取错误信息，从数组中提取函数名为a_log, a_warn, a_error得到文件的名和出错行数进行输出
     foreach ($traces as &$trace) {
-	if (isset($trace["function"])
-	    && ( $name = $trace["function"] )
-	    && in_array($name, $names)
-	) {
-	    //打印track中的语句
+        if (isset($trace["function"])
+            && ( $name = $trace["function"] )
+            && in_array($name, $names)
+        ) {
+            //打印track中的语句
 
-	    $log .= ' [' .  str_replace($pdir, "", $trace['file']) . ':' . $trace['line'] . ']';
+            $log .= ' [' .  str_replace($pdir, "", $trace['file']) . ':' . $trace['line'] . ']';
 
-	    break;
-	}
+            break;
+        }
 
-	unset($track);
+        unset($track);
     }
 
     $log .= ' ' . $msg;
