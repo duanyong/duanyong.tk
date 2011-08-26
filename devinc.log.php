@@ -116,7 +116,7 @@ function a_log_append(&$msg) {
     }
 
     if (!is_writable($log_file)) {
-        fwrite(STDOUT, "\nCant\'t writeable to " . $log_file);
+        fwrite(STDOUT, "  -------> -w:" . $log_file);
 
         return false;
     }

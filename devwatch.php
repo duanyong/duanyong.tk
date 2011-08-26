@@ -536,14 +536,12 @@ function a_devwatch_file_onchange($file, &$depends, &$done) {
     }
 
     global $dev_regx, $not_tpl;
+
     if (in_array($info['extension'], $not_tpl)) {
         return false;
     }
 
-    $do = false;
-
-    //文件内容含有{*devwatch: xxxx*}指令需要重新生成文件
-
+    $do     = false;
     $done[] = $file;
 
 
@@ -568,11 +566,15 @@ function a_devwatch_file_onchange($file, &$depends, &$done) {
 
         //根据文件的后缀判断是js还是css文件
         if ($info['extension'] === 'js') {
-            $filename = $info['filename'];
+            //对于js需要以dev.开头的才更新
+            if (strpos($info['filename'], 'dev.') !== 0) {
+                return false;
+            }
 
-            if (strpos($filename, 'dev.') === 0) {
-                //以dev.base.form.js开头的取base真正的文件名
-                $filename = substr($filename, 4, strpos($filename, '.', 4) - 4);
+            $filename = substr($info['filename'], 4);
+
+            if (strpos($filename, '.') !== false) {
+                $filename = substr($filename, 0, strpos($filename, '.'));
             }
 
             //生成dev.base.js文件生成base.js
@@ -581,11 +583,15 @@ function a_devwatch_file_onchange($file, &$depends, &$done) {
             }
 
         } else if ($info['extension'] === 'css') {
-            $filename = $info['filename'];
+            //对于css需要以dev.开头的才更新
+            if (strpos($info['filename'], 'dev.') !== 0) {
+                return false;
+            }
 
-            if (strpos($filename, 'dev.') === 0) {
-                //以dev.base.form.js开头的取base真正的文件名
-                $filename = substr($filename, 4, strpos($filename, '.', 4) - 4);
+            $filename = substr($info['filename'], 4);
+
+            if (strpos($filename, '.') !== false) {
+                $filename = substr($filename, 0, strpos($filename, '.'));
             }
 
             //生成dev.base.css文件生成base.css
