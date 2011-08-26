@@ -1,0 +1,90 @@
+/*
+ * 布局样式，仅包括头部和尾部样式
+ *
+ * */
+
+/****** 头部 ******/
+#header {
+    background: none repeat scroll 0 0 #0A3443;
+    border-bottom: 3px solid #D2D2D2;
+    border-top: 1px solid #D2D2D2;
+    width: 100%;
+    height: 60px;
+}
+
+.grid {
+    float: left;
+    height: 58px;
+    display: inline;
+    overflow: hidden;
+
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.grid li {
+    float: left;
+    padding-top: 20px;
+}
+
+#nav-part li {
+    margin: 0 10px;
+}
+
+#reg-part li {
+    margin: 0 5px;
+    float: right;
+}
+
+
+/****** 尾部 ******/
+#footer {
+    clear: both;
+    margin-top: 10px;
+}
+
+#lnk-clients {
+    height: 50px;
+    text-align: center;
+}
+
+#lnk-clients a {
+    height: 26px;
+    line-height: 100em;
+    overflow: hidden;
+
+    margin-top: 10px;
+    padding: 0 10px;
+    display: inline-block;
+    background: url("/img/mobile/clients.png") no-repeat scroll 0 0 transparent;
+}
+
+#lnk-clients a.lnk-ios {
+    width: 122px;
+    background-position: -6px 0;
+}
+
+#lnk-clients a.lnk-android {
+    width: 114px;
+    background-position: -9px -38px;
+}
+
+#lnk-clients a.lnk-ovi {
+    width: 132px;
+    background-position: 0 -76px;
+}
+
+#lnk-sites {
+    text-align: center;
+}
+
+#lnk-copyright {
+}
+
+#lnk-sites ul {
+    display: inline-block;
+}
+
+#lnk-sites ul li {
+    float: left;
+}

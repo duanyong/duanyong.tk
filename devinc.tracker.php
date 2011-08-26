@@ -218,7 +218,7 @@ function a_tracker_go() {
 	}
 
 	//没有新事件，沉睡两秒后唤醒
-	sleep(2);
+	sleep(1);
     }
 }
 

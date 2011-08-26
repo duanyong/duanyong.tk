@@ -12,6 +12,7 @@
 
 require_once(__DIR__ . "/devinc.all.php");
 require_once(__DIR__ . "/devinc.tracker.php");
+require_once(__DIR__ . "/devinc.compress.php");
 
 define("JS_DIR", ROOT_DIR . "/js/");
 define("CSS_DIR", ROOT_DIR . "/css/");
@@ -242,7 +243,7 @@ function a_watch_general_js($js) {
     }
 
     //得到所有的dev.base.js dev.base.xxxx.js
-    $all = glob(JS_DIR . "dev.{$js}*.js");
+    $all = glob(JS_DIR . 'dev.' . str_replace($js, '.js', '') . '*.js');
 
     foreach ($all as $file) {
         if (!is_readable($file)
@@ -279,7 +280,7 @@ function a_watch_general_css($css) {
 
 
     //得到所有的dev.base.css dev.base.xxxx.css
-    $all = glob(CSS_DIR . "dev.{$css}*.css");
+    $all = glob(CSS_DIR . 'dev.' . str_replace($css, '.css', '') . '*.css');
 
     foreach ($all as $file) {
         if (!is_readable($file)
@@ -292,8 +293,24 @@ function a_watch_general_css($css) {
     }
 
 
+    global $config;
+
+    $str = '';
+
+    //是否压缩
+    if ($config['compress'] === true
+        && $config["compress_css"] === true
+    ) {
+        //得到文件的字符数
+        $size1  = strlen($text);
+        $text   = a_compress_css($text);
+        $size2  = strlen($text);
+
+        $str = '. compression ratio: ' . floor($size1 * 100 / $size2) . ' %';
+    }
+
     file_put_contents($path, $text) 
-        ? a_log('general done: ' . str_replace(ROOT_DIR, '', $path))
+        ? a_log('general done: ' . str_replace(ROOT_DIR, '', $path) . $str)
         : a_log('general error: ' . str_replace(ROOT_DIR, '', $path));
 }
 
