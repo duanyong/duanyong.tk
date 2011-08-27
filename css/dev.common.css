@@ -33,6 +33,32 @@ blockquote:before, blockquote:after, q:before, q:after { content: ''; content: n
  * */
 
 
+/*
+ * Hack Start
+ * */
+
+/* 伪类，兼容主流浏览器 */
+.cleanfix: after {
+    clear: both;
+    height: 0;
+    content: ".";
+    display: block;
+    font-size: 0;
+    visibility: hidden;
+}
+
+/* 兼容IE6 */
+* html .clearfix{zoom: 1;}
+
+/* 兼容IE7 */
+*:first-child + html .clearfix{zoom: 1;}
+
+
+/*
+ * Hack Start
+ * */
+
+
 a {
     color: #3366CC;
     cursor: pointer;

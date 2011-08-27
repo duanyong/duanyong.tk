@@ -3,6 +3,12 @@
 // devinc.bad.php
 //	判断错误的函数，参数错误返回true，正确返回false
 //
+//  a_bad_username($username, &$var)
+//      判断用户名是否正确
+//
+//  a_bad_password($password, &$var)
+//      判断用户名是否正确
+//
 //  
 //	a_bad_id($id)
 //	    判断数字是否正确（大于0）
@@ -34,17 +40,49 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-function a_bad_username($username, &$var=false) {
-    //是为手机号码或者邮件地址正确
+//用户名检查，包括格式及长度
+function a_bad_username(&$username, &$var=false) {
+    //长度检查
+    $len = strlen($username);
+
+    if ($len <= 0
+        || $len > 25
+    ) {
+        return true;
+    }
+
+
+    //格式检查
+    if (!a_bad_email($username, $var)
+        || !a_bad_mobile($username, $var)
+    ) {
+        //手机号码或邮件地址
+        return false;
+    }
+
+    return true;
+}
+
+
+//密码检查，只检查长度6到25位
+function a_bad_password(&$password, &$var=false) {
+    $len = mb_strlen($password);
+
+    if ($len < 6
+        || $len > 25
+    ) {
+        return true;
+    }
+
     if ($var !== false) {
-        $var = $username;
+        $var = $password;
     }
 
     return false;
 }
 
 
-function a_bad_id($id, &$var=false) {
+function a_bad_id(&$id, &$var=false) {
     if(!is_numeric($id)
         || ( $id = intval($id) ) <= 0
     ) {
@@ -59,7 +97,7 @@ function a_bad_id($id, &$var=false) {
 }
 
 
-function a_bad_0id($id, &$var=false) {
+function a_bad_0id(&$id, &$var=false) {
     if(!is_numeric($id)
         || ( $id = intval($id) ) < 0
     ) {
@@ -74,7 +112,7 @@ function a_bad_0id($id, &$var=false) {
 }
 
 
-function a_bad_string($str, &$var=false) {
+function a_bad_string(&$str, &$var=false) {
     if (!is_string($str)
         || $str !== strval($str)
         || empty($str)
@@ -91,7 +129,7 @@ function a_bad_string($str, &$var=false) {
 }
 
 
-function a_bad_0string($str, &$var=false) {
+function a_bad_0string(&$str, &$var=false) {
     if (!is_string($str)
         || $str !== strval($str)
     ) {
@@ -142,13 +180,13 @@ function a_bad_table_id($table, $id, &$var=false) {
 }
 
 
-function a_bad_file($file) {
+function a_bad_file(&$file) {
     return !( file_exists($file) && is_readable($file) );
 }
 
 
-function a_bad_email($email, &$var=false) {
-    if (false === filter_var($email, FILTER_VALIDATE_EMAIL)) {
+function a_bad_email(&$email, &$var=false) {
+    if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
         return true;
     }
 
@@ -160,17 +198,16 @@ function a_bad_email($email, &$var=false) {
 }
 
 
-function a_bad_mobile($mobile, &$var=false) {
-    if (a_bad_id($mobile)
-        || strlen($mobile) !== 11
-    ) {
+function a_bad_mobile(&$mobile, &$var=false) {
+
+    if (strlen($mobile) !== 11) {
         return true;
     }
 
     static $regx;
 
     if (!$regx) {
-        $regx = "/^[13|15]\d{9}$/";
+        $regx = "/^[13|15]\d+$/";
     }
 
     if (!preg_match($regx, $mobile)) {
@@ -212,7 +249,7 @@ function a_bad_user($uid, &$user=false) {
     }
 
     //可能没有数据
-    if (a_bad_table_id("user", $uid, $user) ) {
+    if (a_bad_table_id('user', $uid, $user) ) {
 
         return false;
     }

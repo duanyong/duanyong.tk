@@ -6,22 +6,26 @@
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <meta content="您手上的心情布袋" name="description"/> 
 
-    {css name="base"}
-    {js name="layout"}
+    {css name="common, reg"}
 </head>
 <body>
     {* 导入header *}
     {include file="header.tpl"}
 
-    <form action="/reg.php" method="post">
-	账号：<input type="text" name="username" value="" /><br/>
-	密码：<input type="password" name="password" value="" /><br/>
-	姓名：<input type="text" name="name" /><br />
-	安全设置：<input type="text" name="repassword" value="" /><br/>
+    <div id="reg-slide" class="reg-box">
+        asda
+    </div>
 
-	<input type="submit" value="提交" /><br/>
-    </form>
+    <div id="reg-action" class="reg-box">
+        <span>注册新账号：</span><br />
+        <form action="/reg.php" method="post">
+	        账号：<input type="text" name="username" value="手机/邮箱" maxlength="25" tabindex="1" /><br/>
+	        密码：<input type="password" name="password" value="" maxlength="25" tabindex="2" /><br/>
+	        安全设置：<input type="text" name="securt" value="" maxlength="25" tabindex="3" /><br/>
 
+	        <input type="submit" value="提交" tabindex="3" /><br/>
+        </form>
+    </div>
 
 
     {* 导入footer*}

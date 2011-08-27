@@ -24,33 +24,42 @@ server {
     #gzip-disable    "MSID [1-6]\.";
 
 
+    #禁止访问dev目录或以dev开关的任何文件
+    location ~ ^/dev {
+        deny all;
+    }
+
     #img、css与js文件永久缓存
     location /img/ {
-	#rewrite /img/(*)([.v0-9]).(*)$   /img/$1.$2	break;
+	    #rewrite /img/(*)([.v0-9]).(*)$   /img/$1.$2	break;
 
-	return 403;
+	    return 403;
     }
 
     location /js/ {
-	#rewrite /js/(*)([.v0-9]).(*)$   /js/$1.$2	break;
+	    #rewrite /js/(*)([.v0-9]).(*)$   /js/$1.$2	break;
 
-	return 403;
+	    return 403;
     }
 
     location /css/ {
-	#rewrite /css/(*)([.v0-9]).(*)$   /css/$1.$2	break;
+	    #rewrite /css/(*)([.v0-9]).(*)$   /css/$1.$2	break;
+	    expires	    max;
+	    access_log  off;
+	    add_header  Pragma public;
+	    add_header  Cache-Control "public, must-revalidate, proxy-revalidate";
 
-	return 403;
+	    return 403;
     }
 
 
     # This block will catch static file requests, such as images, css, js
     location ~* \.(?:ico|css|js|gif|jpe?g|png)$ {
-	# Some basic cache-control for static files to be sent to the browser
-	expires	    max;
-	access_log  off;
-	add_header  Pragma public;
-	add_header  Cache-Control "public, must-revalidate, proxy-revalidate";
+	    # Some basic cache-control for static files to be sent to the browser
+	    expires	    max;
+	    access_log  off;
+	    add_header  Pragma public;
+	    add_header  Cache-Control "public, must-revalidate, proxy-revalidate";
     }
 
 
@@ -60,5 +69,14 @@ server {
         fastcgi_pass    unix:/tmp/php.socket;
         fastcgi_index   index.php;
     }
+
+
+    #对于访问地址/home
+    #   1、先判断是否有home.shtml或home.html，跳转
+    #   2、先判断是否有home.php，跳转
+    #   3、先判断是目录home，跳转
+    #   
+    #   N、返回404
+    try_files $uri.html $uri.shtml $uri.php $uri/ $uri;
 }
 

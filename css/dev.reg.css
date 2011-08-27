@@ -1,0 +1,19 @@
+#warp {
+    min-height: 500px;
+}
+
+.reg-box {
+    margin-top: 20px;
+    overflow: hidden;
+}
+
+#reg-slide {
+    float: left;
+    width: 500px;
+    height: 440px;
+    display: inline;
+}
+#reg-action {
+    display: block;
+    width: 460px;
+}

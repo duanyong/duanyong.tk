@@ -243,7 +243,7 @@ function a_watch_general_js($js) {
     }
 
     //得到所有的dev.base.js dev.base.xxxx.js
-    $all = glob(JS_DIR . 'dev.' . str_replace($js, '.js', '') . '*.js');
+    $all = glob(JS_DIR . 'dev.' . str_replace('.js', '', $js) . '*.js');
 
     foreach ($all as $file) {
         if (!is_readable($file)
@@ -280,7 +280,7 @@ function a_watch_general_css($css) {
 
 
     //得到所有的dev.base.css dev.base.xxxx.css
-    $all = glob(CSS_DIR . 'dev.' . str_replace($css, '.css', '') . '*.css');
+    $all = glob(CSS_DIR . 'dev.' . str_replace('.css', '', $css) . '*.css');
 
     foreach ($all as $file) {
         if (!is_readable($file)
