@@ -1,0 +1,5 @@
+#   mac系统下将此文件内容追加到 /private/etc/hosts 文件中： => sudo cat ./hosts >> /priveate/etc/hosts
+# linux系统下将此文件内容追加到 /etc/hosts 文件中：         => sudo cat ./hosts >> /etc/hosts
+
+127.0.0.1	duanyong.tk
+127.0.0.1	duanyong-dev.tk
