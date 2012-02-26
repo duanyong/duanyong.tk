@@ -18,44 +18,44 @@
  * */
 function a_diary_add(&$diary=false) {
     if (a_bad_array($diary)) {
-	return a_log();
+        return a_log();
     }
 
     // 检查用户是否已经在线
     if (false === ( $user = a_action_user() )) {
-	// 用户有问题
+        // 用户有问题
 
-	return false;
+        return false;
     }
 
 
     // 初始化存储数组
     $data = array(
-	"date"	    => "",
-	"weather"   => "",
-	"content"   => "",
+        "date"	    => "",
+        "weather"   => "",
+        "content"   => "",
     );
 
 
     // 检查必填的项。如日期，天气情况，日记内容
     if (a_bad_0string($diary["date"], $data["date"])) {
-	// 日期
+        // 日期
 
-	return false;
+        return false;
     }
 
 
     if (a_bad_0string($diary["weather"], $data["weather"])) {
-	// 天气情况
+        // 天气情况
 
-	return false;
+        return false;
     }
 
 
     if (a_bad_string($diary["content"], $data["content"])) {
-	// 日记内容
+        // 日记内容
 
-	return false;
+        return false;
     }
 
 
@@ -70,7 +70,7 @@ function a_diary_add(&$diary=false) {
 
     //插入数据
     if (false === a_db("diary:insert", $data)) {
-	return false;
+        return false;
     }
 
     //插入成功

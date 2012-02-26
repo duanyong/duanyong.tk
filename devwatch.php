@@ -381,7 +381,7 @@ function a_watch_general_tpl($tpl) {
 
 
 //得到项目下所有的js文件（eg. /var/www/duanyong/js/base.js）结尾的文件
-function a_devwatch_exhibit_js() {
+function a_devwatch_exhibit_js($jsdir) {
     $ret = array();
 
     //将所有dev.base.form.js处理为dev.base.js
@@ -659,14 +659,6 @@ function a_devwatch_file_onchange($file, &$depends, &$done) {
 }
 
 
-function a_devwatch_all(&$depends) {
-    //生成所有的静态资源
-    a_devwatch_js($depends);
-    a_devwatch_css($depends);
-    a_devwatch_tpl($depends);
-}
-
-
 //生成所有的js文件
 function a_devwatch_js(&$depends) {
     //生成js文件
@@ -709,15 +701,17 @@ function a_devwatch_tpl(&$depends) {
 }
 
 
-//初始化，得到文件之间的关系数组
-$depends = a_devwatch_init();
 
 //是否有参数执行
 if (is_array($argv)
     && count($argv) > 1
 ) {
     if (in_array('-all', $argv)) {
-        exit(a_devwatch_all($depends));
+        a_devwatch_js($depends);
+        a_devwatch_css($depends);
+        a_devwatch_tpl($depends);
+
+        exit(0);
     }
 
     if (in_array('-js', $argv)) {
@@ -737,6 +731,10 @@ if (is_array($argv)
 
     exit(0);
 }
+
+
+//初始化，得到文件之间的关系数组
+$depends = a_devwatch_init();
 
 //余下就是监听的情况了，跟踪目录文件变化并生成文件
 a_devwatch_tracker(ROOT_DIR);

@@ -21,7 +21,7 @@
 
 
 //项目根目录
-define("ROOT_DIR", "/var/www/duanyong");
+define("ROOT_DIR", "/var/www/aiyuji");
 
 
 //系统临时目录

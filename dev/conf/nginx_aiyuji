@@ -3,13 +3,13 @@ server {
     listen 80;
 
     # 注意名称
-    server_name duanyong-dev.tk www.duanyong-dev.tk;
+    server_name aiyuji-dev.tk www.aiyuji-dev.tk;
 
-    root    /var/www/duanyong;
+    root    /var/www/aiyuji;
     index   index.html index.shtml;
 
-    error_log       /var/log/nginx/duanyong.error.log;
-    access_log      /var/log/nginx/duanyong.access.log;
+    error_log       /var/log/nginx/aiyuji.error.log;
+    access_log      /var/log/nginx/aiyuji.access.log;
 
 
     error_page 404              /404.html;
@@ -20,8 +20,10 @@ server {
 
     #启用压缩，但IE7以下不压缩
     gzip on;
-    #gzip-types	    "text/plain" "application/xml";
-    #gzip-disable    "MSID [1-6]\.";
+    gzip_types	    "text/plain" "application/xml";
+    gzip_disable    "MSID [1-6]\.";
+
+
 
 
     #禁止访问dev目录或以dev开关的任何文件
@@ -37,13 +39,13 @@ server {
     }
 
     location /js/ {
-	    #rewrite /js/(*)([.v0-9]).(*)$   /js/$1.$2	break;
+	    #rewrite /js/(*)([.v0-9]).js$   /js/$1.js	break;
 
 	    return 403;
     }
 
     location /css/ {
-	    #rewrite /css/(*)([.v0-9]).(*)$   /css/$1.$2	break;
+	    #rewrite /css/(*)([.v0-9]).css$   /css/$1.css	break;
 	    expires	    max;
 	    access_log  off;
 	    add_header  Pragma public;
@@ -65,7 +67,7 @@ server {
 
     # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
     location ~ \.php$ {
-        include         /var/www/duanyong/dev/conf/fastcgi_params;
+        include         /var/www/aiyuji/dev/conf/fastcgi_params;
         fastcgi_pass    unix:/tmp/php.socket;
         fastcgi_index   index.php;
     }

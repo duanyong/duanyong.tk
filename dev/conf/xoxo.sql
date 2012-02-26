@@ -45,7 +45,7 @@ DROP TABLE IF EXISTS `user_secure`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_secure` (
   `usid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `uid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '用户外键',
+  `uid` int(10) unsigned NOT NULL COMMENT '用户外键',
   `reset` char(64) NOT NULL DEFAULT '' COMMENT '重置密码的方式。可以是手机也可以是邮箱地址',
   `ctime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '绑定时间',
   `log` varchar(10240) NOT NULL DEFAULT '' COMMENT '重置密码日志',

@@ -18,7 +18,7 @@ if (a_bad_ajax()) {
 }
 
 $diary = array(
-    "date"	=> "",
+    "date"      => "",
     "content"	=> "",
     "weather"	=> "",
 );
