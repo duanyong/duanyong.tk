@@ -29,7 +29,7 @@ require_once(__DIR__ . "/devinc.all.php");
 // 数据操作
 function a_db($table, &$v1, &$v2=false) {
     if (a_bad_string($table)) {
-	return a_log();
+        return a_log();
     }
 
 
@@ -38,7 +38,7 @@ function a_db($table, &$v1, &$v2=false) {
     // a_db("user:insert", array("uid" => 1, "name" => "张三"))
     // a_db("user:update", array("uid" => 1, "name" => "张三"), array("name" => "duanyong"))
     // a_db("user:delete", uid)
-    
+
     // 对table分拆，得出表名和需要操作的类型
     $pos    = strrpos($table, ":");
     $action = $pos ? substr($table, $pos+1) : false;
@@ -47,24 +47,24 @@ function a_db($table, &$v1, &$v2=false) {
     $ret = false;
 
     if ($action === false) {
-	// 按主键返回数据
+        // 按主键返回数据
 
-	if (a_bad_id($v1)) {
-	    return a_log();
-	}
+        if (a_bad_id($v1)) {
+            return a_log();
+        }
 
-	$ret = a_db_select($table, $v1);
+        $ret = a_db_select($table, $v1);
 
     } else if ($action === "insert") {
-	// 插入数据
-	$ret = a_db_insert($table, $v1, $v2);
+        // 插入数据
+        $ret = a_db_insert($table, $v1, $v2);
 
     } else if ($action === "update") {
-	// 更新
-	$ret = a_db_update($table, $v1, $v2);
+        // 更新
+        $ret = a_db_update($table, $v1, $v2);
 
     } else if ($action === "delete") {
-	// 删除
+        // 删除
     }
 
 
@@ -76,9 +76,9 @@ function a_db($table, &$v1, &$v2=false) {
 // 返回主键对应的数据
 function a_db_primary($table, $id) {
     if (a_bad_string($table)
-	|| a_bad_id($id)
+        || a_bad_id($id)
     ) {
-	return a_log();
+        return a_log();
     }
 
     $pid = substr($table, 0, 1) . "id";
@@ -86,9 +86,9 @@ function a_db_primary($table, $id) {
 
     // 得到一个资源连接后取得对应的数据
     if ( false === ( $ret = a_db_sql($sql) )
-	|| false === ( $row = mysql_fetch_row($ret) )
+        || false === ( $row = mysql_fetch_row($ret) )
     ) {
-	return a_log();
+        return a_log();
     }
 
     // 释放资源
@@ -101,17 +101,17 @@ function a_db_primary($table, $id) {
 // 插入数据到数据库。其中$data已经包含了对应的主键
 function a_db_insert($table, &$data) {
     if (a_bad_string($table)
-	|| a_bad_array($data)
+        || a_bad_array($data)
     ) {
-	return a_log();
+        return a_log();
     }
 
     $pid = substr($table, 0, 1) . "id";
 
     if (isset($data[$pid])) {
-	// 错误,插入的数据有主键
+        // 错误,插入的数据有主键
 
-	return a_log();
+        return a_log();
     }
 
 
@@ -123,7 +123,7 @@ function a_db_insert($table, &$data) {
     $sql = "insert into `{$table}`";
 
     foreach (array_keys($data) as $key) {
-	$arr[] = $key;
+        $arr[] = $key;
     }
 
     // (`name`, `age`, `sex`, `accuont`)
@@ -134,20 +134,37 @@ function a_db_insert($table, &$data) {
     $arr = array();
 
     foreach (array_values($data) as $value) {
-	$arr[] = is_string($value) ? '"' . $value . '"' : $value;
+        if (is_string($value)) {
+            $arr[] = '"' . $value . '"';
+
+        } else if (is_int($value)) {
+            $arr[] = $value;
+
+        } else if (is_float($value)) {
+            $arr[] = $value;
+
+        } else if (is_double($value)) {
+            $arr[] = $value;
+
+        } else if (is_bool($value)) {
+            $arr[] = $value;
+
+        } else {
+            //非法类型，转成字符串
+            $arr[] = '"' .  strval($value) . '"';
+        }
     }
 
     // ('zhangsan', 22, true, 99)
     $sql .= ' value (' . implode(', ', $arr) . ')';
 
 
-
     if(false === a_db_sql($sql)
-	|| false === ($id = mysql_insert_id() )
+        || false === ($id = mysql_insert_id() )
     ) {
-	// 插入失败
+        // 插入失败
 
-	return a_log();
+        return a_log();
     }
 
     return $data[$pid] = $id;
@@ -157,26 +174,26 @@ function a_db_insert($table, &$data) {
 // 更新数据，其中$v1是原始数据，$v2是需更新的字段，其中不能包括主键
 function a_db_update($table, &$v1, &$v2) {
     if (a_bad_string($table)
-	|| a_bad_array($v1)
-	|| a_bad_array($v2)
+        || a_bad_array($v1)
+        || a_bad_array($v2)
     ) {
-	return a_log();
+        return a_log();
     }
 
     // 分析$table，得到表主键
     $pid    = "";
     $names  = explode("_", $table);
     foreach ($names as $key) {
-	if (a_bad_string($key)) {
-	    continue;
-	}
+        if (a_bad_string($key)) {
+            continue;
+        }
 
-	// 把每个单词的首字母拼凑起来组合成主键
-	$pid .= substr($key, 0, 1);
+        // 把每个单词的首字母拼凑起来组合成主键
+        $pid .= substr($key, 0, 1);
     }
 
     if (empty($pid)) {
-	return a_log();
+        return a_log();
     }
 
     $pid .= "id";
@@ -189,18 +206,18 @@ function a_db_update($table, &$v1, &$v2) {
 
     // 对$v1和$v2数据归类
     foreach ($v2 as $key => $value) {
-	if ($v1[$key] == $v2[$key]) {
-	    continue;
-	}
+        if ($v1[$key] == $v2[$key]) {
+            continue;
+        }
 
-	$values[] = "`{$key}`=" . ( is_string($value) ? '"' . $value . '"' : $value );
+        $values[] = "`{$key}`=" . ( is_string($value) ? '"' . $value . '"' : $value );
     }
 
 
     $sql = "update `{$table}` set " . implode(", ", $values) . " where {$pid} = {$v1[$pid]}";
 
     if (false === a_db_sql($sql)) {
-	return a_log();
+        return a_log();
     }
 
     return a_db_primary($table, $v1[$pid]);
@@ -210,18 +227,18 @@ function a_db_update($table, &$v1, &$v2) {
 // 把数据按列表返回
 function a_db_query($sql) {
     if (a_bad_string($sql)) {
-	return a_log();
+        return a_log();
     }
 
     if ( false === ( $ret = a_db_sql($sql) )) {
-	return a_warn();
+        return a_warn();
     }
 
 
     // 得到资源后，取得对应的数据
     $rows = array();
     while ($row = mysql_fetch_assoc($ret)) {
-	$rows[] = $row;
+        $rows[] = $row;
     }
 
     // 释放资源文件
@@ -230,25 +247,24 @@ function a_db_query($sql) {
 
     //只返回一条数据时
     if (strripos($sql, "limit 1;") !== false
-	&& count($rows) === 1
+        && count($rows) === 1
     ) {
-	return current($rows);
+        return current($rows);
     }
 
     return $rows;
 }
 
 
- // 采用长连接来连接数据库  
+// 采用长连接来连接数据库  
 function a_db_conn() {
     global $config;
 
     if (a_bad_array($config["farm"], $farm)) {
-	return a_warn();
+        return a_warn();
     }
 
     //TODO 服务器重启了怎么办？
-
     return mysql_pconnect($farm[0], $config["username"], $config["password"]); 
 }
 
@@ -256,28 +272,28 @@ function a_db_conn() {
 // 执行sql语句
 function a_db_sql($sql) {
     if (a_bad_string($sql)) {
-	return a_log();
+        return a_log();
     }
 
     global $config;
 
     if (false === ( $conn = a_db_conn() )) {
-	// 数据库错误
+        // 数据库错误
 
-	return a_warn();
+        return a_warn();
     }
 
     if (false === mysql_select_db($config["database"], $conn)) {
-	// 没有数据库
+        // 没有数据库
 
-	return a_warn();
+        return a_warn();
     }
 
     // 设置存取的编码格式。此处用utf8格式
     if (false === mysql_query("SET NAMES 'UTF8'", $conn)) {
-	// 设置编码格式有问题
+        // 设置编码格式有问题
 
-	return a_warn();
+        return a_warn();
     }
 
     a_log($sql);
