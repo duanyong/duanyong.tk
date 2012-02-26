@@ -3,11 +3,12 @@
 // devinc.log.php
 //	日志文件的输出格式为
 //	2011-01-01 01:01:01 NOTICE [/user/devapi.user.php:18] wrong arg
+//	2011-01-01 01:01:01 NOTICE [select `name` from user where `uid`=1;]
 //
 //
 //      E_USER_NOTICE	- 默认。用户生成的 run-time 通知。脚本发现了可能的错误，也有可能在脚本运行正常时发生。
 //      E_USER_WARNING	- 非致命的用户生成的 run-time 警告。脚本执行不被中断。
-//	E_USER_ERROR	- 致命的用户生成的 run-time 错误。错误无法恢复。脚本执行被中断。
+//	    E_USER_ERROR	- 致命的用户生成的 run-time 错误。错误无法恢复。脚本执行被中断。
 //
 //
 //	a_log($log)
