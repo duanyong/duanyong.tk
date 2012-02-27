@@ -3,7 +3,7 @@ server {
     listen 80;
 
     # 注意名称
-    server_name aiyuji-dev.tk www.aiyuji-dev.tk;
+    server_name aiyuji.com aiyuji-dev.com;
 
     root    /var/www/aiyuji;
     index   index.html index.shtml;

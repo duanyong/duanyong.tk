@@ -19,21 +19,31 @@ static $timer = array();
 
 //计时开始，每次都会产生新的时间戳（毫秒）在数组中
 function a_profile_start() {
-    array_push($timer, microtime(get_as_float));
+    global $timer;
+
+    $start = microtime(true);
+
+    array_push($timer, microtime(true));
+
+    a_log("profile begin: ");
 }
 
 
 //计时结束，计算时间之差
 function a_profile_stop() {
+    global $timer;
+
     $start = array_pop($timer);
 
     //没有调用a_profile_start过
     if (!$start) {
+        //TODO: this note!
+
         return a_log("0000000");
     }
 
     //两次时间之差
-    $start = ( microtime(get_as_float) - $start ) * 10000;
+    $start = ( microtime(true) - $start ) * 10000;
 
-    a_log("times:" . $start);
+    a_log("profile:" . intval($start) . "ms");
 }

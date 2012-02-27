@@ -164,7 +164,7 @@ function a_db_insert($table, &$data) {
     ) {
         // 插入失败
 
-        return a_log();
+        return a_log("sql excute to fail: " . $sql);
     }
 
     return $data[$pid] = $id;
@@ -280,25 +280,28 @@ function a_db_sql($sql) {
     if (false === ( $conn = a_db_conn() )) {
         // 数据库错误
 
-        return a_warn();
+        return a_warn("can not connect to database: " . mysql_error());
     }
 
     if (false === mysql_select_db($config["database"], $conn)) {
         // 没有数据库
 
-        return a_warn();
+        return a_warn("database not exist '". $config["database"] . "', please check it.");
     }
 
     // 设置存取的编码格式。此处用utf8格式
     if (false === mysql_query("SET NAMES 'UTF8'", $conn)) {
         // 设置编码格式有问题
 
-        return a_warn();
+        return a_warn("set UTF8 error: " . mysql_error());
     }
 
-    a_log($sql);
+    if (false === mysql_query($sql, $conn)) {
 
-    return mysql_query($sql, $conn);
+        return a_warn("execute sql faild: " . mysql_error());
+    }
+
+    return true;
 }
 
 

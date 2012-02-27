@@ -27,7 +27,6 @@ $config["password"] = "a";
 $config["database"] = "xoxo";
 $config["farm"]	    = array(
     "127.0.0.1",
-    "192.168.1.104",
 );
 
 //压缩的总开关
