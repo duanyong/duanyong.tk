@@ -31,25 +31,25 @@ function a_action_page($tpl=false, $url=false, $stay=false) {
     global $arg;
 
     if (a_action_ajax()) {
-	//ajax提交
-	return json_encode(array(
-	    "url"   => $url,
-	    "err"   => $arg["err"],
-	    "msg"   => $arg["msg"],
-	));
+        //ajax提交
+        return json_encode(array(
+            "url"   => $url,
+            "err"   => $arg["err"],
+            "msg"   => $arg["msg"],
+        ));
     }
 
 
     if ($tpl === false) {
-	global $_SERVER;
+        global $_SERVER;
 
-	$tpl = $_SERVER["REQUEST_URI"];
+        $tpl = $_SERVER["REQUEST_URI"];
     }
 
     if (a_bad_string($tpl)) {
-	return a_log();
+        return a_log();
     }
-    
+
 
     //从用户的请求URL中得到渲染那个tpl文件
     $tpl = str_replace(array(".php", ".tpl"), "", $tpl);
@@ -57,17 +57,17 @@ function a_action_page($tpl=false, $url=false, $stay=false) {
 
     //取得tpl的绝对路径
     if (strpos($tpl, ROOT_DIR) !== 0) {
-	//构建文件的的绝对路径后给smarty渲染数据
-	$tpl = ROOT_DIR . ( strpos($tpl, '/') === 0 ? '' : '/' ) .  $tpl;
+        //构建文件的的绝对路径后给smarty渲染数据
+        $tpl = ROOT_DIR . ( strpos($tpl, '/') === 0 ? '' : '/' ) .  $tpl;
     }
 
     if (a_bad_file($tpl)) {
-	//文件不可读
-	return a_log();
+        //文件不可读
+        return a_log();
     }
 
     if (isset($url)) {
-	$arg["url"] = $url;
+        $arg["url"] = $url;
     }
 
     //交给smarty去渲染出页面
@@ -77,8 +77,8 @@ function a_action_page($tpl=false, $url=false, $stay=false) {
 
 function a_action_msg($msg=false, $tpl=false) {
     if (a_bad_string($msg)) {
-	//参数有问题
-	return a_log();
+        //参数有问题
+        return a_log();
     }
 
     global $arg;
@@ -87,12 +87,12 @@ function a_action_msg($msg=false, $tpl=false) {
 
     //得到referer，好让用户返回
     if (a_bad_string($_SERVER["HTTP_REFERER"], $referer)) {
-	//是否以站内连接
-	$referer = "";
+        //是否以站内连接
+        $referer = "";
     }
 
     if ($tpl === false) {
-	$tpl = "/error.tpl";
+        $tpl = "/error.tpl";
     }
 
 
@@ -104,7 +104,7 @@ function a_action_msg($msg=false, $tpl=false) {
 //页面跳转
 function a_action_redirect($url="/", $msg=false, $delay=false) {
     if (a_bad_string($url)) {
-	return a_log();
+        return a_log();
     }
 
     header("Location: {$url}");
@@ -145,16 +145,16 @@ function a_action_user() {
     // 可能没有数据
     if (a_bad_table_id("user", $uid, $user) ) {
 
-	return false;
+        return false;
     }
 
     //只有._-及非数字开头的英文字母，数字符合要求
     if (a_bad_string($username)) {
-	return false;
+        return false;
     }
 
     if ($var !== false) {
-	$var = $username;
+        $var = $username;
     }
 
     return true;

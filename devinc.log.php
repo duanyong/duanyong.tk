@@ -38,7 +38,7 @@ ini_set('display_errors', 'Off');
 
 
 //日志文件
-$log_file   = "/var/log/nginx/duanyong.tk.log";
+$log_file   = "/var/log/nginx/php.aiyuji.com.log";
 
 //是否开启日志输出（默认开启）
 $log_on	    = true;
@@ -114,15 +114,15 @@ function a_log_append(&$msg) {
 
     if ($log_is_cli) {
         fwrite(STDOUT, $msg);
-
-        if (!is_writable($log_file)) {
-            fwrite(STDOUT, '  -------> -w:' . $log_file . "\n");
-
-            return false;
-        }
     }
 
     if ($log_on) {
+        if (!is_writable($log_file)) {
+            fwrite(STDOUT, "can not write to log file. log path:" . $log_file . "\n");
+
+            return false;
+        }
+
         error_log("\n" . $msg, 3, $log_file);
     }
 }

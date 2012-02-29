@@ -15,17 +15,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-static $timer = array();
+static $timer   = array();
+
 
 //计时开始，每次都会产生新的时间戳（毫秒）在数组中
-function a_profile_start() {
+function a_profile_start($string = null) {
     global $timer;
 
-    $start = microtime(true);
-
-    array_push($timer, microtime(true));
-
-    a_log("profile begin: ");
+    array_push($timer, microtime());
 }
 
 
@@ -33,17 +30,37 @@ function a_profile_start() {
 function a_profile_stop() {
     global $timer;
 
+    $stop  = microtime();
     $start = array_pop($timer);
 
     //没有调用a_profile_start过
     if (!$start) {
-        //TODO: this note!
 
-        return a_log("0000000");
+        return a_log("profile failed, because not started.");
+    }
+
+
+    $stop = explode(" ", $stop);
+    $stop = $stop[1] . substr($stop[0], 1, strlen($stop[0]));
+
+    $start = explode(" ", $start);
+    $start = $start[1] . substr($start[0], 1, strlen($start[0]));
+
+    $time  = bcsub($stop, $start, 4);
+
+    if ($time >= 1) {
+        $time .= " sec";
+
+    } else {
+        $time .= " ms";
     }
 
     //两次时间之差
-    $start = ( microtime(true) - $start ) * 10000;
+    $output = "time elapse:\n";
+    $output .= str_pad("start", 25, "-") . str_pad("stop", 25, "-") . str_pad("total", 25, "-") . "\n";
+    $output .= str_pad($start, 25, " ") . str_pad($stop,  25, " ") . $time . "\n";
 
-    a_log("profile:" . intval($start) . "ms");
+
+    a_log($output);
 }
+

@@ -6,5 +6,9 @@
 
     duanyong 2012/01/01 11:22:3
 
+5、a_action_start() a_action_end()便于调试或者得到过程
+    2011-01-01 01:01:01 ACTION [begin: duanyong /login;]
+    2011-01-01 01:01:01 ACTION [end: duanyong /login;]
+
 
 
