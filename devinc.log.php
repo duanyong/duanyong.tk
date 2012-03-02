@@ -3,19 +3,14 @@
 // devinc.log.php
 //	日志文件的输出格式为
 //	2011-01-01 [duanyong:127.0.0.1] ACTION START: /diary/add
-//	    01:01:01.290086 [trace] [sql] select * from diary order by did desc limit 10 [/devinc.mysql.php:14]
-//	    01:01:01.290087 [trace] [arg] argument is null [/devinc.mysql.php:15]
-//	    01:01:01.290090 [error] [sql] argument is null [/devinc.mysql.php:15]
+//	    01:01:01.290087 [warning] warning arg [/drevinc.mysql.php:15]
+//	    01:01:01.290086 [notice] warning sql [/devinc.mysql.php:14]
+//	    01:01:01.290090 [error] argument is null [/devinc.mysql.php:15]
 //
 ///	2011-01-01 [fengyu:127.0.0.1] ACTION START: /user/add
-//	    01:01:02.290086 [trace] [sql] select * from diary order by did desc limit 10 [/devinc.mysql.php:14]
-//	    01:01:02.290087 [trace] [arg] argument is null [/devinc.mysql.php:15]
-//	    01:01:02.290090 [error] [sql] argument is null [/devinc.mysql.php:15]
-//
-//
-//      E_USER_NOTICE	- 默认。用户生成的 run-time 通知。脚本发现了可能的错误，也有可能在脚本运行正常时发生。
-//      E_USER_WARNING	- 非致命的用户生成的 run-time 警告。脚本执行不被中断。
-//	    E_USER_ERROR	- 致命的用户生成的 run-time 错误。错误无法恢复。脚本执行被中断。
+//	    01:01:02.290087 [warning] warning arg [/drevinc.mysql.php:15]
+//	    01:01:02.290086 [notice] warning sql [/devinc.mysql.php:14]
+//	    01:01:02.290090 [error] argument is null [/devinc.mysql.php:15]
 //
 //
 //	a_log($log)
@@ -51,6 +46,9 @@ $log_on	    = true;
 
 //是否在cli模式下运行
 $log_is_cli = php_sapi_name() === "cli";
+
+static $log_array   = array();
+static $log_action  = false;
 
 
 //
@@ -128,11 +126,12 @@ function a_log_hander(&$no, &$log, &$file, &$line, &$context) {
     //因为日志按项目的相对路径输出。如/home/duanyong/workspace/duanyong/login.php 应输出为/login.php
     //debug_backtrace中file属性为绝对路径，需要将绝对路径换成项目的相对路径。
 
-    static $realdir;
+    static $realdir, $linkdir;
 
     if (!$realdir) {
         if (is_link(ROOT_DIR)) {
             //获取真正的系统路径
+            $linkdir = ROOT_DIR;
             $realdir = readlink(ROOT_DIR);
 
         } else {
@@ -143,52 +142,64 @@ function a_log_hander(&$no, &$log, &$file, &$line, &$context) {
 
     $str    = "\n";
     $time   = $_SERVER['REQUEST_TIME'];
-    $file   = str_replace($realdir, "", $file);
+    $file   = str_replace(array($linkdir, $realdir), "", $file);
+    $log    = str_replace(array($linkdir, $realdir), "", $log);
 
     //$debug  = a_log_debug_message();
 
+    global $log_action;
 
-    if ($no === E_USER_DEPRECATED) {
+    if ($log_action === false) {
         //2011-01-01 [duanyong:127.0.0.1] ACTION START /diary/add
         $username = isset($_COOKIE["username"]) ? $_COOKIE["username"] : "-";
-        $str .= "\n" . date("Y-m-d", $time)                                                                // 2011-01-01
-            . " [" . $username . ":" . $_SERVER["REMOTE_ADDR"] . "] ACTION START "                  // [duanyong:127.0.0.1]
-            . str_replace(".php", "", $file);                                                       // /diary/add
-            //. str_replace(".php", "", $debug["file"]);                                              // /diary/add
+        $str .= "\n" . date("Y-m-d", $time)                                              // 2011-01-01
+            . " [" . $username . ":" . $_SERVER["REMOTE_ADDR"] . "] ACTION START "       // [duanyong:127.0.0.1]
+            . str_replace(".php", "", $file) . "\n";                                     // /diary/add
+            //. str_replace(".php", "", $debug["file"]);                                 // /diary/add
 
-    } else {
-        //    01:01:01.290086 [trace] [sql] select * from diary order by did desc limit 10 [/devinc.mysql.php:14]
-        $desc = null;
-
-        switch ($no) {
-        case E_USER_ERROR:
-            $desc = "error";
-            break;
-
-        case E_USER_WARNING:
-            $desc = "warning";
-            break;
-
-        case E_USER_NOTICE:
-            $desc = "notice";
-            break;
-
-        default:
-            $desc = "notice";
-        }
-
-
-        // 01:01:01.290086
-        $mc = microtime();
-        $t  = explode(" ", $mc);
-        $t  = substr($t[0], 1, strlen($t[0]));
-
-        $str .= "\t" . date("h:i:s", $time) . $t                // 01:01:01.290086
-            . " [" . $desc . "]"                                // [warning]
-            . " " . a_log_argument_tostring($log)               // bool(true)
-            . " [" . $file . "]:" . $line;                      // [/devinc.mysql.php:14]
-            //. " [" . $debug["file"] . "]:" . $debug["line"];    // [/devinc.mysql.php:14]
+        $log_action = true;
     }
+
+
+    //    01:01:01.290086 [trace] [sql] select * from diary order by did desc limit 10 [/devinc.mysql.php:14]
+    $desc = null;
+
+    echo $no;
+    switch ($no) {
+    case E_ERROR:
+    case E_CORE_ERROR:
+    case E_USER_ERROR:
+    case E_COMPILE_ERROR:
+        $desc = "error";
+        break;
+
+    case E_WARNING:
+    case E_CORE_WARNING:
+    case E_USER_WARNING:
+    case E_COMPILE_WARNING:
+        $desc = "warning";
+        break;
+
+    case E_NOTICE:
+    case E_USER_NOTICE:
+        $desc = "notice";
+        break;
+
+    default:
+        $desc = "warning";
+    }
+
+
+    // 01:01:01.290086
+    $mc = microtime();
+    $t  = explode(" ", $mc);
+    $t  = substr($t[0], 1, strlen($t[0]));
+
+    $str .= "\t" . date("h:i:s", $time) . $t                // 01:01:01.290086
+        . " [" . $desc . "]"                                // [warning]
+        . " " . a_log_argument_tostring($log)               // bool(true)
+        . " [" . $file . ":" . $line . "]";                 // [/devinc.mysql.php:14]
+    //. " [" . $debug["file"] . "]:" . $debug["line"];    // [/devinc.mysql.php:14]
 
 
     //追加到日志文件中
