@@ -16,11 +16,11 @@
 
 function a_cookie_set($name, $value, $day=0)() {
     if (a_bad_string($name)
-	|| a_bad_0string($value)
+        || a_bad_0string($value)
 
-	|| a_bad_0id($day)
+        || a_bad_0id($day)
     ) {
-	return a_log();
+        return a_log();
     }
 
     // TODO
@@ -34,7 +34,7 @@ function a_cookie_set($name, $value, $day=0)() {
 
 function a_cookie_get($name) {
     if (a_bad_string($name)) {
-	return null;
+        return null;
     }
 
     $value = $$name;

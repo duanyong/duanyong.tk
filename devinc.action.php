@@ -26,6 +26,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
+
 //如果为ajax提交，直接返回json数据，否则返回页面
 function a_action_page($tpl=false, $url=false, $stay=false) {
     global $arg;
