@@ -38,14 +38,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-//日志文件
-$log_file   = "/var/log/nginx/php.log";
+$log_file       = "/var/log/nginx/php.log";     //日志文件
+$log_on	        = true;                         //是否开启日志输出（默认开启）
+$log_is_cli     = php_sapi_name() === "cli";    //是否在cli模式下运行
 
-//是否开启日志输出（默认开启）
-$log_on	    = true;
-
-//是否在cli模式下运行
-$log_is_cli = php_sapi_name() === "cli";
 
 static $log_array   = array();
 static $log_action  = false;
@@ -88,12 +84,12 @@ function a_log_action() {
 }
 
 
-function a_log_arg() {
-    return trigger_error("warning arg", E_USER_WARNING) && false;
+function a_log_arg($log="warning arg") {
+    return trigger_error($log, E_USER_NOTICE) && false;
 }
 
-function a_log_sql() {
-    return trigger_error("warning sql", E_USER_WARNING) && false;
+function a_log_sql($log="warning sql") {
+    return trigger_error($log, E_USER_WARNING) && false;
 }
 
 function a_error($log) {
@@ -151,11 +147,13 @@ function a_log_hander(&$no, &$log, &$file, &$line, &$context) {
 
     if ($log_action === false) {
         //2011-01-01 [duanyong:127.0.0.1] ACTION START /diary/add
-        $username = isset($_COOKIE["username"]) ? $_COOKIE["username"] : "-";
-        $str .= "\n" . date("Y-m-d", $time)                                              // 2011-01-01
-            . " [" . $username . ":" . $_SERVER["REMOTE_ADDR"] . "] ACTION START "       // [duanyong:127.0.0.1]
-            . str_replace(".php", "", $file) . "\n";                                     // /diary/add
-            //. str_replace(".php", "", $debug["file"]);                                 // /diary/add
+        $remote     = isset($_SERVER["REMOTE_ADDR"]) ? $_SERVER["REMOTE_ADDR"] : "-";
+        $username   = isset($_COOKIE["username"]) ? $_COOKIE["username"] : "-";
+
+        $str .= "\n" . date("Y-m-d", $time)                                             // 2011-01-01
+            . " [" . $username . ":" . $remote . "] ACTION START "                      // [duanyong:127.0.0.1e
+            . str_replace(".php", "", $file) . "\n";                                    // /diary/add
+            //. str_replace(".php", "", $debug["file"]);                                // /diary/add
 
         $log_action = true;
     }
@@ -164,7 +162,6 @@ function a_log_hander(&$no, &$log, &$file, &$line, &$context) {
     //    01:01:01.290086 [trace] [sql] select * from diary order by did desc limit 10 [/devinc.mysql.php:14]
     $desc = null;
 
-    echo $no;
     switch ($no) {
     case E_ERROR:
     case E_CORE_ERROR:

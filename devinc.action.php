@@ -140,27 +140,6 @@ function a_action_ip() {
 }
 
 
-//TODO 
-//查看浏览器cookie中取得uid，不检查是否与密码匹配
-function a_action_user() {
-    // 可能没有数据
-    if (a_bad_table_id("user", $uid, $user) ) {
-
-        return false;
-    }
-
-    //只有._-及非数字开头的英文字母，数字符合要求
-    if (a_bad_string($username)) {
-        return false;
-    }
-
-    if ($var !== false) {
-        $var = $username;
-    }
-
-    return true;
-}
-
 
 //返回ajax请求提交的数据
 function a_action_ajax() {
