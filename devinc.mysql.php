@@ -28,7 +28,7 @@ require_once(__DIR__ . "/devinc.all.php");
 // 数据操作
 function a_db($table, &$v1, &$v2=false) {
     if (a_bad_string($table)) {
-        return a_log();
+        return a_log_arg();
     }
 
 
@@ -49,7 +49,7 @@ function a_db($table, &$v1, &$v2=false) {
         // 按主键返回数据
 
         if (a_bad_id($v1)) {
-            return a_log();
+            return a_log_arg();
         }
 
         $ret = a_db_select($table, $v1);
@@ -77,21 +77,21 @@ function a_db_primary($table, $id) {
     if (a_bad_string($table)
         || a_bad_id($id)
     ) {
-        return a_log();
+        return a_log_arg();
     }
 
     $pid = substr($table, 0, 1) . "id";
     $sql = "select * from {$table} where {$pid} = {$id}";
 
     // 得到一个资源连接后取得对应的数据
-    if ( false === ( $ret = a_db_sql($sql) )
-        || false === ( $row = mysql_fetch_row($ret) )
+    if ( false === ( $reader = a_db_reader($sql) )
+        || false === ( $row = mysql_fetch_row($reader) )
     ) {
-        return a_log();
+        return a_log_arg();
     }
 
     // 释放资源
-    mysql_free_result($ret);
+    mysql_free_result($reader);
 
     return $row;
 }
@@ -102,7 +102,7 @@ function a_db_insert($table, &$data) {
     if (a_bad_string($table)
         || a_bad_array($data)
     ) {
-        return a_log();
+        return a_log_arg();
     }
 
     $pid = substr($table, 0, 1) . "id";
@@ -110,7 +110,7 @@ function a_db_insert($table, &$data) {
     if (isset($data[$pid])) {
         // 错误,插入的数据有主键
 
-        return a_log();
+        return a_log_arg();
     }
 
 
@@ -158,12 +158,12 @@ function a_db_insert($table, &$data) {
     $sql .= ' value (' . implode(', ', $arr) . ')';
 
 
-    if(false === a_db_sql($sql)
+    if(false === a_db_reader($sql)
         || false === ($id = mysql_insert_id() )
     ) {
         // 插入失败
 
-        return a_log("sql excute to fail: " . $sql);
+        return a_log_sql(mysql_error());
     }
 
     return $data[$pid] = $id;
@@ -176,7 +176,7 @@ function a_db_update($table, &$v1, &$v2) {
         || a_bad_array($v1)
         || a_bad_array($v2)
     ) {
-        return a_log();
+        return a_log_arg();
     }
 
     // 分析$table，得到表主键
@@ -192,7 +192,7 @@ function a_db_update($table, &$v1, &$v2) {
     }
 
     if (empty($pid)) {
-        return a_log();
+        return a_log_arg();
     }
 
     $pid .= "id";
@@ -215,8 +215,8 @@ function a_db_update($table, &$v1, &$v2) {
 
     $sql = "update `{$table}` set " . implode(", ", $values) . " where {$pid} = {$v1[$pid]}";
 
-    if (false === a_db_sql($sql)) {
-        return a_log();
+    if (false === a_db_reader($sql)) {
+        return a_log_arg();
     }
 
     return a_db_primary($table, $v1[$pid]);
@@ -226,22 +226,22 @@ function a_db_update($table, &$v1, &$v2) {
 // 把数据按列表返回
 function a_db_query($sql) {
     if (a_bad_string($sql)) {
-        return a_log();
+        return a_log_arg();
     }
 
-    if ( false === ( $ret = a_db_sql($sql) )) {
-        return a_warn();
+    if ( false === ( $reader = a_db_reader($sql) )) {
+        return a_log_sql(mysql_error());
     }
 
 
     // 得到资源后，取得对应的数据
     $rows = array();
-    while ($row = mysql_fetch_assoc($ret)) {
+    while ($row = mysql_fetch_assoc($reader)) {
         $rows[] = $row;
     }
 
     // 释放资源文件
-    mysql_free_result($ret);
+    mysql_free_result($reader);
 
 
     //只返回一条数据时
@@ -255,52 +255,45 @@ function a_db_query($sql) {
 }
 
 
-// 采用长连接来连接数据库  
-function a_db_conn() {
-    global $config;
-
-    if (a_bad_array($config["farm"], $farm)) {
-        return a_warn();
-    }
-
-    //TODO 服务器重启了怎么办？
-    return mysql_pconnect($farm[0], $config["username"], $config["password"]); 
-}
-
-
 // 执行sql语句
-function a_db_sql($sql) {
+function a_db_reader($sql) {
     if (a_bad_string($sql)) {
-        return a_log();
+        return a_log_arg();
     }
 
     global $config;
 
-    if (false === ( $conn = a_db_conn() )) {
-        // 数据库错误
-
-        return a_warn("can not connect to database: " . mysql_error());
+    if (!isset($config["username"])
+        || !isset($config["password"])
+    ) {
+        return a_log_sql("database need set username and password for mysql connection.");
     }
 
-    if (false === mysql_select_db($config["database"], $conn)) {
-        // 没有数据库
-
-        return a_warn("database not exist '". $config["database"] . "', please check it.");
+    if (!isset($config["farm"])
+        || empty($config["farm"])
+    ) {
+        return a_log_sql("database need know ip mysql connection.");
     }
 
-    // 设置存取的编码格式。此处用utf8格式
-    if (false === mysql_query("SET NAMES 'UTF8'", $conn)) {
-        // 设置编码格式有问题
 
-        return a_warn("set UTF8 error: " . mysql_error());
+
+    $farm = $config["farm"];
+
+    if (false === ( $conn = mysql_pconnect($farm[0], $config["username"], $config["password"]) )
+        || false === mysql_select_db($config["database"], $conn)
+        || false === mysql_query("SET NAMES 'UTF8'", $conn)
+        || false === ( $reader = mysql_query($sql, $conn) )
+    ) {
+        return a_log_sql(mysql_error());
     }
 
-    if (false === mysql_query($sql, $conn)) {
+    a_log($sql, E_USER_NOTICE);
 
-        return a_warn("execute sql faild: " . mysql_error());
-    }
-
-    return true;
+    return $reader;
 }
 
+
+function a_db_desc($name) {
+    return a_db_query("SHOW COLUMNS FROM `" . $name . "`;");
+}
 

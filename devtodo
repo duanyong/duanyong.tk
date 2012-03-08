@@ -1,14 +1,15 @@
-1、devinc.log.php 中 a_log会中止进程执行
+1、devinc.log.php 中 a_log会中止进程执行                    //fixed
 2、测试nginx gzip压缩率
-3、设计图片缓存架构
-4、每个request的日志记录上下都空行，便于阅读
+3、设计图片,css,js缓存架构
+4、每个request的日志记录上下都空行，便于阅读                //fixed
     duanyong 2012/01/01 11:22:33 Post /diary/add
-
     duanyong 2012/01/01 11:22:3
 
-5、a_action_start() a_action_end()便于调试或者得到过程
+5、a_action_start() a_action_end()便于调试或者得到过程      //fixed
     2011-01-01 01:01:01 ACTION [begin: duanyong /login;]
     2011-01-01 01:01:01 ACTION [end: duanyong /login;]
 
+6、breakcrumbs
+7、yii model
 
 

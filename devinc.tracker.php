@@ -14,14 +14,14 @@
 //
 //		$events = array(
 //		    "a_devwatch_callback" => array(
-//			array($event),
-//			array($event),
-//			array($event),
+//			    array($event),
+//			    array($event),
+//			    array($event),
 //		    ),
 //		    "a_devlog_split"    => array(
-//			array($event),
-//			array($event),
-//			array($event),
+//			    array($event),
+//			    array($event),
+//			    array($event),
 //		    ),
 //		);
 //

@@ -115,7 +115,7 @@ function a_action_redirect($url="/", $msg=false, $delay=false) {
 
 
 //服务器发生异常
-function a_server_error() {
+function a_action_error() {
     global $arg;
 
     $arg["err"] = "servererror";
@@ -139,27 +139,6 @@ function a_action_ip() {
     return $_SERVER["REMOTE_ADDR"];
 }
 
-
-//TODO 
-//查看浏览器cookie中取得uid，不检查是否与密码匹配
-function a_action_user() {
-    // 可能没有数据
-    if (a_bad_table_id("user", $uid, $user) ) {
-
-        return false;
-    }
-
-    //只有._-及非数字开头的英文字母，数字符合要求
-    if (a_bad_string($username)) {
-        return false;
-    }
-
-    if ($var !== false) {
-        $var = $username;
-    }
-
-    return true;
-}
 
 
 //返回ajax请求提交的数据

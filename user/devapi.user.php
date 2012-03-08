@@ -13,17 +13,30 @@
 //更新用户的登录信息
 function a_user_update_login(&$user) {
     if (a_bad_id($user["uid"], $uid)) {
-	return a_log();
+        return a_log();
+    }
+
+}
+
+
+//查看浏览器cookie中取得uid，不检查是否与密码匹配
+function a_user_logined($uid=false, $redirect="/login") {
+    if ($uid === false) {
+        //get uid from cookie
+        if (false === ($uid = a_cookie_uid()) ) {
+            return false;
+        }
+    }
+
+    $logined = false;
+
+    if (!a_bad_id($uid)
+        && ( $user = a_db("user", $uid) )
+        && a_cookie_password() === md5($user["password"] . $user["last_login"])
+    ) {
+        $logined = true;
     }
 
 
+    return $logined ? $user : false;
 }
-
-
-//返回cookie中的用户名与密码匹配的用户，没有返回false
-function a_user_login() {
-
-}
-
-
-
