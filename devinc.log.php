@@ -85,11 +85,11 @@ function a_log_action() {
 
 
 function a_log_arg($log="warning arg") {
-    return trigger_error($log, E_USER_NOTICE) && false;
+    return trigger_error($log, E_USER_WARNING) && false;
 }
 
 function a_log_sql($log="warning sql") {
-    return trigger_error($log, E_USER_WARNING) && false;
+    return trigger_error($log, E_USER_NOTICE) && false;
 }
 
 function a_error($log) {
@@ -141,7 +141,7 @@ function a_log_hander(&$no, &$log, &$file, &$line, &$context) {
     $file   = str_replace(array($linkdir, $realdir), "", $file);
     $log    = str_replace(array($linkdir, $realdir), "", $log);
 
-    //$debug  = a_log_debug_message();
+    $debug  = a_log_debug_message();
 
     global $log_action;
 
@@ -152,8 +152,8 @@ function a_log_hander(&$no, &$log, &$file, &$line, &$context) {
 
         $str .= "\n" . date("Y-m-d", $time)                                             // 2011-01-01
             . " [" . $username . ":" . $remote . "] ACTION START "                      // [duanyong:127.0.0.1e
-            . str_replace(".php", "", $file) . "\n";                                    // /diary/add
-            //. str_replace(".php", "", $debug["file"]);                                // /diary/add
+            //. str_replace(".php", "", $file) . "\n";                                    // /diary/add
+            . str_replace(".php", "", $debug["file"]);                                  // /diary/add
 
         $log_action = true;
     }
@@ -196,7 +196,7 @@ function a_log_hander(&$no, &$log, &$file, &$line, &$context) {
         . " [" . $desc . "]"                                // [warning]
         . " " . a_log_argument_tostring($log)               // bool(true)
         . " [" . $file . ":" . $line . "]";                 // [/devinc.mysql.php:14]
-    //. " [" . $debug["file"] . "]:" . $debug["line"];    // [/devinc.mysql.php:14]
+    //. " [" . $debug["file"] . "]:" . $debug["line"];      // [/devinc.mysql.php:14]
 
 
     //追加到日志文件中

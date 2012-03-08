@@ -163,7 +163,7 @@ function a_db_insert($table, &$data) {
     ) {
         // 插入失败
 
-        return a_log_sql();
+        return a_log_sql(mysql_error());
     }
 
     return $data[$pid] = $id;
@@ -230,7 +230,7 @@ function a_db_query($sql) {
     }
 
     if ( false === ( $reader = a_db_reader($sql) )) {
-        return a_log_sql();
+        return a_log_sql(mysql_error());
     }
 
 
@@ -266,21 +266,34 @@ function a_db_reader($sql) {
     if (!isset($config["username"])
         || !isset($config["password"])
     ) {
-        return a_log_sql("database need set username or password for mysql connection.");
+        return a_log_sql("database need set username and password for mysql connection.");
     }
+
+    if (!isset($config["farm"])
+        || empty($config["farm"])
+    ) {
+        return a_log_sql("database need know ip mysql connection.");
+    }
+
+
+
+    $farm = $config["farm"];
 
     if (false === ( $conn = mysql_pconnect($farm[0], $config["username"], $config["password"]) )
         || false === mysql_select_db($config["database"], $conn)
         || false === mysql_query("SET NAMES 'UTF8'", $conn)
+        || false === ( $reader = mysql_query($sql, $conn) )
     ) {
         return a_log_sql(mysql_error());
     }
 
-    return  mysql_query($sql, $conn);
+    a_log($sql, E_USER_NOTICE);
+
+    return $reader;
 }
 
 
 function a_db_desc($name) {
-    return a_db_query("desc `" . $name . "`;");
+    return a_db_query("SHOW COLUMNS FROM `" . $name . "`;");
 }
 

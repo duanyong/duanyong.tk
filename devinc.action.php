@@ -115,7 +115,7 @@ function a_action_redirect($url="/", $msg=false, $delay=false) {
 
 
 //服务器发生异常
-function a_server_error() {
+function a_action_error() {
     global $arg;
 
     $arg["err"] = "servererror";
