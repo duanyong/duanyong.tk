@@ -63,15 +63,15 @@ $descriptor = array();
 //
 function a_tracker_init() {
     if (!extension_loaded("inotify")) {
-	//php没有加载inotify模块
+        //php没有加载inotify模块
 
-	return a_log("inotify not loaded.");
+        return a_log("inotify not loaded.");
     }
 
     global $inotify;
 
     if (!$inotify) {
-	$inotify = inotify_init();
+        $inotify = inotify_init();
     }
 
     return $inotify;
@@ -86,14 +86,14 @@ function a_tracker_init() {
 //
 function a_tracker_add($files, $callback) {
     if (!is_array($files)
-	|| !function_exists($callback)
+        || !function_exists($callback)
     ) {
-	return a_log('$files not array or $callback not function.');
+        return a_log('$files not array or $callback not function.');
     }
 
     if (!( $inotify = a_tracker_init() )) {
-	//有可能内核没有inotify模块
-	return a_log("inotify init fail!");
+        //有可能内核没有inotify模块
+        return a_log("inotify init fail!");
     }
 
     global $watching;
@@ -101,21 +101,21 @@ function a_tracker_add($files, $callback) {
 
     //将需要监控的文件存储起来
     foreach ($files as $f) {
-	if (isset($watching[$f])
-	    || !file_exists($f)
-	) {
-	    //目录已监听或者目标不存在
-	    continue;
-	}
+        if (isset($watching[$f])
+            || !file_exists($f)
+        ) {
+            //目录已监听或者目标不存在
+            continue;
+        }
 
-	//目录需要创建，删除
-	$wdid = inotify_add_watch($inotify, $f, IN_CREATE | IN_DELETE | IN_MODIFY);
+        //目录需要创建，删除
+        $wdid = inotify_add_watch($inotify, $f, IN_CREATE | IN_DELETE | IN_MODIFY);
 
-	//将监控的id和文件对应起来
-	//方便event里只需要取wd时就可以知道是那个监控的对象发生了变化
-	$descriptor[$wdid]	    = $f;
-	$watching[$f]["descript"]   = $wdid;
-	$watching[$f]["callback"]   = $callback;
+        //将监控的id和文件对应起来
+        //方便event里只需要取wd时就可以知道是那个监控的对象发生了变化
+        $descriptor[$wdid]	    = $f;
+        $watching[$f]["descript"]   = $wdid;
+        $watching[$f]["callback"]   = $callback;
     }
 
     //开始监听
@@ -132,9 +132,9 @@ function a_tracker_go() {
     global $descriptor;
 
     if (!count($watching)
-	|| $watched === true
+        || $watched === true
     ) {
-	return ;
+        return ;
     }
 
     //设置为已在监听中
@@ -144,81 +144,81 @@ function a_tracker_go() {
     $inotify = a_tracker_init();
 
     while(true) {
-	//读取事件的队列，如果没有任何事件，会阻塞进程
-	if (inotify_queue_len($inotify)) {
-	    //内核检测到有事件（新建、修改或者删除等）
-	    $events = inotify_read($inotify);
+        //读取事件的队列，如果没有任何事件，会阻塞进程
+        if (inotify_queue_len($inotify)) {
+            //内核检测到有事件（新建、修改或者删除等）
+            $events = inotify_read($inotify);
 
-	    $es = array();
+            $es = array();
 
-	    foreach ($events as $event) {
-		//检查每个事件是否有对应的文件以及回调函数
-		if (a_bad_id($event["wd"], $wdid)
-		    || a_bad_string($descriptor[$wdid], $file)
-		    || a_bad_array($watching[$file], $watcher)
+            foreach ($events as $event) {
+                //检查每个事件是否有对应的文件以及回调函数
+                if (a_bad_id($event["wd"], $wdid)
+                    || a_bad_string($descriptor[$wdid], $file)
+                    || a_bad_array($watching[$file], $watcher)
 
-		    || a_bad_string($watcher["callback"], $callback)
-		) {
-		    //对于没有文件名和事件监听的文件不需要做任何事
-		    continue;
-		}
-
-
-		//事件源（自定义属性）
-		$event['dir'] = $file;
+                    || a_bad_string($watcher["callback"], $callback)
+                ) {
+                    //对于没有文件名和事件监听的文件不需要做任何事
+                    continue;
+                }
 
 
-		if (!isset($es[$callback])) {
-		    $es[$callback] = array();
-		}
-
-		//相同文件修改会产生很多事件，此处用$file过滤（保留最后发生的事件）
-		$es[$callback][] = $event;
+                //事件源（自定义属性）
+                $event['dir'] = $file;
 
 
-		/*  将$es结构变成回调函数数组，数组中是一系列inotify的event列表
-		 *
-		 *  $es = array(
-		 *	"a_devwatch_callback" => array(
-		 *	    array($event),
-		 *	    array($event),
-		 *	    array($event),
-		 *	),
-		 *	"a_devlog_split"    => array(
-		 *	    array($event),
-		 *	    array($event),
-		 *	    array($event),
-		 *	),
-		 *  );
-		 *
-		 *  $event = array(
-		 *	"wd"	    : $wd,
-		 *	"mask"	    : $mask,
-		 *	"cookie"    : $cookie,
-		 *	"create"    : 2,	(create / modify / delete 三者只有其中一种, 自定义)
-		 *	"modify"    : 68,	(create / modify / delete 三者只有其中一种, 自定义)
-		 *	"delete"    : 512,	(create / modify / delete 三者只有其中一种, 自定义)
-		 *	"source"    : 事件源,一般为目录	(自定义)
-		 *	"is_dir"    : true / false,	(自定义)
-		 *  )
-		 *
-		 *
-		 * */
-	    }
+                if (!isset($es[$callback])) {
+                    $es[$callback] = array();
+                }
+
+                //相同文件修改会产生很多事件，此处用$file过滤（保留最后发生的事件）
+                $es[$callback][] = $event;
 
 
-	    foreach ($es as $callback => $events) {
-		//准备回调函数
-		try {
-		    call_user_func_array($callback, array(a_tracker_events_unique($events)));
-		} catch (Exception $e) {
-		    a_log($e->getMessage());
-		}
-	    }
-	}
+                /*  将$es结构变成回调函数数组，数组中是一系列inotify的event列表
+                 *
+                 *  $es = array(
+                 *	"a_devwatch_callback" => array(
+                 *	    array($event),
+                 *	    array($event),
+                 *	    array($event),
+                 *	),
+                 *	"a_devlog_split"    => array(
+                 *	    array($event),
+                 *	    array($event),
+                 *	    array($event),
+                 *	),
+                 *  );
+                 *
+                 *  $event = array(
+                 *	"wd"	    : $wd,
+                 *	"mask"	    : $mask,
+                 *	"cookie"    : $cookie,
+                 *	"create"    : 2,	(create / modify / delete 三者只有其中一种, 自定义)
+                 *	"modify"    : 68,	(create / modify / delete 三者只有其中一种, 自定义)
+                 *	"delete"    : 512,	(create / modify / delete 三者只有其中一种, 自定义)
+                 *	"source"    : 事件源,一般为目录	(自定义)
+                 *	"is_dir"    : true / false,	(自定义)
+                 *  )
+                 *
+                 *
+                 * */
+            }
 
-	//没有新事件，沉睡两秒后唤醒
-	sleep(1);
+
+            foreach ($es as $callback => $events) {
+                //准备回调函数
+                try {
+                    call_user_func_array($callback, array(a_tracker_events_unique($events)));
+                } catch (Exception $e) {
+                    a_log($e->getMessage());
+                }
+            }
+        }
+
+        //没有新事件，沉睡两秒后唤醒
+        sleep(1);
     }
 }
 
@@ -237,26 +237,26 @@ function a_tracker_events_unique(&$events) {
     $ret = array();
 
     foreach ($events as &$e) {
-	if (( $name = $e["name"] )) {
-	    //有文件名才检查，其它忽略
-	    if (!isset($ret[$name])) {
-		$ret[$name] = $e;
-	    }
+        if (( $name = $e["name"] )) {
+            //有文件名才检查，其它忽略
+            if (!isset($ret[$name])) {
+                $ret[$name] = $e;
+            }
 
-	    //与队列中的事件对比mask，根据mask的优先级决定是否保留原来的mask值
-	    //删除事件优先级最高，其它事件全部忽略
-	    $ret[$name]["wd"]	    = $e["wd"];
-	    $ret[$name]["dir"]      = $e["dir"];
-	    $ret[$name]["mask"]	    = $e["mask"];
-	    $ret[$name]["delete"]   = $e["mask"] & IN_DELETE;
-	    $ret[$name]["modify"]   = $e["mask"] & IN_MODIFY;
-	    $ret[$name]["create"]   = $e["mask"] & IN_CREATE;
-	    $ret[$name]["cookie"]   = $e["cookie"];
-	    $ret[$name]["is_dir"]   = $e["mask"] & IN_ISDIR;
-	}
+            //与队列中的事件对比mask，根据mask的优先级决定是否保留原来的mask值
+            //删除事件优先级最高，其它事件全部忽略
+            $ret[$name]["wd"]	    = $e["wd"];
+            $ret[$name]["dir"]      = $e["dir"];
+            $ret[$name]["mask"]	    = $e["mask"];
+            $ret[$name]["delete"]   = $e["mask"] & IN_DELETE;
+            $ret[$name]["modify"]   = $e["mask"] & IN_MODIFY;
+            $ret[$name]["create"]   = $e["mask"] & IN_CREATE;
+            $ret[$name]["cookie"]   = $e["cookie"];
+            $ret[$name]["is_dir"]   = $e["mask"] & IN_ISDIR;
+        }
 
-	//一定要unset掉变量
-	unset($e);
+        //一定要unset掉变量
+        unset($e);
     }
 
     return $ret;
