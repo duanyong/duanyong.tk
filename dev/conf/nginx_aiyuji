@@ -3,9 +3,9 @@ server {
     listen 80;
 
     # 注意名称
-    server_name aiyuji.com aiyuji-dev.com;
+    server_name aiyuji.com;
 
-    root    /var/www/aiyuji;
+    root    /var/www/aiyuji.com;
     index   index.html index.shtml;
 
     error_log       /var/log/nginx/aiyuji.error.log;
@@ -67,7 +67,7 @@ server {
 
     # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
     location ~ \.php$ {
-        include         /var/www/aiyuji/dev/conf/fastcgi_params;
+        include         /var/www/aiyuji.com/dev/conf/fastcgi_params;
         fastcgi_pass    unix:/tmp/php.socket;
         fastcgi_index   index.php;
     }

@@ -1,15 +1,15 @@
 *.swo
 *.swp
 
-?.php
-?.tpl
+#?.php
+#?.tpl
 
-*.html
-*.shtml
+#*.html
+#*.shtml
 
 # aa.js, cc.css
-*.js
-*.css
+#*.js
+#*.css
 !dev.*.js
 !dev.*.css
 
