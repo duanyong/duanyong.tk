@@ -21,29 +21,16 @@
 
 
 //项目根目录
-define("ROOT_DIR", "/var/www/aiyuji");
-
-
+define("ROOT_DIR", $_SERVER['DOCUMENT_ROOT']);
 //系统临时目录
-define("TMP_DIR", "/tmp");
-
-//系统路径分隔符
-define("SEPARATOR", "/");
-
-
-//配置文件
-require_once(ROOT_DIR. '/devinc.farm.php');
+define("TEMP_DIR", $_SERVER['TEMP_ROOT']);
 
 
 //基础的php文件（顺序不能乱）
-require_once(ROOT_DIR . '/devinc.bad.php');
-require_once(ROOT_DIR . '/devinc.log.php');
-require_once(ROOT_DIR . '/devinc.smarty.php');
-require_once(ROOT_DIR . '/devinc.action.php');
+require_once(ROOT_DIR . '/dev/devinc.bad.php');
+require_once(ROOT_DIR . '/dev/devinc.safe.php');
+require_once(ROOT_DIR . '/dev/devinc.mdb2.php');
+require_once(ROOT_DIR . '/dev/devinc.action.php');
 
 //数据库文件
-require_once(ROOT_DIR . '/devinc.mysql.php');
-
-
-//smarty模板
-require_once(ROOT_DIR . '/devinc.smarty.php');
+require_once(ROOT_DIR . '/dev/devinc.mysql.php');

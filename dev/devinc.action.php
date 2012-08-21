@@ -13,17 +13,26 @@
 //	a_action_redirect($msg)
 //	    显示提示的信息，然后返回页面
 //
-//	a_action_get()
-//	    返回get请求提交的数据
-//
-//	a_action_post()
-//	    返回post请求提交的数据
 //
 //	a_action_ajax()
 //	    返回ajax请求提交的数据
 //
 //
 ////////////////////////////////////////////////////////////////////////////////
+
+function a_action_uuid() {
+    $uuid = date('Y-m-d H:i:s')
+        . rand(1000000, 9000000)
+        . rand(1000000, 9000000)
+        . rand(1000000, 9000000)
+        . rand(1000000, 9000000)
+        . rand(1000000, 9000000)
+        . rand(1000000, 9000000)
+        . rand(1000000, 9000000)
+        . $_SERVER['SCRIPT_FILE'];
+
+    return md5($uuid);
+}
 
 
 function a_action_user() {
