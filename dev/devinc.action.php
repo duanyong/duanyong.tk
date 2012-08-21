@@ -29,25 +29,10 @@ function a_action_uuid() {
         . rand(1000000, 9000000)
         . rand(1000000, 9000000)
         . rand(1000000, 9000000)
-        . $_SERVER['SCRIPT_FILE'];
+        . $_SERVER['SCRIPT_FILENAME'];
+
 
     return md5($uuid);
-}
-
-
-function a_action_user() {
-    if (!( $uid = a_cookie_uid() )
-        || ( $password = a_cookie_password )
-    ) {
-        return false;
-    }
-
-
-    if (!( $user = a_db("user", $uid) )
-        || !()
-    ) {
-        return false;
-    }
 }
 
 
@@ -97,6 +82,21 @@ function a_action_page($tpl=false, $url=false, $stay=false) {
 
     //交给smarty去渲染出页面
     a_smarty($tpl, $arg);
+}
+
+
+//返回json格式
+function a_action_json($array) {
+    if (!is_array($array)) {
+        echo json_encode(array(
+            'error'     => 500,
+            'errmsg'    => '无数据输出',
+        ));
+
+        return ;
+    }
+
+    echo json_encode($array);
 }
 
 

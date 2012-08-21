@@ -4,60 +4,51 @@
 //	cookie操作的相关函数
 //
 //
-//	a_cookie_set($name, $value, $day=0)
+//	a_cookie($key, &$value=fase, $day=0)
 //	    向客户端设置cookie, $day开之后失效。如果不设置，者浏览器关闭后就失败
 //
-//	a_cookie_get($name)
+//	a_cookie($name)
 //	    接收smarty模板，将其渲染出来
 //
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 
-defined("COOKIE_UID") or define("COOKIE_UID", "uid");
 
-defined("COOKIE_USERNAME") or define("COOKIE_USERNAME", "username");
-defined("COOKIE_PASSWORD") or define("COOKIE_PASSWORD", "password");
+function a_cookie($key, &$value=false, $day=0) {
+    if (a_bad_string($key)) {
+        return false;
+    }
+
+    if ($value !== false) {
+        a_cookie_set($key, $value, $day);
+
+        return ;
+    }
+
+    return a_cookie_get($key);
+}
 
 
-function a_cookie_set($name, $value, $day=0)() {
-    if (a_bad_string($name)
+function a_cookie_set($key, $value, $day=0) {
+    if (a_bad_string($key)
         || a_bad_0string($value)
 
         || a_bad_0id($day)
     ) {
+        return false;
+    }
+
+    $exp = $day * 86400 + a_action_time();
+
+    setcookie($key, htmlspecialchars($value), $exp);
+}
+
+
+function a_cookie_get($key) {
+    if (a_bad_string($key)) {
         return a_log_arg();
     }
 
-    // TODO
-    $secure = true;
-
-    $subdomain = "duanyong.tk";
-
-    setcookie($name, htmlspecialchars($value, "UTF-8"), $day * 60 * 60 * 24, "/", $subdomain, $secure);
-}
-
-
-function a_cookie_get($name) {
-    if (a_bad_string($name)) {
-        return a_log_arg();
-    }
-
-    $cookie = false;
-
-    if (isset($_COOKIE[$name])) {
-        $cookie = htmlspecialchars_decode($_COOKIE[$name]);
-    }
-
-    return $cookie
-}
-
-
-function a_cookie_uid() {
-    return a_cookie_get(COOKIE_UID);
-}
-
-
-function a_cookie_password() {
-    return a_cookie_get(COOKIE_PASSWORD);
+    return isset($_COOKIE[$key]) ? htmlspecialchars_decode($_COOKIE[$key]) : false;
 }

@@ -18,5 +18,32 @@ fastcgi_param  SERVER_ADDR        $server_addr;
 fastcgi_param  SERVER_PORT        $server_port;
 fastcgi_param  SERVER_NAME        $server_name;
 
+fastcgi_param  SERVER_TEMP          /tmp;
+
+fastcgi_param  MYSQL_MASTER_USER    root;
+fastcgi_param  MYSQL_MASTER_PASS    a;
+fastcgi_param  MYSQL_MASTER_HOST    127.0.0.1;
+fastcgi_param  MYSQL_MASTER_PORT    3306;
+fastcgi_param  MYSQL_MASTER_DBNAME  test;
+
+fastcgi_param  MYSQL_SLAVES_USER    root;
+fastcgi_param  MYSQL_SLAVES_PASS    a;
+fastcgi_param  MYSQL_SLAVES_HOST    127.0.0.1;
+fastcgi_param  MYSQL_SLAVES_PORT    3306;
+fastcgi_param  MYSQL_SLAVES_DBNAME  test;
+
+fastcgi_param  SINASRV_DB4_USER   root;
+fastcgi_param  SINASRV_DB4_PASS   a;
+fastcgi_param  SINASRV_DB4_HOST   localhost;
+fastcgi_param  SINASRV_DB4_PORT   3306;
+fastcgi_param  SINASRV_DB4_NAME   test;
+
+fastcgi_param  SINASRV_DB4_USER_R root;
+fastcgi_param  SINASRV_DB4_PASS_R a;
+fastcgi_param  SINASRV_DB4_HOST_R localhost;
+fastcgi_param  SINASRV_DB4_PORT_R 3306;
+fastcgi_param  SINASRV_DB4_NAME_R test;
+
+
 # PHP only, required if PHP was built with --enable-force-cgi-redirect
 # fastcgi_param  REDIRECT_STATUS    200;

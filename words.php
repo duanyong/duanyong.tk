@@ -14,7 +14,7 @@ if (!( $tear = a_cookie('__tear') )) {
     $tear = a_action_uuid();
 
     //永不过期
-    s_cookie('__tear', $tear, 864000000);
+    a_cookie('__tear', $tear, 10);
 }
 
 
@@ -31,18 +31,23 @@ if (a_bad_post('words', $words)) {
 
 $time = a_action_time();
 
-
 $data = array();
 $data['tear']  = $tear;
 
 $data['token'] = $token;
 $data['words'] = $words;
 $data['ip']    = a_action_ip();
-$data['time']  = a_action_time();
+$data['time']  = $time;
+$data['ftime'] = date('Y-m-d H:i:s', $time);
 
 
-if (false === a_db('me:insert', $data)) {
+if (false === ( $id = a_db('%s_words:insert', $data) )) {
     return a_action_error('南飞', 501);
 }
 
 
+//更新此token对应的汇总数据
+a_action_json(array(
+    'error'     => 0,
+    'id'        => $id,
+));

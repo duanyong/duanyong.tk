@@ -53,19 +53,32 @@ require_once('MDB2.php');
 
 //主数据的链接（写操作）
 function &a_db_plink() {
+    /*
 	$dsn = array(
         'phptype'  => "mysql",
-        'username' => $_SERVER['AIYUJI_MYSQL_USER'],
-        'password' => $_SERVER['AIYUJI_MYSQL_PASS'],
-        'hostspec' => $_SERVER['AIYUJI_MYSQL_HOST'],
-        'port'     => $_SERVER['AIYUJI_MYSQL_PORT'],
-        'database' => $_SERVER['AIYUJI_MYSQL_NAME'],
+        'username' => $_SERVER['MYSQL_MASTER_USER'],
+        'password' => $_SERVER['MYSQL_MASTER_PASS'],
+        'hostspec' => $_SERVER['MYSQL_MASTER_HOST'],
+        'port'     => $_SERVER['MYSQL_MASTER_PORT'],
+        'database' => $_SERVER['MYSQL_MASTER_DBNAME'],
+		'charset'  => 'utf8',
+	);
+     */
+
+	$dsn = array(
+        'phptype'  => "mysql",
+        'username' => $_SERVER['SINASRV_DB4_USER'],
+        'password' => $_SERVER['SINASRV_DB4_PASS'],
+        'hostspec' => $_SERVER['SINASRV_DB4_HOST'],
+        'port'     => $_SERVER['SINASRV_DB4_PORT'],
+        'database' => $_SERVER['SINASRV_DB4_NAME'],
 		'charset'  => 'utf8',
 	);
 
+
 	$db = MDB2::connect($dsn);
 	if (MDB2::isError($db)) {
-        die(a_err_sql($db->getMessage()));
+        die(a_log($db->getMessage()));
 	}
 
 	$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
@@ -75,10 +88,21 @@ function &a_db_plink() {
 
 //从数据库的链接（读操作）
 function &a_db_slink() {
+    /*
+	$dsn = array(
+        'phptype'  => "mysql",
+        'username' => $_SERVER['MYSQL_SLAVES_USER'],
+        'password' => $_SERVER['MYSQL_SLAVES_PASS'],
+        'hostspec' => $_SERVER['MYSQL_SLAVES_HOST'],
+        'port'     => $_SERVER['MYSQL_SLAVES_PORT'],
+        'database' => $_SERVER['MYSQL_SLAVES_DBNAME'],
+		'charset'  => 'utf8',
+    );
+     */
 	$dsn = array(
         'phptype'  => "mysql",
         'username' => $_SERVER['SINASRV_DB4_USER_R'],
-        'password' => $_SERVER['SINASRV_DB4_PASa_R'],
+        'password' => $_SERVER['SINASRV_DB4_PASS_R'],
         'hostspec' => $_SERVER['SINASRV_DB4_HOST_R'],
         'port'     => $_SERVER['SINASRV_DB4_PORT_R'],
         'database' => $_SERVER['SINASRV_DB4_NAME_R'],
@@ -87,7 +111,7 @@ function &a_db_slink() {
 
 	$db = MDB2::connect($dsn);
 	if (MDB2::isError($db)) {
-        die(a_err_sql($db->getMessage()));
+        die(a_log($db->getMessage()));
     }
 
     $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
@@ -97,7 +121,7 @@ function &a_db_slink() {
 
 //Disconnecting a database
 function a_db_close(&$dbh) {
-	if (ia_object($dbh)) {
+	if (is_object($dbh)) {
         try {
             $dbh->disconnect();
         } catch (Exception $e) {
@@ -333,7 +357,7 @@ function _a_db_insert($table, &$data) {
     if (a_bad_string($table)
         || a_bad_array($data)
     ) {
-        return a_err_arg();
+        return false;
     }
 
     if (isset($data["id"])) {
@@ -366,19 +390,19 @@ function _a_db_insert($table, &$data) {
     $arr = array();
 
     foreach (array_values($data) as $value) {
-        if (ia_string($value)) {
+        if (is_string($value)) {
             $arr[] = '"' . a_safe_value($value) . '"';
 
-        } else if (ia_int($value)) {
+        } else if (is_int($value)) {
             $arr[] = $value;
 
-        } else if (ia_float($value)) {
+        } else if (is_float($value)) {
             $arr[] = $value;
 
-        } else if (ia_double($value)) {
+        } else if (is_double($value)) {
             $arr[] = $value;
 
-        } else if (ia_bool($value)) {
+        } else if (is_bool($value)) {
             $arr[] = ($value === true ? 1 : 0);
 
         } else {
@@ -426,7 +450,7 @@ function _a_db_update($table, &$v1, &$v2) {
             continue;
         }
 
-        $values[] = "`{$key}`=" . ( ia_string($value) ? '"' . a_safe_value($value) . '"' : $value );
+        $values[] = "`{$key}`=" . ( is_string($value) ? '"' . a_safe_value($value) . '"' : $value );
     }
 
     $sql  = "update `{$table}` set " . implode(", ", $values) . " where `id`={$pid}";
@@ -439,7 +463,7 @@ function _a_db_update($table, &$v1, &$v2) {
 function _a_db_delete($table, $v1) {
     if (a_bad_string($table, $table, true)
         //是数组取主键值
-        || !( $v1 = ( ia_array($v1) && isset($v1["id"]) ) ? intval($v1["id"]) : $v1 )
+        || !( $v1 = ( is_array($v1) && isset($v1["id"]) ) ? intval($v1["id"]) : $v1 )
         || a_bad_id($v1)
     ) {
         return a_err_arg();

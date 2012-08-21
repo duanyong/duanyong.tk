@@ -13,14 +13,30 @@
         </div>
 
         <div id="main">
-            <form id="content_form">
-                <label for="token">写给</label><input id="token" type="text" name="token" />
-                <label for="content">想说的话</label><textarea id="content" type="text" name="content"></textarea>
+            <form id="words_form" action="words.php" method="post">
+                <label for="token">写给</label><input id="token" type="text" name="token" /><br />
+                <label for="content">想说的话</label><textarea id="content" type="text" name="words"></textarea>
+                <input id="form_submit" type="submit" value="传送" /><div id="words_indicator"></div>
             </form>
         </div>
 
         <div id="footer">
         </div>
     </div>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-34246201-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+</script>
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+ <script src="js/index.js"></script>
 </body>
 </html>

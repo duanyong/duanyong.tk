@@ -53,7 +53,7 @@ static $log_action  = false;
 
 error_reporting(E_ALL);
 
-ini_set('display_errors', 'Off');
+//ini_set('display_errors', 'Off');
 
 
 //开启日志输出
@@ -73,7 +73,9 @@ function a_log_off() {
 
 //E_USER_NOTICE	- 默认。用户生成的 run-time 通知。脚本发现了可能的错误，也有可能在脚本运行正常时发生。
 function a_log($log=false, $level=E_USER_NOTICE) {
-    $log = a_log_argument_tostring($log);
+    //$log = a_log_argument_tostring($log);
+    var_dump($log);
+    return ;
 
     return trigger_error($log, $level) && false;
 }

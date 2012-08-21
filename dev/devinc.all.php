@@ -23,14 +23,18 @@
 //项目根目录
 define("ROOT_DIR", $_SERVER['DOCUMENT_ROOT']);
 //系统临时目录
-define("TEMP_DIR", $_SERVER['TEMP_ROOT']);
+define("TEMP_DIR", $_SERVER['SERVER_TEMP']);
+
+define('APP_DB_PREFIX', '201208aiyuji');
+
+
 
 
 //基础的php文件（顺序不能乱）
+require_once(ROOT_DIR . '/dev/devinc.log.php');
 require_once(ROOT_DIR . '/dev/devinc.bad.php');
 require_once(ROOT_DIR . '/dev/devinc.safe.php');
 require_once(ROOT_DIR . '/dev/devinc.mdb2.php');
 require_once(ROOT_DIR . '/dev/devinc.action.php');
+require_once(ROOT_DIR . '/dev/devinc.cookie.php');
 
-//数据库文件
-require_once(ROOT_DIR . '/dev/devinc.mysql.php');
