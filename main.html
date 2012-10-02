@@ -36,8 +36,8 @@
         </div>
 
         <div id="anony">
-            <a id="btn_nav_login" href="javascript:void(0);">登录</a>
-            <a id="btn_nav_reg" href="javascript:void(0);">现在注册</a>
+            <a id="btn_nav_login" href="javascript:void(0);" onclick="s_ga_click('main_login');">登录</a>
+            <a id="btn_nav_reg" href="javascript:void(0);" onclick="s_ga_click('main_reg');">现在注册</a>
         </div>
     </div>
 
@@ -61,18 +61,22 @@
             <form id="reg_form" class="form" action="reg.php" method="post">
                 <fieldset>
                     <div class="item">
-                        <label for="username">账号</label>
-                        <input id="username" class="input text" type="text" name="username" value="" tabindex="1" />
+                        <label for="rnickname">昵称</label>
+                        <input id="rnickname" class="input text" type="text" name="nickname" data-text="好名字会让所有人都记得你" tabindex="1" maxlength="18" />
                     </div>
                     <div class="item">
-                        <label for="password">密码</label>
-                        <input id="password" class="input text" type="password" name="password" value="" tabindex="2" />
+                        <label for="rusername">账号</label>
+                        <input id="rusername" class="input text" type="text" name="username" data-text="请输入您的邮箱或者手机号" tabindex="2" maxlength="25" />
+                    </div>
+                    <div class="item">
+                        <label for="rpassword">密码</label>
+                        <input id="rpassword" class="input text" type="password" name="password" data-text="请输入您的登录密码" tabindex="3" maxlength="32" />
                     </div>
 
                     <div class="item">
-                        <input id="agreement" class="input radio" type="checkbox" name="agreement" value="yes" tabindex="3" />
-                        <label for="agreement">同意用户协议</label>
-                        <input id="reg_submit" class="submit" type="submit" value="注 册" tabindex="4" />
+                        <input id="ragreement" class="input radio" type="checkbox" name="agreement" value="yes" tabindex="4" />
+                        <label for="ragreement">同意用户协议</label>
+                        <input id="reg_submit" class="submit" type="submit" value="注 册" tabindex="5" />
                     </div>
                 </fieldset>
             </form>
@@ -93,11 +97,11 @@
                 <fieldset>
                     <div class="item">
                         <label for="username">账号</label>
-                        <input id="username" class="input text" type="text" name="username" value="" tabindex="1" />
+                        <input id="username" class="input text" type="text" name="username" data-text="请输入您的邮箱或手机号码" tabindex="1" />
                     </div>
                     <div class="item">
                         <label for="password">密码</label>
-                        <input id="password" class="input text" type="password" name="password" value="" tabindex="2" />
+                        <input id="password" class="input text" type="password" name="password" data-text="请输入您的登录密码" tabindex="2" />
                     </div>
 
                     <div class="item">
@@ -121,17 +125,11 @@
 <script src="js/jquery.pop.js"></script>
 <script src="js/jquery.form.js"></script>
 <script src="js/main.js"></script>
+
+<script src="js/jquery.ga.js"></script>
 <!-- script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script -->
 <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-34246201-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
+    s_ga_init('UA-34246201-1');
 </script>
 </body>
 </html>

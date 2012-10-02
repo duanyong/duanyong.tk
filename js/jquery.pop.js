@@ -127,7 +127,8 @@ $.fn.pop = function(popy, fade) {
 
 
 $.fn.popOff = function() {
-    $(this).trigger('close');
+    close.trigger('close');
+    //pop.selector(' form')[0].reset();
 
     pop     = null;
     mask    = null;

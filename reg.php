@@ -21,10 +21,16 @@ if (s_bad_post('password', $password)) {
 }
 
 
+if (s_bad_post('nickname', $nickname)) {
+    //没有填写密码
+    return s_action_error('请填写你的用户昵称', 10003);
+}
 
-if (s_db_one("select `id` from `%s_user` where `username`='{$username}'")) {
+
+
+if (s_db_one("select `id` from `%s_user` where `username`='{$username}' or `nickname`='{$nickname}'")) {
     //用户名已被注册
-    return s_action_error('您的用户名已被注册', 10003);
+    return s_action_error('您的用户名或昵称已被注册', 10004);
 }
 
 
@@ -38,7 +44,7 @@ $data['password']   = s_ssocookie_md5($username, $password);
 // 插入数据
 if (false === ( $uid =  s_db('%s_user:insert', $data) )) {
     //注册失败
-    return s_action_error('注册失败', 10004);
+    return s_action_error('注册失败', 10005);
 }
 
 

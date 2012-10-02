@@ -26,9 +26,10 @@ CREATE TABLE `201208aiyuji_user` (
     `id`            INT(10)         UNSIGNED    NOT NULL    AUTO_INCREMENT                  COMMENT '主键',
     `username`      CHAR(64)                    NOT NULL    DEFAULT ''                      COMMENT '用户手机',
     `password`      CHAR(32)                    NOT NULL    DEFAULT ''                      COMMENT '用户密码',
-    `tear`          CHAR(32)                    NOT NULL    DEFAULT ''                      COMMENT '用户标识',
+    `nickname`      VARCHAR(32)                 NOT NULL    DEFAULT ''                      COMMENT '用户昵称',
     `token`         CHAR(64)                    NOT NULL    DEFAULT ''                      COMMENT '用户标识',
-    `name`          VARCHAR(32)                 NOT NULL    DEFAULT ''                      COMMENT '用户姓名',
+    `firstname`     VARCHAR(32)                 NOT NULL    DEFAULT ''                      COMMENT '用户姓氏',
+    `lastname`      VARCHAR(32)                 NOT NULL    DEFAULT ''                      COMMENT '用户名字',
     `sex`           BOOLEAN                     NOT NULL    DEFAULT FALSE                   COMMENT '用户性别',
     `regip`         VARCHAR(32)                 NOT NULL    DEFAULT ''                      COMMENT '注册IP',
     `sum`           INT(11)         UNSIGNED    NOT NULL    DEFAULT '0'                     COMMENT '留言总数',
@@ -38,10 +39,9 @@ CREATE TABLE `201208aiyuji_user` (
     `status`        TINYINT(4)                  NOT NULL    DEFAULT '0'                     COMMENT '当前状态',
 
     PRIMARY KEY (`id`),
-    INDEX `idx_tear` (`tear`),
-    INDEX `idx_token` (`tear`),
+    INDEX `idx_token` (`token`),
     INDEX `idx_username` (`username`),
-    INDEX `idx_password` (`password`),
+    INDEX `idx_nickname` (`nickname`),
     INDEX `idx_status` (`status`)
 
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户信息表';

@@ -54,8 +54,46 @@
  */
 var form, method, data;
 
+function form_ajax(form, callback) {
+    $.ajax({
+        "url"       : form.attr('action') + "?r" + Math.random(),
+        "type"      : method ? method : form.attr('method'),
+        "dataType"  : data ? data : "json",
+        "data"      : form.serialize(),
+        "success"   : function(ret) {
+            callback(ret);
+        }
+	});
+}
 
-function ajax(form, callback) {
+
+function form_input(event) {
+    $.ajax({
+        "url"       : form.attr('action') + "?r" + Math.random(),
+        "type"      : method ? method : form.attr('method'),
+        "dataType"  : data ? data : "json",
+        "data"      : form.serialize(),
+        "success"   : function(ret) {
+            callback(ret);
+        }
+	});
+}
+
+
+function form_password(event) {
+    $.ajax({
+        "url"       : form.attr('action') + "?r" + Math.random(),
+        "type"      : method ? method : form.attr('method'),
+        "dataType"  : data ? data : "json",
+        "data"      : form.serialize(),
+        "success"   : function(ret) {
+            callback(ret);
+        }
+	});
+}
+
+
+function form_select(event) {
     $.ajax({
         "url"       : form.attr('action') + "?r" + Math.random(),
         "type"      : method ? method : form.attr('method'),
@@ -83,7 +121,33 @@ $.fn.ajax = function(callback, params, method, data) {
         callback = function() {}
     }
 
-    ajax(form, callback);
+    form_ajax(form, callback);
+
+    form    = null;
+    data    = null;
+    method  = null;
 };
+
+/**
+ * human() provides a mechanism for immediately submitting
+ * an HTML form using AJAX.
+ */
+
+$.fn.human = function() {
+    /*jshint scripturl:true */
+};
+
+
+$.fn.wrong = function(text) {
+    var ele = $(this);
+
+    text = text || ele.attr('data-text') || "这儿不能为空哦";
+
+    alert(text);
+
+    return false;
+};
+
+
 
 })(jQuery);
