@@ -10,21 +10,18 @@
  * Version:		1.0
  */
 
+
 class SSOCookie {
     const COOKIE_SUE = 'SUE';   //sina user encrypt info
     const COOKIE_SUP = 'SUP';   //sina user plain info
 	//const COOKIE_KEY_FILE = '/data1/publish/cookie.conf';
 
-	private $_error;
-	private $_errno = 0;
 	private $_arrConf; // the infomation in cookie.conf
     private static $_arrKeyMap = array(
         "cv"    => "cookieversion",
         "bt"    => "begintime",
         "et"    => "expiredtime",
         "uid"   => "uniqueid",
-        "user"  => "userid",
-        "ag"    => "appgroup",
         "nick"  => "displayname",
         "sex"   => "gender",
         "ps"    => "paysign",
@@ -41,9 +38,6 @@ class SSOCookie {
         if (!isset($_COOKIE[self::COOKIE_SUE])
             || !isset($_COOKIE[self::COOKIE_SUP])
         ) {
-            $this->_setError('');
-            //$this->_setError('not all cookie are exists ');
-
             return false;
         }
 

@@ -22,8 +22,7 @@
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-/*
-CREATE TABLE `user` (
+CREATE TABLE `201208aiyuji_user` (
     `id`            INT(10)         UNSIGNED    NOT NULL    AUTO_INCREMENT                  COMMENT '主键',
     `username`      CHAR(64)                    NOT NULL    DEFAULT ''                      COMMENT '用户手机',
     `password`      CHAR(32)                    NOT NULL    DEFAULT ''                      COMMENT '用户密码',
@@ -33,6 +32,7 @@ CREATE TABLE `user` (
     `sex`           BOOLEAN                     NOT NULL    DEFAULT FALSE                   COMMENT '用户性别',
     `regip`         VARCHAR(32)                 NOT NULL    DEFAULT ''                      COMMENT '注册IP',
     `sum`           INT(11)         UNSIGNED    NOT NULL    DEFAULT '0'                     COMMENT '留言总数',
+
     `time`          INT(11)         UNSIGNED    NOT NULL    DEFAULT '0'                     COMMENT '注册时间',
     `ftime`         DATETIME                    NOT NULL    DEFAULT '0000-00-00 00:00:00'   COMMENT '注册时间',
     `status`        TINYINT(4)                  NOT NULL    DEFAULT '0'                     COMMENT '当前状态',
@@ -45,7 +45,6 @@ CREATE TABLE `user` (
     INDEX `idx_status` (`status`)
 
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户信息表';
-*/
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 

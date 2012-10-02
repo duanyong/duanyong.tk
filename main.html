@@ -36,8 +36,8 @@
         </div>
 
         <div id="anony">
-            <a href="javascript:void(0);" onclick="a_user_login();">登录</a>
-            <a href="javascript:void(0);" onclick="a_user_reg();">现在注册</a>
+            <a id="btn_nav_login" href="javascript:void(0);">登录</a>
+            <a id="btn_nav_reg" href="javascript:void(0);">现在注册</a>
         </div>
     </div>
 
@@ -52,13 +52,13 @@
     <div id="footer">
     </div>
 
-    <div id="login_dialog" class="ui-dialog" style="width: 551px; height: 400px; left: 644px; top: 37px; visibility: visible;">
-        <a class="close">x</a>
+    <div id="reg_dialog" class="ui-dialog" style="display: none;">
+        <a class="close">X</a>
         <div class="column ui-dialog-col1">
         </div>
 
         <div class="column ui-dialog-col2">
-            <form class="form">
+            <form id="reg_form" class="form" action="reg.php" method="post">
                 <fieldset>
                     <div class="item">
                         <label for="username">账号</label>
@@ -70,9 +70,9 @@
                     </div>
 
                     <div class="item">
-                        <input id="agrement" class="input radio" type="checkbox" name="agreement" value="yes" tabindex="3" />
-                        <label for="agrement">同意用户协议</label>
-                        <input class="submit" type="submit" value="注 册" tabindex="4" />
+                        <input id="agreement" class="input radio" type="checkbox" name="agreement" value="yes" tabindex="3" />
+                        <label for="agreement">同意用户协议</label>
+                        <input id="reg_submit" class="submit" type="submit" value="注 册" tabindex="4" />
                     </div>
                 </fieldset>
             </form>
@@ -83,11 +83,45 @@
         </div>
     </div>
 
-    <div id="mark" class="overlay"></div>
+    <div id="login_dialog" class="ui-dialog" style="display: none;">
+        <a class="close">X</a>
+        <div class="column ui-dialog-col1">
+        </div>
+
+        <div class="column ui-dialog-col2">
+            <form id="login_form" class="form" action="login.php" method="post">
+                <fieldset>
+                    <div class="item">
+                        <label for="username">账号</label>
+                        <input id="username" class="input text" type="text" name="username" value="" tabindex="1" />
+                    </div>
+                    <div class="item">
+                        <label for="password">密码</label>
+                        <input id="password" class="input text" type="password" name="password" value="" tabindex="2" />
+                    </div>
+
+                    <div class="item">
+                        <input id="login_submit" class="submit" type="submit" value="登 录" tabindex="4" />
+                    </div>
+                </fieldset>
+            </form>
+
+            <div style="display: none;">
+                联合登录：新浪微博、QQ、MSN
+            </div>
+        </div>
+    </div>
+
+
+    <div class="overlay"></div>
 </div>
 
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script src="js/jquery-1.7.2.min.js"></script>
+<script src="js/jquery.pop.js"></script>
+<script src="js/jquery.form.js"></script>
+<script src="js/main.js"></script>
+<!-- script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script -->
 <script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-34246201-1']);

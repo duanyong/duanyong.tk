@@ -20,7 +20,11 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-function a_action_uuid() {
+function a_action_uuid($token=false) {
+    if ($token = false) {
+        $token = '';
+    }
+
     $uuid = date('Y-m-d H:i:s')
         . rand(1000000, 9000000)
         . rand(1000000, 9000000)

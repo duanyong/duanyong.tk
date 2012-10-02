@@ -6,51 +6,44 @@
  *
  * */
 
-require_once __DIR__ . '/devinc.all.php';
-require_once ROOT_DIR . '/user/devapi.user.php';
-require_once ROOT_DIR . '/dev/db/user.php';
+require_once("dev/devapp.config.php");
+require_once(ROOT_DIR . "/dev/devinc.password.php");
 
 
-
-$arg	= array();
-$user	= array();
-
-
-if (a_bad_username($_POST["username"], $user['username'])) {
+if (s_bad_post('username', $username)) {
     //没有填写账户
-    exit(a_action_msg('请填写您的手机或者邮箱做为登录账号'));
+    return s_action_error('请填写您的手机或者邮箱做为登录账号', 10001);
 }
 
-if (a_bad_password($_POST["password"], $user['password'])) {
+if (s_bad_post('password', $password)) {
     //没有填写密码
-    exit(a_action_msg('请填写你的登录密码'));
+    return s_action_error('请填写你的登录密码', 10002);
 }
 
 
 
-// 取值完毕
-
-
-//检查数据库中的值是否存在
-if (a_user_by_username($user['username'])) {
-    exit(a_action_msg('对不起，此账号已被注册，请重新输入新的账号'));
+if (s_db_one("select `id` from `%s_user` where `username`='{$username}'")) {
+    //用户名已被注册
+    return s_action_error('您的用户名已被注册', 10003);
 }
 
 
-$user['regip']	    = a_action_ip();
-$user['ctime']	    = a_action_time();
-$user['password']   = md5($user['password']);
+$time = s_action_time();
+$data['ftime']	    = date('Y-m-d H:i:s', $time);
+$data['username']   = $username;
+$data['password']   = s_ssocookie_md5($username, $password);
+
 
 
 // 插入数据
-if (false === a_db('user:insert', $user)) {
+if (false === ( $uid =  s_db('%s_user:insert', $data) )) {
     //注册失败
-    exit(a_server_error());
+    return s_action_error('注册失败', 10004);
 }
 
 
-
-//一切正常，可以注册
-$arg['err'] = 0;
-
-exit(a_action_redirect('/home', '注册成功，稍后回到首页'));
+s_action_json(array(
+    'error' => 0,
+    'SUE'   => s_ssocookie_sue($username . $uid),
+    'SUP'   => s_ssocookie_sup($username . $uid),
+));
