@@ -57,6 +57,7 @@ CREATE TABLE `201208aiyuji_words` (
     `token`         CHAR(64)                    NOT NULL    DEFAULT ''                      COMMENT '用户标识',
     `words`         TEXT                        NOT NULL    DEFAULT ''                      COMMENT '留言',
     `key`           VARCHAR(512)                NOT NULL    DEFAULT ''                      COMMENT '关键词',
+    `public`        TINYINT(4)      UNSIGNED    NOT NULL    DEFAULT '1'                     COMMENT '是否公开',
 
     `ip`            VARCHAR(32)                 NOT NULL    DEFAULT ''                      COMMENT '注册IP',
     `time`          INT(11)         UNSIGNED    NOT NULL    DEFAULT '0'                     COMMENT '创建时间',
@@ -66,6 +67,7 @@ CREATE TABLE `201208aiyuji_words` (
     PRIMARY KEY (`id`),
     INDEX `idx_tear` (`tear`),
     INDEX `idx_token` (`token`),
+    INDEX `idx_public` (`public`),
     INDEX `idx_status` (`status`)
 
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='用户信息表';

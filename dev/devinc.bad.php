@@ -195,8 +195,9 @@ function a_bad_post($key, &$var=false, $type="string", $escape=true) {
     }
 
     if ($type === "string") {
-        //检查post值是否存在
+        //字符类型
         if (a_bad_string($_POST[$key], $var)) {
+            //不需要转义，直接返回判断结果
             return true;
         }
 

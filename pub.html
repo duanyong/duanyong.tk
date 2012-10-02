@@ -2,32 +2,43 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta content="initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, user-scalable=yes, width=device-width" name="viewport">
-    <meta name="Keywords" content="爱语记,爱情的甜语密语" />
-    <meta name="Description" content="留住那些美好的支字片语,给未来的自己" />
-    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
     <title>爱语记</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <meta content="您手上的心情布袋" name="description"/> 
     <link rel="stylesheet" href="css/reset.css" type="text/css">
     <link rel="stylesheet" href="css/common.css" type="text/css">
 </head>
-<body bgcolor="#3e4243">
-<div id="warpper">
-    <div id="header">
-    </div>
+<body>
+    <div id="warpper">
+        <div id="header">
+        </div>
 
-    <div id="main">
-        <img src="img/index.jpg" border="0" usemap="#map" />
-        <map id="map" name="map">
-            <area href="main.html" coords="200,420,375,480" shape="rect"></area>
-        </map>
-    </div>
+        <div id="main">
+            <form id="find_form" action="find.php" method="post">
+                <ul id="token_list_model" class="list_model">
+                    <li>
+                    <input id="find_wid_ID" type="checkbox" name="ids[ID]" value="TOKEN" />TOKEN
+                    <label for="find_wid_ID">这是我的</label>
+                    </li>
+                </ul>
+                <ul id="token_list">
+                </ul>
+                <div id="find_pagebar">
+                </div>
+            </form>
+        </div>
 
-    <div id="footer">
+        <div id="footer">
+        </div>
     </div>
-</div>
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+ <script src="js/pub.js"></script>
 
 <script type="text/javascript">
+    $(function() {
+        a_tokey_list_by_page();
+    });
+
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-34246201-1']);
     _gaq.push(['_trackPageview']);
@@ -37,6 +48,7 @@
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
+
 </script>
 </body>
 </html>

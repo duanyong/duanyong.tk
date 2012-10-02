@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, user-scalable=yes, width=device-width" name="viewport">
+    <meta name="Keywords" content="爱语记,爱情的甜语密语" />
+    <meta name="Description" content="留住那些美好的支字片语,给未来的自己" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+    <title>爱语记</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="css/reset.css" type="text/css">
+    <link rel="stylesheet" href="css/common.css" type="text/css">
+</head>
+<body bgcolor="#FFF">
+<div id="warpper">
+    <div id="header">
+        <div id="logo">
+            <a title="爱语记">
+                <img src="img/logo.png" />
+                <a target="_blank" href="about.html">关于我</a>
+            </a>
+        </div>
+
+        <div id="user" style="display: none;">
+            <label id="nickname">段</label>
+            <div id="u_cnt">
+                <a target="_blank" data-label="查看总数" href="/mine?type=played">累积收听<span id="rec_played">5206</span>首</a>
+                <a target="_blank" data-label="记录总数" href="/mine?type=played">累积收听<span id="rec_played">5206</span>首</a>
+                <a target="_blank" data-label="关闭总数" href="/mine?type=played">累积收听<span id="rec_played">5206</span>首</a>
+            </div>
+            <div id="u_set">
+                <a target="_blank" data-label="查看总数" href="/mine?type=played">累积收听<span id="rec_played">5206</span>首</a>
+                <a target="_blank" data-label="记录总数" href="/mine?type=played">累积收听<span id="rec_played">5206</span>首</a>
+                <a target="_blank" data-label="关闭总数" href="/mine?type=played">累积收听<span id="rec_played">5206</span>首</a>
+            </div>
+        </div>
+
+        <div id="anony">
+            <a href="javascript:void(0);" onclick="a_user_login();">登录</a>
+            <a href="javascript:void(0);" onclick="a_user_reg();">现在注册</a>
+        </div>
+    </div>
+
+    <div id="main">
+        <form id="words_form" action="words.php" method="post">
+            <label for="token">写给</label><input id="token" type="text" name="token" /><br />
+            <label for="content">想说的话</label><textarea id="content" type="text" name="words"></textarea>
+            <input id="form_submit" type="submit" value="传送" /><div id="words_indicator"></div>
+        </form>
+    </div>
+
+    <div id="footer">
+    </div>
+
+    <div id="login_dialog" class="ui-dialog" style="width: 551px; height: 400px; left: 644px; top: 37px; visibility: visible;">
+        <a class="close">x</a>
+        <div class="column ui-dialog-col1">
+        </div>
+
+        <div class="column ui-dialog-col2">
+            <form class="form">
+                <fieldset>
+                    <div class="item">
+                        <label for="username">账号</label>
+                        <input id="username" class="input text" type="text" name="username" value="" tabindex="1" />
+                    </div>
+                    <div class="item">
+                        <label for="password">密码</label>
+                        <input id="password" class="input text" type="password" name="password" value="" tabindex="2" />
+                    </div>
+
+                    <div class="item">
+                        <input id="agrement" class="input radio" type="checkbox" name="agreement" value="yes" tabindex="3" />
+                        <label for="agrement">同意用户协议</label>
+                        <input class="submit" type="submit" value="注 册" tabindex="4" />
+                    </div>
+                </fieldset>
+            </form>
+
+            <div style="display: none;">
+                联合登录：新浪微博、QQ、MSN
+            </div>
+        </div>
+    </div>
+
+    <div id="mark" class="overlay"></div>
+</div>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-34246201-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+</body>
+</html>

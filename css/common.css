@@ -1,0 +1,161 @@
+.ui-dialog {
+    z-index: 100;
+    position: fixed;
+
+    border-radius: 0 0 0 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    background: none repeat scroll 0 0 #FFFFFF;
+}
+
+.ui-dialog .close {
+    float: right;
+    margin: 5px;
+    font-size: 9px;
+}
+
+.ui-dialog .column {
+    height: 400px;
+    float: left;
+
+    letter-spacing: 0;
+    vertical-align: top;
+}
+
+.ui-dialog-col1  {
+    width: 190px;
+    background-color: #3E4243;
+}
+
+.ui-dialog-col2 {
+    width: 300px;
+}
+
+.ui-dialog .item {
+    color: #666666;
+
+    width: 255px;
+    height: 19px;
+    padding: 8px 0px 8px 25px;
+    font-size: 12px;
+
+    float: left;
+    margin: 8px 0px;
+    background-color: #EEF1F0;
+}
+
+.ui-dialog .form {
+    margin-top: 100px;
+}
+
+.ui-dialog .form label {
+    float: none;
+}
+
+.ui-dialog .input {
+    top: 10px;
+    color: #3E3243;
+
+    border: 0 none;
+    background-color: #EEF1F0;
+    padding: 0px 3px;
+}
+
+.ui-dialog .text {
+    width: 210px;
+}
+
+.ui-dialog .radio {
+    margin: 0px 0px 0px -36px;
+
+    width: 17px;
+    height: 17px;
+
+    border: 0 none;
+    outline: 0 none;
+    cursor: pointer;
+}
+
+.ui-dialog .submit {
+    width: 110px;
+    height: 35px;
+
+    color: #333;
+    float: right;
+
+    font-size: 14px;
+    text-align: center;
+    line-height: 35px;
+    margin-top: -8px;
+
+    cursor: pointer;
+    border: 0 none;
+    outline: 0 none;
+    display: block;
+    background-color: #A6D9CA;
+}
+
+
+.ui-dialog .left {
+    width: 190px;
+    height: 400px;
+    color: #AAAAAA;
+    float: left;
+
+    letter-spacing: 0;
+    vertical-align: top;
+    background-color: #3e4243;
+}
+
+#warpper {
+    text-align: center;
+    min-width: 700px;
+    margin-top: 5px;
+}
+
+.overlay {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+    position: absolute;
+    background-color: #EAEDEC;
+    z-index: 99;
+}
+
+#warpper #header {
+    width: 900px;
+    height: 150px;
+    margin: 0 auto;
+
+    font: 12px/1.6 arial, helvetica, sans-serif;
+}
+
+#header a:link, a:visited {
+    color: #666;
+    text-decoration: none;
+}
+
+#header #logo {
+    width: 310px;
+    padding-bottom: 38px;
+    float: left;
+}
+
+#header #user {
+    margin-right: 0 auto;
+}
+
+#header #anony {
+    float: right;
+}
+
+#anony a {
+    color: #666666;
+    margin: 0px;
+    padding: 8px 8px;
+    display: inline-block;
+    background: #E5E6E6;
+}
+#anony #an_login {
+}

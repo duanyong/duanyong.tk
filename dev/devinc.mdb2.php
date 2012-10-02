@@ -141,12 +141,11 @@ function a_db_list($sql) {
     }
 
     if (defined("APP_DB_PREFIX")
-        && ( $count = substr_count($sql, '%a_') )
+        && ( $count = substr_count($sql, '%s_') )
     ) {
         //替换表名:"%a_user:update" => "201204disney_user:update"
-        $sql = str_replace('%a_', APP_DB_PREFIX . '_', $sql, $count);
+        $sql = str_replace('%s_', APP_DB_PREFIX . '_', $sql, $count);
     }
-
 
     $ret = $db->queryAll($sql);
 

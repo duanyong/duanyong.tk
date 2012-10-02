@@ -21,9 +21,9 @@
 
 
 //项目根目录
-define("ROOT_DIR", $_SERVER['DOCUMENT_ROOT'] . 'aiyuji');
+define("ROOT_DIR", $_SERVER['DOCUMENT_ROOT'] . '/aiyuji');
 //系统临时目录
-define("TEMP_DIR", $_SERVER['SERVER_TEMP']);
+//define("TEMP_DIR", $_SERVER['SERVER_TEMP']);
 
 define('APP_DB_PREFIX', '201208aiyuji');
 
