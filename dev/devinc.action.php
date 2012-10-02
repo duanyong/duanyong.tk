@@ -71,11 +71,6 @@ function a_action_page($tpl=false, $url=false, $stay=false) {
         $tpl = ROOT_DIR . ( strpos($tpl, '/') === 0 ? '' : '/' ) .  $tpl;
     }
 
-    if (a_bad_file($tpl)) {
-        //文件不可读
-        return a_log();
-    }
-
     if (isset($url)) {
         $arg["url"] = $url;
     }

@@ -153,7 +153,7 @@ function a_db_list($sql) {
     a_db_close($db);
 
     if (PEAR::isError($ret)) {
-        a_err_sql($ret->getMessage());
+        a_log($ret->getMessage());
 
         $ret = false;
     }
@@ -181,7 +181,7 @@ function a_db_row($sql) {
     a_db_close($db);
 
     if (PEAR::isError($ret)) {
-        a_err_sql($ret->getMessage());
+        a_log($ret->getMessage());
 
         $ret = false;
     }
@@ -212,7 +212,7 @@ function a_db_one($sql, $prefix=true) {
     a_db_close($db);
 
     if (PEAR::isError($ret)) {
-        a_err_sql($ret->getMessage());
+        a_log($ret->getMessage());
 
         $ret = false;
     }
@@ -241,7 +241,7 @@ function a_db_exec($sql) {
 
     if (PEAR::isError($ret)) {
         //记录失败
-        a_err_sql($ret->getMessage());
+        a_log($ret->getMessage());
 
         $ret = false;
     }
@@ -285,7 +285,7 @@ function a_db_exec($sql) {
 // 数据操作
 function a_db($table, &$v1, $v2=false) {
     if (a_bad_string($table)) {
-        return a_err_arg();
+        return a_log();
     }
 
 
@@ -310,7 +310,7 @@ function a_db($table, &$v1, $v2=false) {
     if ($action === false) {
         // 按主键返回数据
         if (a_bad_id($v1)) {
-            return a_err_arg();
+            return a_log();
         }
 
         $ret = a_db_primary($table, $v1);
@@ -338,7 +338,7 @@ function a_db_primary($table, $id) {
     if (a_bad_string($table)
         || a_bad_id($id)
     ) {
-        return a_err_arg();
+        return a_log();
     }
 
     if (defined("APP_DB_PREFIX")) {
@@ -363,11 +363,6 @@ function _a_db_insert($table, &$data) {
     if (isset($data["id"])) {
         //删除$data中的主键数据
         unset($data["id"]);
-    }
-
-    if (defined("APP_DB_PREFIX")) {
-        //替换表名:"%a_user:update" => "201204disney_user:update"
-        $table = sprintf($table, APP_DB_PREFIX, true);
     }
 
 
@@ -427,7 +422,7 @@ function _a_db_update($table, &$v1, &$v2) {
         //没有指定主键，更新失败
         || a_bad_id($v1["id"], $pid)
     ) {
-        return a_err_arg("no primary key.");
+        return a_log("no primary key.");
     }
 
     if (defined("APP_DB_PREFIX")) {
@@ -466,7 +461,7 @@ function _a_db_delete($table, $v1) {
         || !( $v1 = ( is_array($v1) && isset($v1["id"]) ) ? intval($v1["id"]) : $v1 )
         || a_bad_id($v1)
     ) {
-        return a_err_arg();
+        return a_log();
     }
 
 

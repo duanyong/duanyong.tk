@@ -21,7 +21,7 @@
 
 
 //项目根目录
-define("ROOT_DIR", $_SERVER['DOCUMENT_ROOT']);
+define("ROOT_DIR", $_SERVER['DOCUMENT_ROOT'] . 'aiyuji');
 //系统临时目录
 define("TEMP_DIR", $_SERVER['SERVER_TEMP']);
 
