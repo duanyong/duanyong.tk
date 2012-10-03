@@ -41,8 +41,17 @@ function s_reg_submit() {
             //注册成功
             $('#login_dialog').popOff();
 
+            //写COOKIE
+            if (ret.sup) {
+                $.cookie('sup', ret.sup);
+            }
+
+            if (ret.sue) {
+                $.cookie('sue', ret.sue);
+            }
+
             //页面跳转
-            return window.location.href = "main.html";
+            //return window.location.href = "main.html";
         }
 
         //注册出错，服务器返回的就不用友好提示了
@@ -91,6 +100,5 @@ $(function() {
 
     //检查用户账号及用户昵称
     $('#rusername').on('blur', s_reg_has);
-    $('#rnickname').on('blur', s_reg_has);
 
 });

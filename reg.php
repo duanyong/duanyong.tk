@@ -37,7 +37,8 @@ if (s_db_one("select `id` from `%s_user` where `username`='{$username}' or `nick
 $time = s_action_time();
 $data['ftime']	    = date('Y-m-d H:i:s', $time);
 $data['username']   = $username;
-$data['password']   = s_ssocookie_md5($username, $password);
+$data['nickname']   = $nickname;
+$data['password']   = s_sso_encrypt($username, $password);
 
 
 
@@ -47,9 +48,15 @@ if (false === ( $uid =  s_db('%s_user:insert', $data) )) {
     return s_action_error('注册失败', 10005);
 }
 
+$user = array(
+    'uid'       => $uid,
+    'nickname'  => $nickname,
+    'username'  => $username,
+);
+
 
 s_action_json(array(
     'error' => 0,
-    'SUE'   => s_ssocookie_sue($username . $uid),
-    'SUP'   => s_ssocookie_sup($username . $uid),
+    'sue'   => s_sso_encrypt($user, $time),
+    'sup'   => s_sso_chain($user, $time),
 ));

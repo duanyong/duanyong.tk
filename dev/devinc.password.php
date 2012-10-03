@@ -29,7 +29,7 @@ define('SSOCOOKIE_KEY32_3', 'rv');
 define('SSOCOOKIE_KEY1024', 'rv0');
 
 
-function s_ssocookie_config($config=false) {
+function s_sso_config($config=false) {
     if ($config === false) {
         $config = SSOCOOKIE_CONFIG;
     }
@@ -47,29 +47,51 @@ function s_ssocookie_config($config=false) {
 }
 
 
-function s_ssocookie_sue() {
-    if (!( $config = s_ssocookie_config() )
+function s_sso_encrypt(&$user, &$time) {
+    if (!( $config = s_sso_config() )) {
+        return false;
+    }
+
+
+    return 'ue=' 
+        . md5($config[SSOCOOKIE_KEY32_1] 
+        . ';bt=' . $time
+        . ';et=' . ( $time + 86400 * 6 )
+        . ';uid=' . $user['uid']
+        . $config[SSOCOOKIE_KEY1024]);
+}
+
+
+function s_sso_decrypt(&$cookie) {
+    if (!( $config = s_sso_config() )
+        || s_bad_string($cookie['ue'], $ue)
+        || s_bad_id($cookie['bt'], $bt)
+        || s_bad_id($cookie['et'], $et)
+        || s_bad_id($cookie['uid'], $uid)
     ) {
         return false;
     }
 
-    return md5(a);
+    return $ue === md5($config[SSOCOOKIE_KEY32_1] . $bt . $et . $uid . $config[SSOCOOKIE_KEY1024]);
 }
 
 
-function s_ssocookie_sup() {
-    if (!( $config = s_ssocookie_config() )
+function s_sso_chain(&$user, &$time) {
+    if (!( $config = s_sso_config() )
     ) {
         return false;
     }
 
-    return md5(a);
+    return 'bt=' . $time
+        . ';et' .  ( $time + 86400 * 6 )
+        . ';uid=' . $user['uid'];
 }
 
-function s_ssocookie_md5($username, $password) {
+
+function s_sso_password($username, $password) {
     if (s_bad_string($username)
         || s_bad_string($password)
-        || !( $config = s_ssocookie_config() )
+        || !( $config = s_sso_config() )
 
     ) {
         return false;
