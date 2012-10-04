@@ -6,65 +6,16 @@
  *
  * */
 
-require_once(__DIR__ . "/devinc.all.php");
-require_once(ROOT_DIR . "/db/devdb.user.php");
+require_once("dev/devapp.config.php");
 require_once(ROOT_DIR . "/user/devapi.user.php");
 
+$data = array();
 
-$arg	= array();
+if (( $user = user_autologin() )) {
+    //用户已登录
+    $data['user'] = $user;
 
-if (a_bad_string($_POST["username"], $username)) {
-    //没有输入用户名
-    exit(a_action_msg("请输入登录账号"));
+    return s_action_redirect('/main.php');
 }
 
-
-if (a_bad_string($_POST["password"], $password)) {
-    //没有输入密码
-    exit(a_action_msg("请输入登录密码"));
-}
-
-
-
-// 取值完毕
-
-
-
-//检查数据库中的值是否存在
-if (false === ( $user = a_user_by_username($username) )) {
-    // 数据库错误
-    exit(a_server_error());
-}
-
-
-if (empty($user)
-    || $user["password"] !== md5($password)
-) {
-    //密码错误
-    exit(a_action_msg("用户名或者密码错误，请重新输入"));
-}
-
-
-
-//设置cookie
-if (empty($_POST["rem"])) {
-    $exp = 0;
-
-} else {
-    $exp = 86400 * 30 + time();
-}
-
-
-setCookie("uid", $user["uid"], $exp);
-setCookie("key", $user["password"], $exp);
-
-
-
-//更新登录信息
-a_user_update_login($user);
-
-
-//密码和用户正确
-$arg["err"] = 0;
-
-exit(a_action_redirect("/home"));
+s_action_page($data);

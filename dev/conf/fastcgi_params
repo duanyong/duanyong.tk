@@ -45,5 +45,13 @@ fastcgi_param  SINASRV_DB4_PORT_R 3306;
 fastcgi_param  SINASRV_DB4_NAME_R test;
 
 
+fastcgi_param  SINASRV_CACHE_DIR  "/tmp/";
+fastcgi_param  SINASRV_CACHE_URL  "http://all.vic.sina.con.cn/cache";
+
+fastcgi_param  SINASRV_MEMCACHED_SERVERS            127.0.0.1:11211;
+fastcgi_param  SINASRV_GLOBAL_MEMCACHED_SERVERS     127.0.0.1:11211;
+fastcgi_param  SINASRV_MEMCACHED_KEY_PREFIX "_sing_";
+
+
 # PHP only, required if PHP was built with --enable-force-cgi-redirect
 # fastcgi_param  REDIRECT_STATUS    200;

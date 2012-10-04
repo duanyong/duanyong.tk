@@ -7,6 +7,29 @@
  *
  * */
 
+function user_by_id($id) {
+    if (s_bad_id($id)) {
+        return false;
+    }
+
+    $mkey = "user_by_id#" . $id;
+
+    if (( $user = s_memcache($mkey) )) {
+        return $user;
+    }
+
+    //用户未注册
+    if (!( $user = s_db_row("select * from `%s_user` where `id`={$id}") )) {
+        return false;
+    }
+
+    //添加到memcache中，存储30秒
+    s_memcache($mkey, $user, 30);
+
+    return $user;
+}
+
+
 function user_by_username($username) {
     if (s_bad_string($username)) {
         return false;
@@ -19,10 +42,9 @@ function user_by_username($username) {
     }
 
     //用户未注册
-    if (!s_db_row("select * from `%s_user` where `username`='{$username}'")) {
+    if (!( $user = s_db_row("select * from `%s_user` where `username`='{$username}'") )) {
         return false;
     }
-
 
     //添加到memcache中，存储30秒
     s_memcache($mkey, $user, 30);
@@ -49,19 +71,19 @@ function user_create($username, $password, $nickname) {
 
 
 //更新用户的登录信息
-function user_autologin() {
-    if (!( $sup = s_cookie_desue($_COOKIE['SUE'], $_COOKIE['SUP']) )) {
+function user_autologin($update=false) {
+    if (!( $user = s_cookie_desue() )) {
         return false;
     }
 
-    return user_by_username($sup['nn']);
+    return $update ?  user_by_id($user['id']) : $user;
 }
 
 
 //更新用户的登录信息
-function user_login($username, $password) {
+function user_login($username, $password, $remember) {
     if (!( $user = user_by_username($username) )
-        || !( $user['password'] !== user_encrypt($username, $password) )
+        || ( $user['password'] !== user_encrypt($username, $password) )
     ) {
         return false;
     }
@@ -70,10 +92,11 @@ function user_login($username, $password) {
 
     //登录成功，更新cookie时间....
 
+    $exp = $remember ? 7 * 86400 : false;
 
     //更新COOKIE信息
-    s_cookie('SUP', s_cookie_sup($user));
-    s_cookie('SUE', s_cookie_sue($user));
+    s_cookie('SUP', s_cookie_sup($user, $exp));
+    s_cookie('SUE', s_cookie_sue($user, $exp));
 
     return $user;
 }

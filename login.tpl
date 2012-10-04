@@ -9,18 +9,18 @@
     <title>爱语记</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="css/common.css" type="text/css">
-    <link rel="stylesheet" href="css/main.css" type="text/css">
+    <link rel="stylesheet" href="css/login.css" type="text/css">
 </head>
 <body bgcolor="#FFF">
 <div id="warpper">
     {include file="header.tpl" user=$user}
 
     <div id="main" class="layout-2">
-        <div id="reg_slider" class="left">
+        <div id="login_slider" class="left">
         </div>
 
-        <div id="reg_container" class="right container">
-            <form id="reg_form" class="form-1" action="register.php" method="post">
+        <div id="login_container" class="right container">
+            <form id="login_form" class="form-1" action="sign.php" method="post">
                 <fieldset>
                     <div class="item">
                         <label for="username">账 号</label>
@@ -33,20 +33,12 @@
                         <br /><span id="password_wrong" class="monition" style="display: none;"></span>
                     </div>
                     <div class="item">
-                        <label for="nickname">昵 称</label>
-                        <input id="nickname" class="text" type="text" name="nickname" data-text="好名字会让所有人都记得你" tabindex="3" maxlength="18" value="{$nickname}" />
-                        <br /><span id="nickname_wrong" class="monition" style="display: none;"></span>
-                    </div>
-                    <div class="item">
-                        <span style="margin-left: 70px; padding-bottom: 10px;">已注册过，<a href="login.php">我要登录</a></span>
-                        <input id="reg_submit" class="submit" type="submit" value="注 册" tabindex="4" />
+                        <span style="font-size: 0.8em;">联合登录：新浪微博、QQ、MSN</span>
+                        <input id="login_submit" class="submit" type="submit" value="登 录" tabindex="4" />
                     </div>
                 </fieldset>
             </form>
 
-            <div style="display: none;">
-                联合登录：新浪微博、QQ、MSN
-            </div>
         </div>
     </div>
 
@@ -58,7 +50,7 @@
 <script src="js/jquery.pop.js"></script>
 <script src="js/jquery.form.js"></script>
 <script src="js/jquery.cookie.js"></script>
-<script src="js/reg.js"></script>
+<script src="js/login.js"></script>
 
 <script src="js/jquery.ga.js"></script>
 <!-- script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script -->
@@ -68,7 +60,6 @@
         $('#{$key}').wrong('{$msg}');
     {/foreach}
 {/if}
-
     s_ga_init('UA-34246201-1');
 </script>
 </body>
