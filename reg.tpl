@@ -23,17 +23,17 @@
                 <fieldset>
                     <div class="item">
                         <label for="username">账 号</label>
-                        <input id="username" class="text" type="text" name="username" data-text="请输入您的邮箱或手机号" tabindex="1" maxlength="25" />
+                        <input id="username" class="text" type="text" name="username" data-text="请输入您的邮箱或手机号" tabindex="1" maxlength="25" value="{$username}" />
                         <br /><span id="username_wrong" class="monition" style="display: none;"></span>
                     </div>
                     <div class="item">
                         <label for="password">密 码</label>
-                        <input id="password" class="text" type="password" name="password" data-text="请输入您的登录密码" tabindex="2" maxlength="32" />
+                        <input id="password" class="text" type="password" name="password" data-text="请输入您的登录密码" tabindex="2" maxlength="32" value="{$password}" />
                         <br /><span id="password_wrong" class="monition" style="display: none;"></span>
                     </div>
                     <div class="item">
                         <label for="nickname">昵 称</label>
-                        <input id="nickname" class="text" type="text" name="nickname" data-text="好名字会让所有人都记得你" tabindex="3" maxlength="18" />
+                        <input id="nickname" class="text" type="text" name="nickname" data-text="好名字会让所有人都记得你" tabindex="3" maxlength="18" value="{$nickname}" />
                         <br /><span id="nickname_wrong" class="monition" style="display: none;"></span>
                     </div>
                     <div class="item">
@@ -62,6 +62,12 @@
 <script src="js/jquery.ga.js"></script>
 <!-- script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script -->
 <script type="text/javascript">
+{if $wrong}
+    {foreach $wrong as $key=>$msg}
+        $('#{$key}').wrong('{$msg}');
+    {/foreach}
+{/if}
+
     s_ga_init('UA-34246201-1');
 </script>
 </body>
