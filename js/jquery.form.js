@@ -139,11 +139,13 @@ $.fn.human = function() {
 
 
 $.fn.wrong = function(text) {
-    var ele = $(this);
+    var ele = $(this).addClass('wrong');
 
+    //获取对应的文字框
     text = text || ele.attr('data-text') || "这儿不能为空哦";
 
-    alert(text);
+    //显示提示信息
+    $('#' + ele.attr('id') + '_wrong').html(text).show();
 
     return false;
 };
