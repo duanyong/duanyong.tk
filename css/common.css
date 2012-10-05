@@ -63,6 +63,11 @@ table {
 .layout-2 .right {
     float: left;
 }
+.layout-2 .right .shadow {
+    display: inline-block;
+}
+
+
 
 
 /* 2栏布局 */
@@ -90,28 +95,46 @@ table {
     text-decoration: none;
 }
 
-#header #logo {
+
+#header .nav-logo {
     width: 310px;
-    padding-bottom: 38px;
     float: left;
+    padding-bottom: 38px;
 }
 
-#header #user {
-    margin-right: 0 auto;
-}
-
-#header #anony {
+#header .nav-box {
     float: right;
+    margin: 5px 1px;
+    display: inline-block;
 }
 
-#anony a {
-    color: #666666;
-    margin: 0px;
-    padding: 8px 8px;
-    display: inline-block;
-    background: #E5E6E6;
+#header .nav-fun {
 }
-#anony #an_login {
+
+#header .nav-fun a, a:link, a:visited, a:hover, a:active {
+    padding: 8px;
+    margin: 5px 1px;
+    font-size: 1.2em;
+    line-height: 14px;
+
+    color: #666666;
+    background: #E5E6E6;
+
+    display: inline-block;
+}
+
+#header .nav-fun a:hover {
+    color: #FFF;
+    background: #3E4243;
+}
+
+#header .nav-wel {
+    font-weight: normal;   
+    font-family:'Microsoft YaHei','微软雅黑','Microsoft JhengHei','华文黑体',STHeiti,Georgia,'Times New Roman',Times,serif;
+    *font-family: "黑体";
+
+    font-size: 1.4em;
+    padding: 10px 15px;
 }
 
 
