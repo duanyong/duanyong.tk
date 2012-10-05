@@ -1,11 +1,16 @@
-#reg_slider {
-    width: 500px;
-    height: 310px;
+#main_slider {
+    width: 200px;
+    margin-left: 35px;
+}
+
+#main_gap {
+    width: 200px;
+    height: 80px;
+}
+
+#main_exam {
+    width: 200px;
+    height: 350px;
     background-color: #3E4243;
 }
 
-#reg_container {
-    width: 380px;
-    height: 240px;
-    margin-top: 70px;
-}

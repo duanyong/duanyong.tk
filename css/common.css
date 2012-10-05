@@ -214,6 +214,104 @@ table {
 
 
 
+/* 表单 */
+
+.form-2 {
+}
+
+.form-2 .item {
+    color: #666666;
+    margin: 8px 0px;
+
+    line-height: 30px;
+    padding: 8px 5px 8px 10px;
+
+    font-size: 14px;
+}
+
+.form-2 .item1 {
+    color: #666666;
+    margin: 8px 0px;
+
+    font-size: 1.2em;
+    line-height: 30px;
+
+    padding: 8px 5px 8px 10px;
+}
+
+.form-2 label {
+    width: 60px;
+    float: left;
+
+    text-align: right;
+    margin-right: 15px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+
+.form-2 .text {
+    width: 255px;
+    height: 25px;
+    font-size: 1.2em;
+
+    color: #212121;
+    padding: 4px 8px;
+
+    float: left;
+
+    border: 1px solid #C9C9C9;
+    border-radius: 3px 3px 3px 3px;
+}
+
+.form-2 .mutitext {
+    width: 455px;
+    height: 270px;
+    color: #212121;
+
+    font-size: 1.2em;
+    line-height: 30px;
+
+    float: left;
+
+    padding: 4px 8px;
+    border: 1px solid #C9C9C9;
+    border-radius: 3px 3px 3px 3px;
+}
+
+
+.form-2 .wrong {
+    border: 1px solid red;
+}
+
+.form-2 .monition {
+    float: right;
+    font-size: 0.8em;
+    margin: -7px 5px 0px 5px;
+}
+
+.form-2 .submit {
+    width: 110px;
+    height: 35px;
+
+    color: #333;
+    font-size: 14px;
+
+    margin: 13px;
+    float: right;
+    line-height: 35px;
+    text-align: center;
+
+    cursor: pointer;
+    border: 0 none;
+    outline: 0 none;
+    display: block;
+    background-color: #A6D9CA;
+}
+
+
+
+
 .ui-dialog {
     z-index: 100;
     position: fixed;

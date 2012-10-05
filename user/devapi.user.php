@@ -76,7 +76,11 @@ function user_autologin($update=false) {
         return false;
     }
 
-    return $update ?  user_by_id($user['id']) : $user;
+    if (!$update) {
+        $user['nickname'] = $user['nn'];
+    }
+
+    return $user;
 }
 
 
