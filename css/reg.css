@@ -1,0 +1,88 @@
+#reg_slider {
+    width: 500px;
+    height: 310px;
+    background-color: #F9F9F9;
+}
+
+#reg-feature-item {
+    height: 75px;
+    padding: 15px 0px 0px 75px;
+    text-align: left;
+    position: relative;
+}
+
+#reg-feature-item .title {
+    color: #1E5243;
+    font-size: 140%;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+#reg-feature-item .desc {
+    color: #9E9E9E;
+    padding: 5px 0px;
+    font-size: 75%;
+}
+
+#reg-feature-item .icon {
+    top: 0;
+    left: 0;
+    width: 75px;
+    height: 75px;
+    overflow: hidden;
+    position: absolute;
+    background: url("/img/features-icons.png") no-repeat scroll 0 0 transparent;
+}
+
+
+#reg-feature-item .icon-voice {
+    background-position: 0 0;
+}
+
+#reg-feature-item .icon-bottle {
+    background-position: -384px 0;
+}
+
+#reg-feature-item .icon-localtion {
+    background-position: -256px 0;
+}
+
+#reg-feature-item .desc {
+    color: #9E9E9E;
+    padding: 5px 0px;
+    font-size: 75%;
+}
+
+
+#reg_container .ad-box {
+    height: 100px;
+    background-color: #2E4243;
+}
+
+#anony_list {
+    margin: 15px;
+}
+
+#anony_list li {
+    margin: 10px;
+    text-align: left;
+}
+
+#anony_list .avatar {
+    height: 48px;
+    margin: 3px;
+
+}
+
+#anony_list .avatar a, a:link a:hover a:active a:hover a:visited {
+    color: #000;
+    cursor: pointer;
+    background: #F9F9F9;
+
+    display: inline-block;
+}
+
+#anony_list .text {
+    height: 38px;
+    line-height: 38px;
+}

@@ -7,6 +7,11 @@
 #login_container {
     width: 380px;
     height: 240px;
-    margin-top: 100px;
+}
+
+
+#login_container .ad-box {
+    height: 100px;
+    background-color: #2E4243;
 }
 

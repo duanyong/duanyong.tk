@@ -12,6 +12,9 @@ require_once(ROOT_DIR . "/user/devapi.user.php");
 if (!( $user = user_autologin() )) {
     //用户未登录
     $user = array();
+
+    //设置用户标识
+    user_token();
 }
 
 $data           = array();

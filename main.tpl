@@ -17,8 +17,6 @@
 
     <div id="main" class="layout-2">
         <div id="main_content" class="left">
-            <h1>欢迎{$user['nickname']|default:"你"}回来</h1>
-
             <form id="words_form" class="form-2" action="words.php" method="post">
                 <fieldset>
                     <div class="item">

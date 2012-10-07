@@ -34,6 +34,12 @@ if (s_bad_post('password', $password)) {
     ), 'login.tpl');
 }
 
+if (s_bad_post('remember', $remember)) {
+    $remember = false;
+}
+
+
+
 if (!user_by_username($username)) {
     //用户不存在
     $wrong['username'] = "您使用的账号不存在，请重新登录";
@@ -46,7 +52,7 @@ if (!user_by_username($username)) {
     ), 'login.tpl');
 }
 
-if (!( $user = user_login($username, $password) )) {
+if (!( $user = user_login($username, $password, $remember) )) {
     //用户名或密码不正确
     $wrong['password'] = "您的密码不正确，请重新输入";
 
@@ -60,4 +66,4 @@ if (!( $user = user_login($username, $password) )) {
 
 $data['user'] = $user;
 
-s_action_redirect($data, '/main.tp');
+s_action_redirect('/main.php');

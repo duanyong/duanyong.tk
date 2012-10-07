@@ -9,17 +9,39 @@
     <title>爱语记</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="css/common.css" type="text/css">
-    <link rel="stylesheet" href="css/main.css" type="text/css">
+    <link rel="stylesheet" href="css/reg.css" type="text/css">
 </head>
 <body bgcolor="#FFF">
 <div id="warpper">
-    {include file="header.tpl" user=$user}
+{include file="header.tpl" user=$user}
 
     <div id="main" class="layout-2">
         <div id="reg_slider" class="left">
+            <h3 class="h3">爱语记</h3>
+            <div id="reg-feature-item">
+                <a class="title">思念是一呼一吸</a>
+                <div class="desc">不管睡前还是醒后，这都是有你和我的梦</div>
+                <div class="icon icon-voice"></div>
+            </div>
+            <div id="reg-feature-item">
+                <div class="icon icon-bottle"></div>
+                <a class="title">将你说的话传递给她</a>
+                <div class="desc">距离无法停止我的思念，终有一天你会在我眼前</div>
+            </div>
+            <!--
+            <div id="reg-feature-item">
+                <a class="title">同是天涯论落人</a>
+                <div class="desc">上辈子我们有相遇未见，今世再续前缘</div>
+                <div class="icon icon-localtion"></div>
+            </div>
+            //-->
         </div>
 
         <div id="reg_container" class="right container">
+        <!--
+            <div class="ad-box">
+            </div>
+        //-->
             <form id="reg_form" class="form-1" action="register.php" method="post">
                 <fieldset>
                     <div class="item">
@@ -38,7 +60,6 @@
                         <br /><span id="nickname_wrong" class="monition" style="display: none;"></span>
                     </div>
                     <div class="item">
-                        <span style="margin-left: 70px; padding-bottom: 10px;">已注册过，<a href="login.php">我要登录</a></span>
                         <input id="reg_submit" class="submit" type="submit" value="注 册" tabindex="4" />
                     </div>
                 </fieldset>
@@ -50,7 +71,7 @@
         </div>
     </div>
 
-    {include file="footer.tpl"}
+{include file="footer.tpl"}
 </div>
 
 

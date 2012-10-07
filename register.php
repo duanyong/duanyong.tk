@@ -25,12 +25,43 @@ if (s_bad_post('nickname', $nickname)) {
     $wrong['username'] = '请填写你的用户昵称';
 }
 
+if (user_by_username($username)) {
+    $wrong['username'] = '您使用的账号已被注册';
+}
 
-if (isset($wrong)
-    || !user_create($username, $password, $nickname)
+if (user_by_nickname($nickname)) {
+    $wrong['nickname'] = '您使用的昵称已被注册';
+}
+
+/*
+
+if (( $token = user_token_from_cookie() )) {
+    $token = "";
+}
+
+if (user_by_username($username)
+    || user_by_nickname($nickname)
 ) {
+    //账号、昵称、用户发过说说等跳转到再次注册页面
+    return s_action_redirect("exist.php?username={$username}&nickname={$nickname}&token={$token}");
+}
+ */
 
-    $wrong['username'] = "您的账号已被占用，是否需要找回密码";
+if (isset($wrong)) {
+    return s_action_page(array(
+        'error'     => 10000,
+        'username'  => $username,
+        'password'  => $password,
+        'nickname'  => $nickname,
+        'wrong'     => $wrong,
+    ), 'reg.tpl');
+}
+
+
+
+//数据库写入失败
+if (!user_create_by_reg($username, $password, $nickname) ) {
+    $wrong['message'] = '注册失败，请重新注册';
 
     return s_action_page(array(
         'error'     => 10000,
@@ -43,7 +74,7 @@ if (isset($wrong)
 
 
 //模拟用户登录
-user_login($username, $password, false);
+user_login($username, $password);
 
 
 //页面跳转到用户首页

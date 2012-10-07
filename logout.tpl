@@ -9,21 +9,20 @@
     <title>爱语记</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="css/common.css" type="text/css">
-    <link rel="stylesheet" href="css/login.css" type="text/css">
+    <link rel="stylesheet" href="css/logout.css" type="text/css">
 </head>
 <body bgcolor="#FFF">
 <div id="warpper">
     {include file="header.tpl" user=$user}
 
     <div id="main" class="layout-2">
-        <div id="login_slider" class="left">
+        <div id="logout_slider" class="left">
         </div>
 
-        <div id="login_container" class="right container">
-        <!--
-            <div class="ad-box">
+        <div id="logout_container" class="right container">
+            <div class="right-shadow" style="height: 100px;">
+                <h2>您已安全退出</h2>
             </div>
-        //-->
             <form id="login_form" class="form-1" action="sign.php" method="post">
                 <fieldset>
                     <div class="item">
@@ -37,9 +36,7 @@
                         <br /><span id="password_wrong" class="monition" style="display: none;"></span>
                     </div>
                     <div class="item">
-                    <!--
                         <span style="font-size: 0.8em;">联合登录：新浪微博、QQ、MSN</span>
-                    //-->
                         <input id="login_submit" class="submit" type="submit" value="登 录" tabindex="4" />
                     </div>
                 </fieldset>

@@ -47,6 +47,26 @@ table {
     border-spacing: 0;
 }
 
+.h2 {
+    color: #000;
+    font-size: 1.5em;
+    line-height: 1.5em;
+    text-align: left;
+    padding: 5px 15px;
+}
+
+.h3 {
+    color: #000;
+    text-align: left;
+    font-weight: bold;
+
+    margin: 20px 25px;
+    text-decoration: none;
+}
+
+a, a:active {
+    text-decoration: none;
+}
 
 
 /* 布局 */
@@ -90,12 +110,6 @@ table {
     font: 12px/1.6 arial, helvetica, sans-serif;
 }
 
-#header a:link, a:visited {
-    color: #666;
-    text-decoration: none;
-}
-
-
 #header .nav-logo {
     width: 310px;
     float: left;
@@ -106,9 +120,6 @@ table {
     float: right;
     margin: 5px 1px;
     display: inline-block;
-}
-
-#header .nav-fun {
 }
 
 #header .nav-fun a, a:link, a:visited, a:hover, a:active {
@@ -274,7 +285,6 @@ table {
 
 
 .form-2 .text {
-    width: 255px;
     height: 25px;
     font-size: 1.2em;
 

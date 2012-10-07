@@ -1,31 +1,50 @@
 <?php
 /**
- * 
+ * 用户发布想说的话
  *
+ *  /db/devdb.user.php
  *
  * */
 
-require_once('dev/devinc.all.php');
+require_once("dev/devapp.config.php");
+require_once(ROOT_DIR . "/user/devapi.user.php");
 
+$wrong = array();
 
-//检查是否第一次
-if (!( $tear = a_cookie('__tear') )) {
-    //创建新的并记录到用户的COOKIE中
-    $tear = a_action_uuid();
-
-    //永不过期
-    a_cookie('__tear', $tear, 10);
-}
-
-
-if (a_bad_post('token', $token)) {
+if (s_bad_post('nickname', $nickname)) {
     //没有记录标识，发送到公开页面
-    $token = '';
+    $wrong['nickname'] = '';
 }
 
-if (a_bad_post('words', $words)) {
+
+if (s_bad_post('words', $words)) {
     //记录空白
-    $words = '';
+    $wrong['wrods'] = '';
+}
+
+
+//检查用户是否是已注册
+if (!( $user = user_autologin() )
+    || !( $token = user_token(false) )
+) {
+    //用户不存在（机器人访问）
+    $wrong['message'] = '发布失败';
+}
+
+$data = array();
+
+if (!empty($wrong)) {
+    //有错误，需要页面提示
+    $data['wrong'] = $wrong;
+
+    return s_action_page($data);
+}
+
+
+//检查昵称对应的用户是否存在
+if (!( $people = user_by_nickname($nickname) )) {
+    //创建一个昵称对应的用户
+
 }
 
 
