@@ -9,12 +9,15 @@ require_once("dev/devapp.config.php");
 require_once(ROOT_DIR . "/user/devapi.user.php");
 
 
-if (!( $user = user_autologin() )) {
+if (!( $user = user_login_by_cookie() )) {
     //用户未登录
     $user = array();
 
     //设置用户标识
-    user_token();
+    if(!user_token_from_cookie()) {
+        //用户之前没有来访过
+        user_create_by_token(user_token_from_cookie(true));
+    }
 }
 
 $data           = array();

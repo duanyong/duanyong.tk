@@ -9,7 +9,6 @@
 require_once("dev/devapp.config.php");
 require_once(ROOT_DIR . "/user/devapi.user.php");
 
-$wrong = array();
 
 if (s_bad_post('nickname', $nickname)) {
     //没有记录标识，发送到公开页面
@@ -17,56 +16,61 @@ if (s_bad_post('nickname', $nickname)) {
 }
 
 
-if (s_bad_post('words', $words)) {
+if (s_bad_post('message', $message)) {
     //记录空白
-    $wrong['wrods'] = '';
+    $message = "我很想你。。。";
 }
 
 
-//检查用户是否是已注册
-if (!( $user = user_autologin() )
-    || !( $token = user_token(false) )
+//非注册用户非token不予发布说说
+if (false === ( $user = user_login_by_cookie() )
+    && false === ( $user = user_login_by_token() )
 ) {
     //用户不存在（机器人访问）
-    $wrong['message'] = '发布失败';
+    $wrong['notice'] = '发布失败';
 }
+
+
+//需要传送的用户不存在，创建一个新用户
+if (!( $people = user_by_nickname($nickname) )
+    && !( $people = user_create_by_nickname($nickname) )
+) {
+    $wrong['notice'] = '发布失败';
+}
+
+
+if (isset($wrong)) {
+    return s_action_page(array(
+        'error'     => 10000,
+        'message'   => $message,
+        'nickname'  => $nickname,
+        'wrong'     => $wrong,
+    ), 'main.tpl');
+}
+
+
+
+$time = s_action_time();
 
 $data = array();
+$data['sid']    = $user['id'];
+$data['tid']    = $people['id'];
+$data['words']  = $message;
 
-if (!empty($wrong)) {
-    //有错误，需要页面提示
-    $data['wrong'] = $wrong;
+$data['ip']     = s_action_ip();
+$data['time']   = $time;
 
-    return s_action_page($data);
+
+if (false === ( $id = s_db('%s_words:insert', $data) )) {
+    $wrong['notice'] = '发布失败';
+
+    return s_action_page(array(
+        'error'     => 10001,
+        'message'   => $message,
+        'nickname'  => $nickname,
+        'wrong'     => $wrong,
+    ), 'main.tpl');
 }
 
 
-//检查昵称对应的用户是否存在
-if (!( $people = user_by_nickname($nickname) )) {
-    //创建一个昵称对应的用户
-
-}
-
-
-$time = a_action_time();
-
-$data = array();
-$data['tear']  = $tear;
-
-$data['token'] = $token;
-$data['words'] = $words;
-$data['ip']    = a_action_ip();
-$data['time']  = $time;
-$data['ftime'] = date('Y-m-d H:i:s', $time);
-
-
-if (false === ( $id = a_db('%s_words:insert', $data) )) {
-    return a_action_error('南飞', 501);
-}
-
-
-//更新此token对应的汇总数据
-a_action_json(array(
-    'error'     => 0,
-    'id'        => $id,
-));
+return s_action_redirect("list.php?nickname={$user['nickname']}");

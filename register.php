@@ -33,19 +33,6 @@ if (user_by_nickname($nickname)) {
     $wrong['nickname'] = '您使用的昵称已被注册';
 }
 
-/*
-
-if (( $token = user_token_from_cookie() )) {
-    $token = "";
-}
-
-if (user_by_username($username)
-    || user_by_nickname($nickname)
-) {
-    //账号、昵称、用户发过说说等跳转到再次注册页面
-    return s_action_redirect("exist.php?username={$username}&nickname={$nickname}&token={$token}");
-}
- */
 
 if (isset($wrong)) {
     return s_action_page(array(
@@ -59,8 +46,10 @@ if (isset($wrong)) {
 
 
 
-//数据库写入失败
-if (!user_create_by_reg($username, $password, $nickname) ) {
+//查看token对应的用户是否已经被占用
+$token = user_token_from_cookie();
+
+if (!user_create_by_reg($username, $password, $nickname, $token) ) {
     $wrong['message'] = '注册失败，请重新注册';
 
     return s_action_page(array(

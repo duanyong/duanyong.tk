@@ -11,7 +11,7 @@ require_once(ROOT_DIR . "/user/devapi.user.php");
 
 $data = array();
 
-if (( $user = user_autologin() )) {
+if (( $user = user_login_by_cookie() )) {
     //用户已登录
     $data['user'] = $user;
 

@@ -9,7 +9,7 @@
 require_once("dev/devapp.config.php");
 require_once(ROOT_DIR . "/user/devapi.user.php");
 
-if (( $user = user_autologin() )) {
+if (( $user = user_login_by_cookie() )) {
     user_logout($user);
 }
 

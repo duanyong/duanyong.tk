@@ -13,21 +13,21 @@
 </head>
 <body bgcolor="#FFF">
 <div id="warpper">
-    {include file="header.tpl" user=$user}
+    {include file="header.tpl"}
 
     <div id="main" class="layout-2">
         <div id="main_content" class="left">
             <form id="words_form" class="form-2" action="words.php" method="post">
                 <fieldset>
                     <div class="item">
-                        <label for="words_token">写给你</label>
-                        <input id="words_token" class="text" type="text" name="token" data-text="可以输入Ta的邮箱或手机号" tabindex="1" maxlength="25" value="{$token}" />
-                        <br /><span id="token_wrong" class="monition" style="display: none;"></span>
+                        <label for="words_nickname">写给你</label>
+                        <input id="words_nickname" class="text" type="text" name="nickname" data-text="可以输入Ta的邮箱或手机号" tabindex="1" maxlength="25" value="{$token}" />
+                        <br /><span id="nickname_wrong" class="monition" style="display: none;"></span>
                     </div>
                     <div class="item">
                         <label for="words_message">我想说</label>
-                        <textarea id="words_message" class="mutitext" name="wrods" data-text="我现在很多话想对你说，却无从起口" tabindex="2">{$words}</textarea>
-                        <br /><span id="password_wrong" class="monition" style="display: none;"></span>
+                        <textarea id="words_message" class="mutitext" name="message" data-text="我现在很多话想对你说，却无从起口" tabindex="2">{$words}</textarea>
+                        <br /><span id="message_wrong" class="monition" style="display: none;"></span>
                     </div>
                     <div class="item" style="display: none;">
                         <label for="words_pic">给你看张相片</label>
@@ -64,6 +64,11 @@
 <script src="js/jquery.ga.js"></script>
 <!-- script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script -->
 <script type="text/javascript">
+{if $wrong}
+    {foreach $wrong as $key=>$msg}
+        $('#{$key}').wrong('{$msg}');
+    {/foreach}
+{/if}
     s_ga_init('UA-34246201-1');
 </script>
 </body>

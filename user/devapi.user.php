@@ -6,9 +6,10 @@
  *	1、ROOT_DIR . "devinc.all.php"
  *
  * */
-define('USER_TYPE_REG',         1 < 0);
-define('USER_TYPE_TOKEN',       1 < 1);
-define('USER_TYPE_NICKNAME',    1 < 2);
+define('USER_TYPE_TOKEN',       1 << 0);
+define('USER_TYPE_NICKNAME',    1 << 1);
+define('USER_TYPE_REG',         1 << 2);
+
 
 
 function user_by_id($id) {
@@ -83,7 +84,7 @@ function user_by_token($token) {
     $mkey = "uid_by_token#" . $token;
 
     if (!( $uid = s_memcache($mkey) )) {
-        if (!( $uid = s_db_one("select `uid` from `%s_user` where `token`='{$token}'") )) {
+        if (!( $uid = s_db_one("select `id` from `%s_user` where `token`='{$token}'") )) {
             //没有此token对应的用户信息
             return false;
         }
@@ -103,16 +104,6 @@ function user_token_from_cookie($setup=false) {
     ) {
         //产生64位随机字符
         $token  = s_string_random(64, true);
-
-        //插入数据库
-        $nickname = "";
-        $username = $token;
-        $password = $token;
-
-        //创建以tokken为基准的新用户
-        if (!user_create($username, $password, $nickname, USER_TYPE_TOKEN, $token)) {
-            return false;
-        }
 
         //存储30年
         s_cookie('TOKEN', $token, 1 << 30);
@@ -143,15 +134,15 @@ function user_create_by_token($token) {
 
     $time   = s_action_time();
     $data['tokentime']	= date('Y-m-d H:i:s', $time);
-    $date['time']       = $time;
+    $data['time']       = $time;
 
-    return s_db('%s_user:insert', $data);
+    return s_db('%s_user', s_db('%s_user:insert', $data));
 }
 
 
 //通过nickname方式创建新用户
 function user_create_by_nickname($nickname) {
-    if (s_bad_string($nikcnam)) {
+    if (s_bad_string($nickname)) {
         return false;
     }
 
@@ -159,6 +150,7 @@ function user_create_by_nickname($nickname) {
     $username = s_string_random(64, true);
 
     $data = array();
+    $data['token']      = user_token_from_cookie(true);
     $data['username']   = $username;
     $data['nickname']   = $nickname;
     $data['password']   = user_encrypt($username, $username);
@@ -166,15 +158,15 @@ function user_create_by_nickname($nickname) {
 
     $time = s_action_time();
     $data['nicktime']	= date('Y-m-d H:i:s', $time);
-    $date['time']       = $time;
+    $data['time']       = $time;
 
-    return s_db('%s_user:insert', $data);
+    return s_db('%s_user', s_db('%s_user:insert', $data));
 }
 
 
 
 //通过注册方式创建新用户
-function user_create_by_reg($username, $password, $nickname) {
+function user_create_by_reg($username, $password, $nickname, $token=false) {
     if (s_bad_string($username)
         || s_bad_string($nickname)
         || s_bad_string($password)
@@ -182,28 +174,61 @@ function user_create_by_reg($username, $password, $nickname) {
         return false;
     }
 
-    //token对应的用户已经存在，只需要更新用户名和密码
-    $data['username']   = $username;
-    $data['nickname']   = $nickname;
-    $data['password']   = user_encrypt($username, $password);
-    $data['status']     = USER_TYPE_REG;
+    //用户已经发表过说说，但未注册
+    //获取用户，修改用户名和密码
+    if ($token
+        && ( $user = user_by_token($token) )
+        && ( $user['status'] <= USER_TYPE_TOKEN )
+    ) {
+        $data['username']   = $username;
+        $data['nickname']   = $nickname;
+        $data['password']   = user_encrypt($username, $password);
+        $data['status']     = USER_TYPE_REG;
 
-    $time = s_action_time();
-    $data['regtime']    = date('Y-m-d H:i:s', $time);
-    $data['time']       = $time;
+        $time = s_action_time();
+        $data['regtime']    = date('Y-m-d H:i:s', $time);
+        $data['time']       = $time;
 
 
-    return s_db('%s_user:insert', $data);
+        //更新用户的资料
+        s_db('%s_user:update', $user, $data);
+
+        return s_db('%s_user', $user['id']);
+
+    } else {
+        //token对应的用户已经存在，只需要更新用户名和密码
+        $data['token']      = $token ? $token : user_token_from_cookie(true);
+        $data['username']   = $username;
+        $data['nickname']   = $nickname;
+        $data['password']   = user_encrypt($username, $password);
+        $data['status']     = USER_TYPE_REG;
+
+        $time = s_action_time();
+        $data['regtime']    = date('Y-m-d H:i:s', $time);
+        $data['time']       = $time;
+
+        return s_db('%s_user', s_db('%s_user:insert', $data));
+    }
 }
 
 //更新用户的登录信息
-function user_autologin($update=false) {
-    if (!( $user = s_cookie_desue() )) {
+function user_login_by_cookie($update=false) {
+    if (!( $cookie = s_cookie_desue() )
+        || !( $user = s_db('%s_user', $cookie['uid']) )
+    ) {
         return false;
     }
 
-    if (!$update) {
-        $user['nickname'] = $user['nn'];
+    return $user;
+}
+
+
+//更新用户的登录信息
+function user_login_by_token($update=false) {
+    if (!( $user = user_by_token(s_cookie('TOKEN') ))
+        || $user['token'] != USER_TYPE_TOKEN
+    ) {
+        return false;
     }
 
     return $user;
