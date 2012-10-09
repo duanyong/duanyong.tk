@@ -263,13 +263,15 @@ function user_login($username, $password, $remember=false) {
 
 //更新用户的登退出信息
 function user_logout($user) {
-    if (!( $user = user_by_id($user['uid']) )) {
+    if (s_bad_id($user['id'], $id)
+        || !( $user = user_by_id($id) )
+    ) {
         return false;
     }
 
     //更新COOKIE信息
-    s_cookie('SUP', '', -1);
-    s_cookie('SUE', '', -1);
+    s_cookie('SUP', 'true', -1);
+    s_cookie('SUE', 'true', -1);
 }
 
 
