@@ -7,6 +7,7 @@
  * */
 
 require_once("dev/devapp.config.php");
+require_once(ROOT_DIR . "/user/devapi.user.php");
 
 
 $data = array();
