@@ -14,9 +14,10 @@ if (!( $user = user_login_by_cookie() )) {
     $user = array();
 
     //设置用户标识
-    if(!user_token_from_cookie()) {
-        //用户之前没有来访过
-        user_create_by_token(user_token_from_cookie(true));
+    if(!user_token_from_cookie()
+        && !( $user = user_create_by_token(user_token_from_cookie(true)) )
+    ) {
+        $user = array();
     }
 }
 

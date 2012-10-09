@@ -13,7 +13,7 @@
 </head>
 <body bgcolor="#FFF">
 <div id="warpper">
-    {include file="header.tpl"}
+    {include file="header.tpl" user=$user}
 
     <div id="main" class="layout-2">
         <div id="main_content" class="left">

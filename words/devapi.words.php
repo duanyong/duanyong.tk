@@ -6,6 +6,29 @@
  *
  * */
 
+
+//返回用户的留言总数
+function words_count_by_sender($user) {
+    if (s_bad_id($user['id'], $uid)) {
+        return false;
+    }
+
+    $mkey = "words_count_by_sid#" . $uid;
+
+    if (!( $count = s_memcache($mkey) )) {
+        if (!( $count = s_db_one("select count(*) from `%s_words` where `sid`={$uid}") )) {
+            //没有此token对应的用户信息
+            return false;
+        }
+
+        //添加到memcache中，存储10秒
+        s_memcache($mkey, $count, 10);
+    }
+
+    return $count;
+}
+
+
 function words_list_by_sender($nickname, $page=1, $size=20) {
     if (s_bad_string($nickname)
         || s_bad_id($page)
@@ -62,3 +85,4 @@ function words_list_by_receiver($nickname, $page=1, $size=20) {
 
     return $list;
 }
+

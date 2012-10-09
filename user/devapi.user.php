@@ -136,7 +136,11 @@ function user_create_by_token($token) {
     $data['tokentime']	= date('Y-m-d H:i:s', $time);
     $data['time']       = $time;
 
-    return s_db('%s_user', s_db('%s_user:insert', $data));
+    if (!( $uid = s_db('%s_user', s_db('%s_user:insert', $data)) )) {
+        return false;
+    }
+
+    return s_db('%s_user', $uid);
 }
 
 
@@ -305,5 +309,3 @@ function user_encrypt($username, $password) {
 
     return md5($new);
 }
-
-

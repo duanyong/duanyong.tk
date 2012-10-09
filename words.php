@@ -8,6 +8,7 @@
 
 require_once("dev/devapp.config.php");
 require_once(ROOT_DIR . "/user/devapi.user.php");
+require_once(ROOT_DIR . "/words/devapi.words.php");
 
 
 if (s_bad_post('nickname', $nickname)) {
@@ -35,7 +36,7 @@ if (false === ( $user = user_login_by_cookie() )
 if (!( $people = user_by_nickname($nickname) )
     && !( $people = user_create_by_nickname($nickname) )
 ) {
-    $wrong['notice'] = '发布失败';
+    $wrong['notice'] = '无法创建对应的用户昵称，发布失败';
 }
 
 
@@ -72,5 +73,14 @@ if (false === ( $id = s_db('%s_words:insert', $data) )) {
     ), 'main.tpl');
 }
 
+
+//更新留言总数
+if (( $count = words_count_by_sender($user) )) {
+    $v2 = array(
+        'sum'   => $count,
+    );
+
+    s_db('%s_user:update', $user, $v2);
+}
 
 return s_action_redirect("list.php?nickname={$user['nickname']}");
