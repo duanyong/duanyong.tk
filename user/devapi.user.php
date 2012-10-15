@@ -220,6 +220,7 @@ function user_login_by_cookie($update=false) {
     if (!( $cookie = s_cookie_desue() )
         || !( $user = s_db('%s_user', $cookie['uid']) )
     ) {
+        var_dump($cookie);
         return false;
     }
 
@@ -254,8 +255,8 @@ function user_login($username, $password, $remember=false) {
     $exp = $remember ? 7 * 86400 : false;
 
     //更新COOKIE信息
-    s_cookie('SUP', s_cookie_sup($user, $exp));
-    s_cookie('SUE', s_cookie_sue($user, $exp));
+    s_cookie('AUP', s_cookie_sup($user, $exp));
+    s_cookie('AUE', s_cookie_sue($user, $exp));
 
     return $user;
 }
@@ -270,8 +271,8 @@ function user_logout($user) {
     }
 
     //更新COOKIE信息
-    s_cookie('SUP', 'true', -1);
-    s_cookie('SUE', 'true', -1);
+    s_cookie('AUP', 'true', -1);
+    s_cookie('AUE', 'true', -1);
 }
 
 
