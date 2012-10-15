@@ -14,7 +14,7 @@ if (!( $user = user_login_by_cookie() )) {
     $user = array();
 
     //设置用户标识
-    if(!user_token_from_cookie()
+    if(!( $user = user_by_token(user_token_from_cookie()) )
         && !( $user = user_create_by_token(user_token_from_cookie(true)) )
     ) {
         $user = array();

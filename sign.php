@@ -66,4 +66,4 @@ if (!( $user = user_login($username, $password, $remember) )) {
 
 $data['user'] = $user;
 
-s_action_redirect('/main.php');
+s_action_redirect('main.php');
