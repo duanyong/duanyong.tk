@@ -220,7 +220,6 @@ function user_login_by_cookie($update=false) {
     if (!( $cookie = s_cookie_desue() )
         || !( $user = s_db('%s_user', $cookie['uid']) )
     ) {
-        var_dump($cookie);
         return false;
     }
 
